@@ -8,7 +8,7 @@ A Node.js RESTful API for managing student records, built with Express and Mongo
 
 1. **Clone the repository**
    ```bash
-   git clone https://github.com/Silas-Nmenme/School-Management-API cd student-crud-api
+   git clone https://github.com/Silas-Nmenme/School-Management-API.git cd student-crud-api
    ```
 
 2. **Install dependencies**
