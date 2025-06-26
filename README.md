@@ -8,7 +8,7 @@ A Node.js RESTful API for managing student records, built with Express and Mongo
 
 1. **Clone the repository**
    ```bash
-   git clone <your-repo-url>cd student-crud-api
+   git clone https://github.com/Silas-Nmenme/School-Management-API cd student-crud-api
    ```
 
 2. **Install dependencies**
@@ -55,20 +55,19 @@ A Node.js RESTful API for managing student records, built with Express and Mongo
 
 ## 📚 API Endpoints Overview
 
-- `POST /api/students/register` — Register a new student
-- `POST /api/students/login` — Student login
-- `POST /api/students/logout` — Student logout
-- `PUT /api/students/reset-password/:studentId` — Reset password
-- `POST /api/students/forgot-password` — Forgot password (send OTP)
-- `PUT /api/students/student-count' -  getStudentCount
+post '/register', - registerStudent
+post '/login', - loginStudent
+post '/forget-password', - forgetPassword
+post '/verify-otp', - verifyOtp
+put '/reset-password/:studentId', - resetPassword
+post '/logout',- logoutStudent
+get '/student-count', - getStudentCount
+
 
 **Admin Endpoints (require admin JWT):**
-- `GET /api/admin/get-all-students` — List all students
-- `GET /api/admin/student-count` — Get total student count
-- `PUT /api/admin/edit-student/:id` — Edit student details
-- `DELETE /api/admin/delete-student/:id` — Delete student
-- `PUT /api/admin/make-admin/:id` — Make a student an admin
-- `GET /api/admin/search-student?name=John` — Search students by name
+put '/edit-student/:id', - editStudent
+delete '/delete-student/:id', - deleteStudent
+get'/get-all-students', - getAllStudents
 
 ---
 
@@ -86,7 +85,7 @@ A Node.js RESTful API for managing student records, built with Express and Mongo
 
 ---
 
-## 🛠️ Notes
+## Notes
 
 - Ensure MongoDB is running before starting the API.
 - Use the correct JWT token for protected/admin routes.
