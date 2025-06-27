@@ -1,15 +1,84 @@
 const Student = require("../models/student.schema.js");
+const bcrypt = require("bcryptjs");
+const saltRounds = 10;
+const uuid = require("uuid").v4;
+const token = uuid(); // Generate a unique token for the student
+
+const generateStudentId = () => {
+    return 'STU' + Date.now() + Math.floor(Math.random() * 1000);
+};
+
+const addStudent = async (req, res) => {
+    const { Fistname, Lastname, email, age, phone, password, confirmpassword } = req.body;
+    // Validate required fields
+    if (!Fistname || !Lastname || !email || !age || !phone || !password || !confirmpassword) {
+        return res.status(400).json({ message: "All fields are required" });
+    }
+       const parsedAge = Number(age);
+    if (isNaN(parsedAge) || parsedAge <= 0) {
+        return res.status(400).json({ message: 'Age must be a positive number' });
+    }
+        if (password.length < 6) {
+            return res.status(400).json({ message: "Password must be at least 6 characters long" });
+        }
+        // Check if the student already exists
+        const existingStudent = await Student.findOne({ email });
+        if (existingStudent) {
+            return res.status(400).json({ message: "Student already exists" });
+        }
+
+        // Validate password match
+        if (password !== confirmpassword) {
+            return res.status(400).json({ message: "Passwords do not match" });
+        }
+
+        // Hash the password
+        const hashedPassword = await bcrypt.hash(password, saltRounds);
+
+        const studentId = generateStudentId(); // Generate a unique student ID
+
+        // Create a new student
+         const newStudent = new Student({
+        studentId,
+        Fistname,
+        Lastname,
+        email,
+        age: parsedAge,
+        phone,
+        password: hashedPassword,
+        confirmpassword: hashedPassword,
+        token: token
+    });
+    
+
+        // Save the student to the database
+        await newStudent.save();
+
+        //Prepare registration details to return (excluding password)
+        const registrationDetails = {
+            studentId: newStudent.studentId,
+            Fistname: newStudent.Fistname,
+            Lastname: newStudent.Lastname,
+            email: newStudent.email,
+            age: newStudent.age,
+            phone: newStudent.phone
+        };
+
+        res.status(201).json({ message: "Student registered successfully", registrationDetails });
+        console.log("New student registered:", registrationDetails);
+        return newStudent;
+};
 
 
 //Edit a student
 const editStudent = async (req, res) => {
     const { studentId } = req.params;
-    const { Fistname, Lastname, email, age, phone } = req.body;
+    const { Fistname, Lastname, email, age, phone } = req.body || {};
     const id = req.student.id;
     try {
         const admin = await Student.findById(id);
         if (admin.isAdmin !== true) {
-            return res.status(403).json({ message: "Only admin can edit student" });
+            return res.status(403).json({ message: "Only admins can edit student" });
         }
         const student = await Student.findById(studentId);
         if (!student) {
@@ -31,7 +100,7 @@ const editStudent = async (req, res) => {
 };
 
 const deleteStudent = async (req, res) => {
-    const { studentId } = req.params;
+    const  {studentId } = req.params;
     const id = req.student.id;
     try {
         const student = await Student.findById(id);
@@ -62,6 +131,7 @@ const getAllStudents = async (_req, res) => {
 
 
 module.exports = {
+    addStudent,
     editStudent,
     deleteStudent,
     getAllStudents

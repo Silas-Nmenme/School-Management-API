@@ -108,6 +108,20 @@ const loginStudent = async (req, res) => {
     }
 };
 
+const makeAdmin = async (req, res) => {
+    const { studentId } = req.params;
+    try {
+        const student = await Student.findById(studentId);
+        if (!student) {
+            return res.status(404).json({ message: "Student not found" });
+        }
+        student.isAdmin = true; // Assuming you have an isAdmin field in your student schema
+        await student.save();
+        return res.status(200).json({ message: "Student promoted to admin successfully", student });
+    } catch (error) {
+        return res.status(500).json({ message: "Internal server error", error });
+    }
+};
 
 const forgetPassword = async (req, res) => {
     const { email } = req.body;
@@ -235,6 +249,7 @@ const getStudentCount = async (req, res) => {
 module.exports = {
     registerStudent,
     loginStudent,
+    makeAdmin,
     forgetPassword,
     verifyOtp,
     resetPassword,

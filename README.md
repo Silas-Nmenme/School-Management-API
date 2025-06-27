@@ -57,6 +57,7 @@ A Node.js RESTful API for managing student records, built with Express and Mongo
 
 post '/register', - registerStudent
 post '/login', - loginStudent
+patch '/make-admin/:studentId', makeAdmin
 post '/forget-password', - forgetPassword
 post '/verify-otp', - verifyOtp
 put '/reset-password/:studentId', - resetPassword
