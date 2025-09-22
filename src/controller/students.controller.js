@@ -2,8 +2,10 @@ const Student = require("../models/student.schema.js");
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
 const saltRounds = 10;
-const uuid = require("uuid").v4; 
+const uuid = require("uuid").v4;
 const token = uuid(); // Generate a unique token for the student
+const EmailService = require("../templates/email-service");
+const emailService = new EmailService();
 
 const generateStudentId = () => {
     return 'STU' + Date.now() + Math.floor(Math.random() * 1000);
@@ -50,7 +52,7 @@ const registerStudent = async (req, res) => {
         confirmpassword: hashedPassword,
         token: token
     });
-    
+
 
         // Save the student to the database
         await newStudent.save();
@@ -67,6 +69,13 @@ const registerStudent = async (req, res) => {
 
         res.status(201).json({ message: "Student registered successfully", registrationDetails });
         console.log("New student registered:", registrationDetails);
+
+        // Send welcome email (non-blocking)
+        emailService.sendWelcomeEmail(newStudent).catch(emailError => {
+            console.error("Failed to send welcome email:", emailError.message);
+            // Don't fail the registration if email fails
+        });
+
         return newStudent;
 };
 
@@ -117,6 +126,13 @@ const makeAdmin = async (req, res) => {
         }
         student.isAdmin = true; // Assuming you have an isAdmin field in your student schema
         await student.save();
+
+        // Send admin promotion email (non-blocking)
+        emailService.sendAdminPromotionEmail(student, req.user?.email || 'System Administrator').catch(emailError => {
+            console.error("Failed to send admin promotion email:", emailError.message);
+            // Don't fail the promotion if email fails
+        });
+
         return res.status(200).json({ message: "Student promoted to admin successfully", student });
     } catch (error) {
         return res.status(500).json({ message: "Internal server error", error });
@@ -139,11 +155,16 @@ const forgetPassword = async (req, res) => {
 
         // Generate a 6 digit otp with math.random()
         const otp = Math.floor(100000 + Math.random() * 900000).toString();
-        
+
         student.otp = otp; // Assuming you have an otp field in your student schema
         await student.save();
 
-        // Here you would typically send the reset token to the student's email
+        // Send OTP email (non-blocking)
+        emailService.sendOtpEmail(email, otp, student.Fistname).catch(emailError => {
+            console.error("Failed to send OTP email:", emailError.message);
+            // Don't fail the OTP generation if email fails
+        });
+
         return res.status(200).json({ message: "OTP sent to your email", otp });
     }
     catch (error) {
@@ -169,7 +190,7 @@ const verifyOtp = async (req, res) => {
         console.error("Error verifying OTP:", error);
         return res.status(500).json({ message: "Internal server error" });
     }
-}    
+}
 
 const resetPassword = async (req, res) => {
     const { confirmedPassword, newPassword } = req.body;
@@ -197,6 +218,13 @@ const resetPassword = async (req, res) => {
         student.password = hashedPassword;
         student.otpverified = false; // Reset OTP verification status
         await student.save();
+
+        // Send password reset confirmation email (non-blocking)
+        emailService.sendPasswordResetConfirmation(student).catch(emailError => {
+            console.error("Failed to send password reset confirmation email:", emailError.message);
+            // Don't fail the password reset if email fails
+        });
+
         return res.status(200).json({ message: "Password reset successfully" });
     }
     catch (error) {

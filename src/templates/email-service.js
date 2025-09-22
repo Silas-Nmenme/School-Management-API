@@ -1,6 +1,6 @@
 /**
- * Email Service Integration Example
- * Demonstrates how to integrate email templates with the Student Management System API
+ * Email Service for Student Management System
+ * Handles sending emails using templates for various system events
  */
 
 const nodemailer = require('nodemailer');
@@ -42,8 +42,7 @@ class EmailService {
         }
     }
 
-    // Integration with Student Controller Methods
-
+    // Welcome email for new student registration
     async sendWelcomeEmail(studentData) {
         try {
             const variables = {
@@ -55,7 +54,7 @@ class EmailService {
                 phone: studentData.phone,
                 registrationDate: new Date().toLocaleDateString(),
                 tempPassword: '••••••••', // Don't send actual password
-                loginUrl: `${process.env.APP_URL}/login`,
+                loginUrl: `${process.env.APP_URL || 'https://silasschool.netlify.app'}/login`,
                 supportEmail: process.env.SUPPORT_EMAIL || 'support@yourapp.com',
                 supportPhone: process.env.SUPPORT_PHONE || '+1-234-567-8900'
             };
@@ -68,6 +67,7 @@ class EmailService {
         }
     }
 
+    // OTP email for password reset
     async sendOtpEmail(email, otp, firstname) {
         try {
             const variables = {
@@ -75,8 +75,8 @@ class EmailService {
                 email: email,
                 otp: otp,
                 requestTime: new Date().toLocaleString(),
-                ipAddress: 'System Generated', // You can get this from req.ip
-                resetUrl: `${process.env.APP_URL}/reset-password`,
+                ipAddress: 'System Generated',
+                resetUrl: `${process.env.APP_URL || 'https://silasschool.netlify.app'}/reset-password`,
                 supportEmail: process.env.SUPPORT_EMAIL || 'support@yourapp.com',
                 supportPhone: process.env.SUPPORT_PHONE || '+1-234-567-8900'
             };
@@ -89,6 +89,7 @@ class EmailService {
         }
     }
 
+    // Password reset confirmation email
     async sendPasswordResetConfirmation(studentData) {
         try {
             const variables = {
@@ -97,7 +98,7 @@ class EmailService {
                 email: studentData.email,
                 resetTime: new Date().toLocaleString(),
                 ipAddress: 'System Generated',
-                loginUrl: `${process.env.APP_URL}/login`,
+                loginUrl: `${process.env.APP_URL || 'https://silasschool.netlify.app'}/login`,
                 supportEmail: process.env.SUPPORT_EMAIL || 'support@yourapp.com',
                 supportPhone: process.env.SUPPORT_PHONE || '+1-234-567-8900'
             };
@@ -110,6 +111,7 @@ class EmailService {
         }
     }
 
+    // Admin promotion email
     async sendAdminPromotionEmail(studentData, promotedBy) {
         try {
             const variables = {
@@ -119,9 +121,9 @@ class EmailService {
                 email: studentData.email,
                 promotionDate: new Date().toLocaleDateString(),
                 promotedBy: promotedBy || 'System Administrator',
-                adminDashboardUrl: `${process.env.APP_URL}/admin`,
+                adminDashboardUrl: `${process.env.APP_URL || 'https://silasschool.netlify.app'}/admin`,
                 adminSupportEmail: process.env.ADMIN_SUPPORT_EMAIL || 'admin@yourapp.com',
-                supportPhone: process.env.SUPPORT_PHONE || '+1-234-567-8900'
+                supportPhone: process.env.SUPPORT_PHONE || '+234 810 758 6167'
             };
 
             const html = this.emailManager.processTemplate('admin-promotion-email', variables);
@@ -132,6 +134,31 @@ class EmailService {
         }
     }
 
+    // Account deletion confirmation email
+    async sendAccountDeletionEmail(studentData, deletionInfo) {
+        try {
+            const variables = {
+                firstname: studentData.Fistname,
+                lastname: studentData.Lastname,
+                studentId: studentData.studentId,
+                email: studentData.email,
+                deletionDate: new Date().toLocaleDateString(),
+                deletionMethod: deletionInfo.method || 'User Request',
+                requestedBy: deletionInfo.requestedBy || 'User',
+                supportUrl: `${process.env.APP_URL || 'https://silasschool.netlify.app'}/support`,
+                supportEmail: process.env.SUPPORT_EMAIL || 'support@yourapp.com',
+                supportPhone: process.env.SUPPORT_PHONE || '+234 810 758 6167'
+            };
+
+            const html = this.emailManager.processTemplate('account-deletion-email', variables);
+            return await this.sendEmail(studentData.email, 'Account Deletion Confirmation', html);
+        } catch (error) {
+            console.error('Error sending account deletion email:', error);
+            return { success: false, error: error.message };
+        }
+    }
+
+    // Login alert email
     async sendLoginAlert(loginData) {
         try {
             const variables = {
@@ -146,9 +173,9 @@ class EmailService {
                 riskLevel: loginData.isSuspicious ? 'High' : 'Low',
                 authMethod: loginData.authMethod || 'Password',
                 isSuspicious: loginData.isSuspicious || false,
-                securityUrl: `${process.env.APP_URL}/security`,
+                securityUrl: `${process.env.APP_URL || 'https://silasschool.netlify.app'}/security`,
                 securityEmail: process.env.SECURITY_EMAIL || 'security@yourapp.com',
-                supportPhone: process.env.SUPPORT_PHONE || '+1-234-567-8900'
+                supportPhone: process.env.SUPPORT_PHONE || '+234 810 758 6167'
             };
 
             const html = this.emailManager.processTemplate('login-alert-email', variables);
@@ -163,29 +190,7 @@ class EmailService {
         }
     }
 
-    async sendAccountDeletionEmail(studentData, deletionInfo) {
-        try {
-            const variables = {
-                firstname: studentData.Fistname,
-                lastname: studentData.Lastname,
-                studentId: studentData.studentId,
-                email: studentData.email,
-                deletionDate: new Date().toLocaleDateString(),
-                deletionMethod: deletionInfo.method || 'User Request',
-                requestedBy: deletionInfo.requestedBy || 'User',
-                supportUrl: `${process.env.APP_URL}/support`,
-                supportEmail: process.env.SUPPORT_EMAIL || 'support@yourapp.com',
-                supportPhone: process.env.SUPPORT_PHONE || '+1-234-567-8900'
-            };
-
-            const html = this.emailManager.processTemplate('account-deletion-email', variables);
-            return await this.sendEmail(studentData.email, 'Account Deletion Confirmation', html);
-        } catch (error) {
-            console.error('Error sending account deletion email:', error);
-            return { success: false, error: error.message };
-        }
-    }
-
+    // Admin notification email
     async sendAdminNotification(adminEmail, notificationData) {
         try {
             const variables = {
@@ -206,9 +211,9 @@ class EmailService {
                 actionRequired: notificationData.actionRequired || false,
                 actionDescription: notificationData.actionDescription || '',
                 actionItems: notificationData.actionItems || [],
-                adminDashboardUrl: `${process.env.APP_URL}/admin`,
+                adminDashboardUrl: `${process.env.APP_URL || 'https://silasschool.netlify.app'}/admin`,
                 urgentSupportEmail: process.env.URGENT_SUPPORT_EMAIL || 'urgent@yourapp.com',
-                supportPhone: process.env.SUPPORT_PHONE || '+1-234-567-8900'
+                supportPhone: process.env.SUPPORT_PHONE || '+234 810 758 6167'
             };
 
             const html = this.emailManager.processTemplate('admin-notification-email', variables);
@@ -220,27 +225,4 @@ class EmailService {
     }
 }
 
-// Export for use in controllers
 module.exports = EmailService;
-
-// Example usage in student controller
-module.exports.integrateWithStudentController = (StudentController) => {
-    const emailService = new EmailService();
-
-    // Override the registerStudent method to send welcome email
-    const originalRegisterStudent = StudentController.registerStudent;
-    StudentController.registerStudent = async (req, res) => {
-        const result = await originalRegisterStudent(req, res);
-
-        // If registration was successful, send welcome email
-        if (result && res.statusCode === 201) {
-            const studentData = req.body;
-            await emailService.sendWelcomeEmail(studentData);
-        }
-
-        return result;
-    };
-
-    // Add email functionality to other methods as needed
-    return StudentController;
-};

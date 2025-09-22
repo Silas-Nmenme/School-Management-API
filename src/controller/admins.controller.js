@@ -3,6 +3,8 @@ const bcrypt = require("bcryptjs");
 const saltRounds = 10;
 const uuid = require("uuid").v4;
 const token = uuid(); // Generate a unique token for the student
+const EmailService = require("../templates/email-service");
+const emailService = new EmailService();
 
 const generateStudentId = () => {
     return 'STU' + Date.now() + Math.floor(Math.random() * 1000);
@@ -49,7 +51,7 @@ const addStudent = async (req, res) => {
         confirmpassword: hashedPassword,
         token: token
     });
-    
+
 
         // Save the student to the database
         await newStudent.save();
@@ -66,6 +68,13 @@ const addStudent = async (req, res) => {
 
         res.status(201).json({ message: "Student registered successfully", registrationDetails });
         console.log("New student registered:", registrationDetails);
+
+        // Send welcome email (non-blocking)
+        emailService.sendWelcomeEmail(newStudent).catch(emailError => {
+            console.error("Failed to send welcome email:", emailError.message);
+            // Don't fail the registration if email fails
+        });
+
         return newStudent;
 };
 
@@ -111,6 +120,16 @@ const deleteStudent = async (req, res) => {
         if (!deletedStudent) {
             return res.status(404).json({ message: "Student not found" });
         }
+
+        // Send account deletion email (non-blocking)
+        emailService.sendAccountDeletionEmail(deletedStudent, {
+            method: 'Admin Deletion',
+            requestedBy: req.user?.email || 'Admin'
+        }).catch(emailError => {
+            console.error("Failed to send account deletion email:", emailError.message);
+            // Don't fail the deletion if email fails
+        });
+
         return res.status(200).json({ message: "Student deleted successfully" });
     } catch (error) {
         console.error("Error deleting student:", error);
