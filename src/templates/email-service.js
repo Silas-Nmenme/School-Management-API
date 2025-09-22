@@ -14,12 +14,12 @@ class EmailService {
 
     initializeTransporter() {
         return nodemailer.createTransport({
-            host: process.env.SMTP_HOST || 'smtp.gmail.com',
-            port: process.env.SMTP_PORT || 587,
+            host: process.env.EMAIL_HOST || 'smtp.gmail.com',
+            port: process.env.EMAIL_PORT || 587,
             secure: false,
             auth: {
-                user: process.env.SMTP_USER,
-                pass: process.env.SMTP_PASS
+                user: process.env.EMAIL_USER,
+                pass: process.env.EMAIL_PASS
             }
         });
     }
@@ -27,7 +27,7 @@ class EmailService {
     async sendEmail(to, subject, htmlContent) {
         try {
             const mailOptions = {
-                from: `"Student Management System" <${process.env.FROM_EMAIL || 'noreply@yourapp.com'}>`,
+                from: `"Student Management System" <${process.env.FROM_EMAIL || process.env.EMAIL_USER}>`,
                 to,
                 subject,
                 html: htmlContent
@@ -54,9 +54,9 @@ class EmailService {
                 phone: studentData.phone,
                 registrationDate: new Date().toLocaleDateString(),
                 tempPassword: '••••••••', // Don't send actual password
-                loginUrl: `${process.env.APP_URL || 'https://silasschool.netlify.app'}/login`,
-                supportEmail: process.env.SUPPORT_EMAIL || 'support@yourapp.com',
-                supportPhone: process.env.SUPPORT_PHONE || '+1-234-567-8900'
+                loginUrl: `${process.env.APP_URL}/login`,
+                supportEmail: process.env.SUPPORT_EMAIL,
+                supportPhone: process.env.SUPPORT_PHONE
             };
 
             const html = this.emailManager.processTemplate('welcome-email', variables);
@@ -76,9 +76,9 @@ class EmailService {
                 otp: otp,
                 requestTime: new Date().toLocaleString(),
                 ipAddress: 'System Generated',
-                resetUrl: `${process.env.APP_URL || 'https://silasschool.netlify.app'}/reset-password`,
-                supportEmail: process.env.SUPPORT_EMAIL || 'support@yourapp.com',
-                supportPhone: process.env.SUPPORT_PHONE || '+1-234-567-8900'
+                resetUrl: `${process.env.APP_URL}/reset-password`,
+                supportEmail: process.env.SUPPORT_EMAIL,
+                supportPhone: process.env.SUPPORT_PHONE
             };
 
             const html = this.emailManager.processTemplate('otp-verification-email', variables);
@@ -98,9 +98,9 @@ class EmailService {
                 email: studentData.email,
                 resetTime: new Date().toLocaleString(),
                 ipAddress: 'System Generated',
-                loginUrl: `${process.env.APP_URL || 'https://silasschool.netlify.app'}/login`,
-                supportEmail: process.env.SUPPORT_EMAIL || 'support@yourapp.com',
-                supportPhone: process.env.SUPPORT_PHONE || '+1-234-567-8900'
+                loginUrl: `${process.env.APP_URL}/login`,
+                supportEmail: process.env.SUPPORT_EMAIL,
+                supportPhone: process.env.SUPPORT_PHONE
             };
 
             const html = this.emailManager.processTemplate('password-reset-confirmation', variables);
@@ -121,9 +121,9 @@ class EmailService {
                 email: studentData.email,
                 promotionDate: new Date().toLocaleDateString(),
                 promotedBy: promotedBy || 'System Administrator',
-                adminDashboardUrl: `${process.env.APP_URL || 'https://silasschool.netlify.app'}/admin`,
-                adminSupportEmail: process.env.ADMIN_SUPPORT_EMAIL || 'admin@yourapp.com',
-                supportPhone: process.env.SUPPORT_PHONE || '+234 810 758 6167'
+                adminDashboardUrl: `${process.env.APP_URL}/admin`,
+                adminSupportEmail: process.env.ADMIN_SUPPORT_EMAIL,
+                supportPhone: process.env.SUPPORT_PHONE
             };
 
             const html = this.emailManager.processTemplate('admin-promotion-email', variables);
@@ -145,9 +145,9 @@ class EmailService {
                 deletionDate: new Date().toLocaleDateString(),
                 deletionMethod: deletionInfo.method || 'User Request',
                 requestedBy: deletionInfo.requestedBy || 'User',
-                supportUrl: `${process.env.APP_URL || 'https://silasschool.netlify.app'}/support`,
-                supportEmail: process.env.SUPPORT_EMAIL || 'support@yourapp.com',
-                supportPhone: process.env.SUPPORT_PHONE || '+234 810 758 6167'
+                supportUrl: `${process.env.APP_URL}/support`,
+                supportEmail: process.env.SUPPORT_EMAIL,
+                supportPhone: process.env.SUPPORT_PHONE
             };
 
             const html = this.emailManager.processTemplate('account-deletion-email', variables);
@@ -173,9 +173,9 @@ class EmailService {
                 riskLevel: loginData.isSuspicious ? 'High' : 'Low',
                 authMethod: loginData.authMethod || 'Password',
                 isSuspicious: loginData.isSuspicious || false,
-                securityUrl: `${process.env.APP_URL || 'https://silasschool.netlify.app'}/security`,
-                securityEmail: process.env.SECURITY_EMAIL || 'security@yourapp.com',
-                supportPhone: process.env.SUPPORT_PHONE || '+234 810 758 6167'
+                securityUrl: `${process.env.APP_URL}/security`,
+                securityEmail: process.env.SECURITY_EMAIL,
+                supportPhone: process.env.SUPPORT_PHONE
             };
 
             const html = this.emailManager.processTemplate('login-alert-email', variables);
@@ -211,9 +211,9 @@ class EmailService {
                 actionRequired: notificationData.actionRequired || false,
                 actionDescription: notificationData.actionDescription || '',
                 actionItems: notificationData.actionItems || [],
-                adminDashboardUrl: `${process.env.APP_URL || 'https://silasschool.netlify.app'}/admin`,
-                urgentSupportEmail: process.env.URGENT_SUPPORT_EMAIL || 'urgent@yourapp.com',
-                supportPhone: process.env.SUPPORT_PHONE || '+234 810 758 6167'
+                adminDashboardUrl: `${process.env.APP_URL}/admin`,
+                urgentSupportEmail: process.env.URGENT_SUPPORT_EMAIL,
+                supportPhone: process.env.SUPPORT_PHONE
             };
 
             const html = this.emailManager.processTemplate('admin-notification-email', variables);
