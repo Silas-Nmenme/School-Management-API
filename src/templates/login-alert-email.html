@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>New Login Alert - Student Management System</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            max-width: 600px;
+            margin: 0 auto;
+            background-color: #f4f4f4;
+            padding: 20px;
+        }
+        .container {
+            background-color: #ffffff;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 0 20px rgba(0,0,0,0.1);
+        }
+        .header {
+            text-align: center;
+            border-bottom: 3px solid #17a2b8;
+            padding-bottom: 20px;
+            margin-bottom: 30px;
+        }
+        .header h1 {
+            color: #17a2b8;
+            margin: 0;
+            font-size: 28px;
+        }
+        .login-container {
+            background: linear-gradient(135deg, #17a2b8, #007bff);
+            color: white;
+            padding: 25px;
+            border-radius: 10px;
+            margin: 20px 0;
+            box-shadow: 0 4px 15px rgba(23, 162, 184, 0.3);
+        }
+        .login-details {
+            background-color: #d1ecf1;
+            border: 1px solid #bee5eb;
+            color: #0c5460;
+            padding: 20px;
+            border-radius: 8px;
+            margin: 20px 0;
+        }
+        .login-details h4 {
+            margin-top: 0;
+            color: #17a2b8;
+        }
+        .security-status {
+            background-color: #f8f9fa;
+            padding: 15px;
+            border-radius: 8px;
+            margin: 20px 0;
+            border-left: 4px solid #28a745;
+        }
+        .suspicious-activity {
+            background-color: #f8d7da;
+            border: 1px solid #f5c6cb;
+            color: #721c24;
+            padding: 20px;
+            border-radius: 8px;
+            margin: 20px 0;
+        }
+        .button {
+            display: inline-block;
+            background-color: #17a2b8;
+            color: white;
+            padding: 12px 30px;
+            text-decoration: none;
+            border-radius: 5px;
+            margin: 20px 0;
+            font-weight: bold;
+        }
+        .footer {
+            text-align: center;
+            margin-top: 30px;
+            padding-top: 20px;
+            border-top: 1px solid #eee;
+            color: #666;
+            font-size: 14px;
+        }
+        .warning {
+            background-color: #fff3cd;
+            border: 1px solid #ffeaa7;
+            color: #856404;
+            padding: 15px;
+            border-radius: 5px;
+            margin: 20px 0;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🔐 New Login Detected</h1>
+            <p style="margin: 10px 0 0 0; color: #666;">Security alert for your account</p>
+        </div>
+
+        <h2>Login Activity Alert</h2>
+
+        <p>A new login to your Student Management System account has been detected. Please review the details below to ensure this was you.</p>
+
+        <div class="login-container">
+            <h3 style="margin-top: 0; color: white;">New Login Session</h3>
+            <p style="margin-bottom: 0; opacity: 0.9;">{{LOGIN_TIME}}</p>
+        </div>
+
+        <div class="login-details">
+            <h4>📍 Login Details:</h4>
+            <ul>
+                <li><strong>Account:</strong> {{EMAIL}}</li>
+                <li><strong>Login Time:</strong> {{LOGIN_TIME}}</li>
+                <li><strong>IP Address:</strong> {{IP_ADDRESS}}</li>
+                <li><strong>Location:</strong> {{LOCATION}}</li>
+                <li><strong>Device:</strong> {{DEVICE_INFO}}</li>
+                <li><strong>Browser:</strong> {{BROWSER_INFO}}</li>
+                <li><strong>Session ID:</strong> {{SESSION_ID}}</li>
+            </ul>
+        </div>
+
+        <div class="security-status">
+            <h4 style="margin-top: 0;">🛡️ Security Status</h4>
+            <p><strong>Status:</strong> {{SECURITY_STATUS}}</p>
+            <p><strong>Risk Level:</strong> {{RISK_LEVEL}}</p>
+            <p><strong>Authentication Method:</strong> {{AUTH_METHOD}}</p>
+        </div>
+
+        {{#if IS_SUSPICIOUS}}
+        <div class="suspicious-activity">
+            <h4 style="margin-top: 0;">🚨 Suspicious Activity Detected</h4>
+            <p>This login appears to be from an unusual location or device. If this wasn't you, please take immediate action:</p>
+            <ul>
+                <li>Change your password immediately</li>
+                <li>Review your account activity</li>
+                <li>Enable additional security features</li>
+                <li>Contact support if needed</li>
+            </ul>
+        </div>
+        {{/if}}
+
+        <div style="text-align: center; margin: 30px 0;">
+            <a href="{{SECURITY_URL}}" class="button">Review Account Security</a>
+        </div>
+
+        <div class="warning">
+            <h4 style="margin-top: 0;">⚠️ Security Recommendations</h4>
+            <ul>
+                <li>Always log out when using shared devices</li>
+                <li>Use strong, unique passwords</li>
+                <li>Enable two-factor authentication</li>
+                <li>Monitor your account activity regularly</li>
+                <li>Report suspicious logins immediately</li>
+            </ul>
+        </div>
+
+        <p><strong>Questions?</strong> If you don't recognize this login activity, please contact our security team immediately.</p>
+
+        <div class="footer">
+            <p><strong>Student Management System - Security Center</strong></p>
+            <p>This is an automated security alert. Please do not reply to this email.</p>
+            <p>For security issues: {{SECURITY_EMAIL}} | {{SUPPORT_PHONE}}</p>
+        </div>
+    </div>
+</body>
+</html>

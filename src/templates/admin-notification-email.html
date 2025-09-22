@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>System Notification - Student Management System</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            max-width: 600px;
+            margin: 0 auto;
+            background-color: #f4f4f4;
+            padding: 20px;
+        }
+        .container {
+            background-color: #ffffff;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 0 20px rgba(0,0,0,0.1);
+        }
+        .header {
+            text-align: center;
+            border-bottom: 3px solid #fd7e14;
+            padding-bottom: 20px;
+            margin-bottom: 30px;
+        }
+        .header h1 {
+            color: #fd7e14;
+            margin: 0;
+            font-size: 28px;
+        }
+        .notification-container {
+            background: linear-gradient(135deg, #fd7e14, #e83e8c);
+            color: white;
+            padding: 25px;
+            border-radius: 10px;
+            margin: 20px 0;
+            box-shadow: 0 4px 15px rgba(253, 126, 20, 0.3);
+        }
+        .notification-type {
+            background-color: #f8f9fa;
+            padding: 15px;
+            border-radius: 8px;
+            margin: 20px 0;
+            border-left: 4px solid #fd7e14;
+        }
+        .event-details {
+            background-color: #e9ecef;
+            padding: 20px;
+            border-radius: 8px;
+            margin: 20px 0;
+        }
+        .event-details h4 {
+            margin-top: 0;
+            color: #495057;
+        }
+        .action-required {
+            background-color: #d4edda;
+            border: 1px solid #c3e6cb;
+            color: #155724;
+            padding: 20px;
+            border-radius: 8px;
+            margin: 20px 0;
+        }
+        .button {
+            display: inline-block;
+            background-color: #fd7e14;
+            color: white;
+            padding: 12px 30px;
+            text-decoration: none;
+            border-radius: 5px;
+            margin: 20px 0;
+            font-weight: bold;
+        }
+        .footer {
+            text-align: center;
+            margin-top: 30px;
+            padding-top: 20px;
+            border-top: 1px solid #eee;
+            color: #666;
+            font-size: 14px;
+        }
+        .priority-high {
+            border-left-color: #dc3545 !important;
+        }
+        .priority-medium {
+            border-left-color: #fd7e14 !important;
+        }
+        .priority-low {
+            border-left-color: #28a745 !important;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>📢 System Notification</h1>
+            <p style="margin: 10px 0 0 0; color: #666;">Administrative Alert - {{NOTIFICATION_TYPE}}</p>
+        </div>
+
+        <h2>Attention Administrator</h2>
+
+        <p>A system event has occurred that requires your attention. Please review the details below and take appropriate action if necessary.</p>
+
+        <div class="notification-container">
+            <h3 style="margin-top: 0; color: white;">{{NOTIFICATION_TITLE}}</h3>
+            <p style="margin-bottom: 0; opacity: 0.9;">Priority: {{PRIORITY_LEVEL}}</p>
+        </div>
+
+        <div class="notification-type priority-{{PRIORITY_CLASS}}">
+            <h4>📋 Notification Details:</h4>
+            <ul>
+                <li><strong>Type:</strong> {{NOTIFICATION_TYPE}}</li>
+                <li><strong>Timestamp:</strong> {{TIMESTAMP}}</li>
+                <li><strong>System:</strong> Student Management System</li>
+                <li><strong>Environment:</strong> {{ENVIRONMENT}}</li>
+            </ul>
+        </div>
+
+        <div class="event-details">
+            <h4>🔍 Event Information:</h4>
+            <p><strong>Description:</strong> {{EVENT_DESCRIPTION}}</p>
+            <p><strong>Details:</strong> {{EVENT_DETAILS}}</p>
+            <p><strong>Affected Components:</strong> {{AFFECTED_COMPONENTS}}</p>
+        </div>
+
+        {{#if ACTION_REQUIRED}}
+        <div class="action-required">
+            <h4 style="margin-top: 0;">⚡ Action Required</h4>
+            <p>{{ACTION_DESCRIPTION}}</p>
+            <ul>
+                {{#each ACTION_ITEMS}}
+                <li>{{this}}</li>
+                {{/each}}
+            </ul>
+        </div>
+        {{/if}}
+
+        <div style="text-align: center; margin: 30px 0;">
+            <a href="{{ADMIN_DASHBOARD_URL}}" class="button">View Admin Dashboard</a>
+        </div>
+
+        <p><strong>Additional Information:</strong></p>
+        <ul style="list-style: none; padding: 0;">
+            <li><strong>Notification ID:</strong> {{NOTIFICATION_ID}}</li>
+            <li><strong>Source IP:</strong> {{SOURCE_IP}}</li>
+            <li><strong>User Agent:</strong> {{USER_AGENT}}</li>
+            <li><strong>Request ID:</strong> {{REQUEST_ID}}</li>
+        </ul>
+
+        <div class="footer">
+            <p><strong>Student Management System - Admin Portal</strong></p>
+            <p>This is an automated system notification. Please do not reply to this email.</p>
+            <p>For urgent issues: {{URGENT_SUPPORT_EMAIL}} | {{SUPPORT_PHONE}}</p>
+        </div>
+    </div>
+</body>
+</html>

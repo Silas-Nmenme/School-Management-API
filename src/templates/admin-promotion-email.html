@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Access Granted - Student Management System</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            max-width: 600px;
+            margin: 0 auto;
+            background-color: #f4f4f4;
+            padding: 20px;
+        }
+        .container {
+            background-color: #ffffff;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 0 20px rgba(0,0,0,0.1);
+        }
+        .header {
+            text-align: center;
+            border-bottom: 3px solid #6f42c1;
+            padding-bottom: 20px;
+            margin-bottom: 30px;
+        }
+        .header h1 {
+            color: #6f42c1;
+            margin: 0;
+            font-size: 28px;
+        }
+        .promotion-container {
+            background: linear-gradient(135deg, #6f42c1, #e83e8c);
+            color: white;
+            padding: 30px;
+            border-radius: 10px;
+            text-align: center;
+            margin: 30px 0;
+            box-shadow: 0 4px 15px rgba(111, 66, 193, 0.3);
+        }
+        .admin-badge {
+            font-size: 24px;
+            margin-bottom: 15px;
+        }
+        .privileges {
+            background-color: #f8f9fa;
+            padding: 20px;
+            border-radius: 8px;
+            margin: 20px 0;
+            border-left: 4px solid #6f42c1;
+        }
+        .privileges h4 {
+            margin-top: 0;
+            color: #6f42c1;
+        }
+        .responsibilities {
+            background-color: #fff3cd;
+            border: 1px solid #ffeaa7;
+            color: #856404;
+            padding: 20px;
+            border-radius: 8px;
+            margin: 20px 0;
+        }
+        .button {
+            display: inline-block;
+            background-color: #6f42c1;
+            color: white;
+            padding: 12px 30px;
+            text-decoration: none;
+            border-radius: 5px;
+            margin: 20px 0;
+            font-weight: bold;
+        }
+        .footer {
+            text-align: center;
+            margin-top: 30px;
+            padding-top: 20px;
+            border-top: 1px solid #eee;
+            color: #666;
+            font-size: 14px;
+        }
+        .warning {
+            background-color: #f8d7da;
+            border: 1px solid #f5c6cb;
+            color: #721c24;
+            padding: 15px;
+            border-radius: 5px;
+            margin: 20px 0;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>👑 Admin Access Granted!</h1>
+            <p style="margin: 10px 0 0 0; color: #666;">You now have administrative privileges</p>
+        </div>
+
+        <h2>Congratulations {{FIRSTNAME}} {{LASTNAME}}!</h2>
+
+        <p>You have been granted administrative access to the Student Management System. You now have elevated privileges to manage students and system operations.</p>
+
+        <div class="promotion-container">
+            <div class="admin-badge">👑</div>
+            <h3 style="margin: 0; color: white;">Administrator Status Activated</h3>
+            <p style="margin-bottom: 0; opacity: 0.9;">Welcome to the admin team!</p>
+        </div>
+
+        <div class="privileges">
+            <h4>🔑 Your New Administrative Privileges:</h4>
+            <ul>
+                <li><strong>Student Management:</strong> Add, edit, and delete student records</li>
+                <li><strong>User Administration:</strong> Manage user accounts and permissions</li>
+                <li><strong>System Access:</strong> Access to admin dashboard and reports</li>
+                <li><strong>Data Management:</strong> Import/export student data</li>
+                <li><strong>Security Oversight:</strong> Monitor system security and user activities</li>
+            </ul>
+        </div>
+
+        <div class="responsibilities">
+            <h4 style="margin-top: 0;">⚠️ Administrative Responsibilities</h4>
+            <ul>
+                <li>Maintain the confidentiality of sensitive student information</li>
+                <li>Follow data protection and privacy regulations</li>
+                <li>Ensure all administrative actions are properly documented</li>
+                <li>Regularly review system logs and security reports</li>
+                <li>Provide support to other users when needed</li>
+            </ul>
+        </div>
+
+        <div style="text-align: center; margin: 30px 0;">
+            <a href="{{ADMIN_DASHBOARD_URL}}" class="button">Access Admin Dashboard</a>
+        </div>
+
+        <div class="warning">
+            <h4 style="margin-top: 0;">🚨 Important Security Reminders</h4>
+            <ul>
+                <li>Administrative access comes with great responsibility</li>
+                <li>All your actions are logged and monitored</li>
+                <li>Never share your admin credentials with anyone</li>
+                <li>Report any suspicious activities immediately</li>
+                <li>Regularly update your password and security settings</li>
+            </ul>
+        </div>
+
+        <p><strong>Account Details:</strong></p>
+        <ul style="list-style: none; padding: 0;">
+            <li><strong>Admin ID:</strong> {{STUDENT_ID}}</li>
+            <li><strong>Email:</strong> {{EMAIL}}</li>
+            <li><strong>Promotion Date:</strong> {{PROMOTION_DATE}}</li>
+            <li><strong>Promoted By:</strong> {{PROMOTED_BY}}</li>
+        </ul>
+
+        <div class="footer">
+            <p><strong>Student Management System</strong></p>
+            <p>This is an automated administrative notification. Please do not reply to this email.</p>
+            <p>For admin support: {{ADMIN_SUPPORT_EMAIL}} | {{SUPPORT_PHONE}}</p>
+        </div>
+    </div>
+</body>
+</html>
