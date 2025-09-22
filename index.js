@@ -22,6 +22,7 @@ app.use(cors({
   allowedHeaders: ["Content-Type", "Authorization"],
   credentials: true
 }));
+// ...existing code...
 
 app.get('/', (req, res) => {
   res.send('Hello TechyJAunt Cohort 6, welcome to my student management API!');
