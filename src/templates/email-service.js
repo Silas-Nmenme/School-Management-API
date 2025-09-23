@@ -162,20 +162,20 @@ class EmailService {
     async sendLoginAlert(loginData) {
         try {
             const variables = {
-                email: loginData.email,
-                loginTime: new Date().toLocaleString(),
-                ipAddress: loginData.ip || 'Unknown',
-                location: loginData.location || 'Unknown',
-                deviceInfo: loginData.deviceInfo || 'Unknown Device',
-                browserInfo: loginData.browserInfo || 'Unknown Browser',
-                sessionId: loginData.sessionId || 'N/A',
-                securityStatus: loginData.isSuspicious ? 'Suspicious' : 'Normal',
-                riskLevel: loginData.isSuspicious ? 'High' : 'Low',
-                authMethod: loginData.authMethod || 'Password',
-                isSuspicious: loginData.isSuspicious || false,
-                securityUrl: `${process.env.APP_URL}/security`,
-                securityEmail: process.env.SECURITY_EMAIL,
-                supportPhone: process.env.SUPPORT_PHONE
+                EMAIL: loginData.email,
+                LOGIN_TIME: new Date().toLocaleString(),
+                IP_ADDRESS: loginData.ip || 'Unknown',
+                LOCATION: loginData.location || 'Unknown',
+                DEVICE_INFO: loginData.deviceInfo || 'Unknown Device',
+                BROWSER_INFO: loginData.browserInfo || 'Unknown Browser',
+                SESSION_ID: loginData.sessionId || 'N/A',
+                SECURITY_STATUS: loginData.isSuspicious ? 'Suspicious' : 'Normal',
+                RISK_LEVEL: loginData.isSuspicious ? 'High' : 'Low',
+                AUTH_METHOD: loginData.authMethod || 'Password',
+                IS_SUSPICIOUS: loginData.isSuspicious || false,
+                SECURITY_URL: `${process.env.APP_URL}/security`,
+                SECURITY_EMAIL: process.env.SECURITY_EMAIL,
+                SUPPORT_PHONE: process.env.SUPPORT_PHONE
             };
 
             const html = this.emailManager.processTemplate('login-alert-email', variables);
