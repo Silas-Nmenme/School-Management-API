@@ -46,17 +46,17 @@ class EmailService {
     async sendWelcomeEmail(studentData, originalPassword) {
         try {
             const variables = {
-                firstname: studentData.Fistname,
-                lastname: studentData.Lastname,
-                studentId: studentData.studentId,
-                email: studentData.email,
-                age: studentData.age,
-                phone: studentData.phone,
-                registrationDate: new Date().toLocaleDateString(),
-                tempPassword: originalPassword, // Send actual password
-                loginUrl: `${process.env.APP_URL}/login`,
-                supportEmail: process.env.SUPPORT_EMAIL,
-                supportPhone: process.env.SUPPORT_PHONE
+                FIRSTNAME: studentData.Fistname,
+                LASTNAME: studentData.Lastname,
+                STUDENT_ID: studentData.studentId,
+                EMAIL: studentData.email,
+                AGE: studentData.age,
+                PHONE: studentData.phone,
+                REGISTRATION_DATE: new Date().toLocaleDateString(),
+                TEMP_PASSWORD: originalPassword, // Send actual password
+                LOGIN_URL: `${process.env.APP_URL}/login`,
+                SUPPORT_EMAIL: process.env.SUPPORT_EMAIL,
+                SUPPORT_PHONE: process.env.SUPPORT_PHONE
             };
 
             const html = this.emailManager.processTemplate('welcome-email', variables);
