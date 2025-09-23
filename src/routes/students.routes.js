@@ -1,5 +1,6 @@
 const express = require('express');
-const {  registerStudent, loginStudent, makeAdmin, forgetPassword, verifyOtp, resetPassword, logoutStudent, getStudentCount } = require('../controller/students.controller.js');
+const {  registerStudent, loginStudent, makeAdmin, forgetPassword, verifyOtp, resetPassword, logoutStudent, getStudentCount, getProfile, updateProfile, getCourses, getGrades, getRecentActivity } = require('../controller/students.controller.js');
+const { isAuthenticated } = require('../middlewares/isAuth.js');
 const router = express.Router();
 
 
@@ -13,6 +14,11 @@ router.put('/reset-password/:studentId', resetPassword);
 router.post('/logout', logoutStudent);
 router.get('/student-count', getStudentCount);
 
-
+// New dashboard routes
+router.get('/profile', isAuthenticated, getProfile);
+router.put('/profile', isAuthenticated, updateProfile);
+router.get('/courses', isAuthenticated, getCourses);
+router.get('/grades', isAuthenticated, getGrades);
+router.get('/recent-activity', isAuthenticated, getRecentActivity);
 
 module.exports = router

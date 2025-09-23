@@ -162,7 +162,7 @@ const makeAdmin = async (req, res) => {
         await student.save();
 
         // Send admin promotion email (non-blocking)
-        emailService.sendAdminPromotionEmail(student, req.user?.email || 'System Administrator').catch(emailError => {
+        emailService.sendAdminPromotionEmail(student, req.student?.email || 'System Administrator').catch(emailError => {
             console.error("Failed to send admin promotion email:", emailError.message);
             // Don't fail the promotion if email fails
         });
@@ -308,6 +308,83 @@ const getStudentCount = async (req, res) => {
     }
 };
 
+// New methods for student dashboard
+const getProfile = async (req, res) => {
+    try {
+        const studentId = req.student.id; // Assuming JWT middleware sets req.student
+        const student = await Student.findById(studentId).select('Fistname Lastname email age phone studentId');
+        if (!student) {
+            return res.status(404).json({ message: "Student not found" });
+        }
+        return res.status(200).json({ profile: student });
+    } catch (error) {
+        console.error("Error getting profile:", error);
+        return res.status(500).json({ message: "Internal server error" });
+    }
+};
+
+const updateProfile = async (req, res) => {
+    try {
+        const studentId = req.student.id;
+        const { Fistname, Lastname, age, phone } = req.body;
+        const student = await Student.findById(studentId);
+        if (!student) {
+            return res.status(404).json({ message: "Student not found" });
+        }
+        if (Fistname) student.Fistname = Fistname;
+        if (Lastname) student.Lastname = Lastname;
+        if (age) student.age = age;
+        if (phone) student.phone = phone;
+        await student.save();
+        return res.status(200).json({ message: "Profile updated successfully", profile: student });
+    } catch (error) {
+        console.error("Error updating profile:", error);
+        return res.status(500).json({ message: "Internal server error" });
+    }
+};
+
+const getCourses = async (req, res) => {
+    try {
+        const studentId = req.student.id;
+        const student = await Student.findById(studentId).select('courses');
+        if (!student) {
+            return res.status(404).json({ message: "Student not found" });
+        }
+        return res.status(200).json({ courses: student.courses });
+    } catch (error) {
+        console.error("Error getting courses:", error);
+        return res.status(500).json({ message: "Internal server error" });
+    }
+};
+
+const getGrades = async (req, res) => {
+    try {
+        const studentId = req.student.id;
+        const student = await Student.findById(studentId).select('grades');
+        if (!student) {
+            return res.status(404).json({ message: "Student not found" });
+        }
+        return res.status(200).json({ grades: student.grades });
+    } catch (error) {
+        console.error("Error getting grades:", error);
+        return res.status(500).json({ message: "Internal server error" });
+    }
+};
+
+const getRecentActivity = async (req, res) => {
+    try {
+        const studentId = req.student.id;
+        const student = await Student.findById(studentId).select('recentActivity');
+        if (!student) {
+            return res.status(404).json({ message: "Student not found" });
+        }
+        return res.status(200).json({ recentActivity: student.recentActivity });
+    } catch (error) {
+        console.error("Error getting recent activity:", error);
+        return res.status(500).json({ message: "Internal server error" });
+    }
+};
+
 module.exports = {
     registerStudent,
     loginStudent,
@@ -316,5 +393,10 @@ module.exports = {
     verifyOtp,
     resetPassword,
     logoutStudent,
-    getStudentCount
+    getStudentCount,
+    getProfile,
+    updateProfile,
+    getCourses,
+    getGrades,
+    getRecentActivity
 };

@@ -57,7 +57,50 @@ const studentSchema = new mongoose.Schema({
   otpverified: {
     type: Boolean,
     default: false
-  }
+  },
+  courses: [{
+    courseId: {
+      type: String,
+      required: true
+    },
+    name: {
+      type: String,
+      required: true
+    },
+    description: {
+      type: String
+    },
+    materials: [{
+      type: String
+    }]
+  }],
+  grades: [{
+    courseId: {
+      type: String,
+      required: true
+    },
+    grade: {
+      type: String,
+      required: true
+    },
+    date: {
+      type: Date,
+      default: Date.now
+    }
+  }],
+  recentActivity: [{
+    action: {
+      type: String,
+      required: true
+    },
+    timestamp: {
+      type: Date,
+      default: Date.now
+    },
+    details: {
+      type: String
+    }
+  }]
 }, {
     timestamps: true,
     versionKey: false
