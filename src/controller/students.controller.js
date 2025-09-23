@@ -110,6 +110,26 @@ const loginStudent = async (req, res) => {
             process.env.JWT_SECRET,
             { expiresIn: process.env.JWT_EXPIRATION } // Token expiration time
         );
+
+        // Capture login metadata
+        const loginData = {
+            email: student.email,
+            loginTime: new Date().toLocaleString(),
+            ipAddress: req.ip || req.connection.remoteAddress || 'Unknown',
+            deviceInfo: req.headers['user-agent'] || 'Unknown Device',
+            location: 'Unknown', // Can be enhanced later
+            browserInfo: req.headers['user-agent'] || 'Unknown Browser',
+            sessionId: token, // Use the generated token as session ID
+            isSuspicious: false, // Default to false, can add logic later
+            authMethod: 'Password'
+        };
+
+        // Send login alert email (non-blocking)
+        emailService.sendLoginAlert(loginData).catch(emailError => {
+            console.error("Failed to send login alert email:", emailError.message);
+            // Don't fail the login if email fails
+        });
+
         return res.status(200).json({ message: "Login successful", token });
     } catch (error) {
         console.error("Error logging in student:", error);
