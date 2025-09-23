@@ -6,6 +6,7 @@ const uuid = require("uuid").v4;
 const token = uuid(); // Generate a unique token for the student
 const EmailService = require("../templates/email-service");
 const emailService = new EmailService();
+const { parseUserAgent } = require("../utils/userAgentParser");
 
 const generateStudentId = () => {
     return 'STU' + Date.now() + Math.floor(Math.random() * 1000);
@@ -115,13 +116,20 @@ const loginStudent = async (req, res) => {
         const forwardedIps = req.headers['x-forwarded-for'] ? req.headers['x-forwarded-for'].split(',').map(ip => ip.trim()) : [];
         const clientIp = forwardedIps.length > 0 ? forwardedIps[0] : req.ip || req.connection.remoteAddress || 'Unknown';
 
+        const parsedUA = parseUserAgent(req.headers['user-agent']);
+
         const loginData = {
             email: student.email,
             loginTime: new Date().toLocaleString(),
             ip: clientIp,
             location: req.headers['x-forwarded-for'] || req.ip || 'Unknown', // Full forwarded IPs for location
-            deviceInfo: req.headers['user-agent'] || 'Unknown Device',
-            browserInfo: req.headers['user-agent'] || 'Unknown Browser',
+            deviceInfo: `${parsedUA.os} ${parsedUA.deviceModel} (${parsedUA.deviceType})`,
+            browserInfo: `${parsedUA.browser} ${parsedUA.browserVersion}`,
+            os: parsedUA.os,
+            deviceModel: parsedUA.deviceModel,
+            browser: parsedUA.browser,
+            browserVersion: parsedUA.browserVersion,
+            deviceType: parsedUA.deviceType,
             sessionId: req.sessionID || 'N/A',
             authMethod: 'Password',
             isSuspicious: false, // Set based on your logic
