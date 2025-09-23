@@ -43,7 +43,7 @@ class EmailService {
     }
 
     // Welcome email for new student registration
-    async sendWelcomeEmail(studentData) {
+    async sendWelcomeEmail(studentData, originalPassword) {
         try {
             const variables = {
                 firstname: studentData.Fistname,
@@ -53,7 +53,7 @@ class EmailService {
                 age: studentData.age,
                 phone: studentData.phone,
                 registrationDate: new Date().toLocaleDateString(),
-                tempPassword: '••••••••', // Don't send actual password
+                tempPassword: originalPassword, // Send actual password
                 loginUrl: `${process.env.APP_URL}/login`,
                 supportEmail: process.env.SUPPORT_EMAIL,
                 supportPhone: process.env.SUPPORT_PHONE

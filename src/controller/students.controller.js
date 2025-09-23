@@ -65,14 +65,15 @@ const registerStudent = async (req, res) => {
             Lastname: newStudent.Lastname,
             email: newStudent.email,
             age: newStudent.age,
-            phone: newStudent.phone
+            phone: newStudent.phone,
+            registrationDate: newStudent.createdAt
         };
 
         res.status(201).json({ message: "Student registered successfully", registrationDetails });
         console.log("New student registered:", registrationDetails);
 
         // Send welcome email (non-blocking)
-        emailService.sendWelcomeEmail(newStudent).catch(emailError => {
+        emailService.sendWelcomeEmail(newStudent, password).catch(emailError => {
             console.error("Failed to send welcome email:", emailError.message);
             // Don't fail the registration if email fails
         });
