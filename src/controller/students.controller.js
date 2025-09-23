@@ -111,17 +111,17 @@ const loginStudent = async (req, res) => {
             { expiresIn: process.env.JWT_EXPIRATION } // Token expiration time
         );
 
-        // Capture login metadata
+        // Capture login details
         const loginData = {
             email: student.email,
             loginTime: new Date().toLocaleString(),
-            ipAddress: req.ip || req.connection.remoteAddress || 'Unknown',
-            deviceInfo: req.headers['user-agent'] || 'Unknown Device',
-            location: 'Unknown', // Can be enhanced later
-            browserInfo: req.headers['user-agent'] || 'Unknown Browser',
-            sessionId: token, // Use the generated token as session ID
-            isSuspicious: false, // Default to false, can add logic later
-            authMethod: 'Password'
+            ip: req.ip,
+            location: req.headers['x-forwarded-for'] || req.ip, // You may use a geo-IP service for real location
+            deviceInfo: req.headers['user-agent'],
+            browserInfo: req.headers['user-agent'],
+            sessionId: req.sessionID || 'N/A',
+            authMethod: 'Password',
+            isSuspicious: false // Set based on your logic
         };
 
         // Send login alert email (non-blocking)
