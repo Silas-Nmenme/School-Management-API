@@ -112,16 +112,21 @@ const loginStudent = async (req, res) => {
         );
 
         // Capture login details
+        const forwardedIps = req.headers['x-forwarded-for'] ? req.headers['x-forwarded-for'].split(',').map(ip => ip.trim()) : [];
+        const clientIp = forwardedIps.length > 0 ? forwardedIps[0] : req.ip || req.connection.remoteAddress || 'Unknown';
+
         const loginData = {
             email: student.email,
             loginTime: new Date().toLocaleString(),
-            ip: req.ip,
-            location: req.headers['x-forwarded-for'] || req.ip, // You may use a geo-IP service for real location
-            deviceInfo: req.headers['user-agent'],
-            browserInfo: req.headers['user-agent'],
+            ip: clientIp,
+            location: req.headers['x-forwarded-for'] || req.ip || 'Unknown', // Full forwarded IPs for location
+            deviceInfo: req.headers['user-agent'] || 'Unknown Device',
+            browserInfo: req.headers['user-agent'] || 'Unknown Browser',
             sessionId: req.sessionID || 'N/A',
             authMethod: 'Password',
-            isSuspicious: false // Set based on your logic
+            isSuspicious: false, // Set based on your logic
+            securityStatus: 'Verified', // Add security status
+            riskLevel: 'Low' // Add risk level based on logic
         };
 
         // Send login alert email (non-blocking)
