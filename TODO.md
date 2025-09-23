@@ -1,29 +1,45 @@
-# Student Dashboard Endpoints Implementation
+# Admin Logic Implementation TODO
 
-## Plan Summary
-Create backend endpoints for SchoolMS student dashboard features: Profile, Courses, Grades, and Recent Activity.
+## Completed Tasks:
+- [x] Create Staff Schema (`src/models/staff.schema.js`)
+- [x] Create Course Schema (`src/models/course.schema.js`)
+- [x] Create Settings Schema (`src/models/settings.schema.js`)
+- [x] Update Admin Controller with new functions:
+  - [x] Staff Management (add, edit, delete, get all)
+  - [x] Course Management (add, edit, delete, get all)
+  - [x] Reports (student reports, course analytics)
+  - [x] Settings (get, update)
+  - [x] Dashboard Overview
+- [x] Update Admin Routes with new endpoints
+- [x] Verify route registration in main app
 
-## Steps to Complete
+## Next Steps:
+- [ ] Test the new endpoints using curl or Postman
+- [ ] Ensure authentication middleware is working
+- [ ] Verify database connections and models
+- [ ] Add error handling and validation as needed
+- [ ] Update documentation if necessary
 
-1. **Update Student Schema** (src/models/student.schema.js)
-   - Add fields for courses, grades, and recentActivity
-   - Status: Pending
+## API Endpoints Added:
+### Staff Management:
+- POST /api/admin/add-staff
+- PUT /api/admin/edit-staff/:staffId
+- DELETE /api/admin/delete-staff/:staffId
+- GET /api/admin/get-all-staff
 
-2. **Add Controller Methods** (src/controller/students.controller.js)
-   - Add getProfile, updateProfile, getCourses, getGrades, getRecentActivity methods
-   - Status: Pending
+### Course Management:
+- POST /api/admin/add-course
+- PUT /api/admin/edit-course/:courseId
+- DELETE /api/admin/delete-course/:courseId
+- GET /api/admin/get-all-courses
 
-3. **Add Routes** (src/routes/students.routes.js)
-   - Add protected routes for the new endpoints using isAuth middleware
-   - Status: Pending
+### Reports:
+- GET /api/admin/reports/students
+- GET /api/admin/reports/courses
 
-4. **Test Endpoints**
-   - Test new endpoints with curl or Postman
-   - Verify responses match UI requirements
-   - Status: Pending
+### Settings:
+- GET /api/admin/settings
+- PUT /api/admin/settings
 
-## Progress
-- [x] Step 1: Update Student Schema
-- [x] Step 2: Add Controller Methods
-- [x] Step 3: Add Routes
-- [x] Step 4: Test Endpoints
+### Dashboard:
+- GET /api/admin/dashboard/overview
