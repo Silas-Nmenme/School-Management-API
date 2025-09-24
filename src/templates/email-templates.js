@@ -1,3 +1,4 @@
+
 /**
  * Email Templates Utility
  * Handles email template management and variable replacement for the Student Management System
@@ -19,6 +20,7 @@ class EmailTemplateManager {
     loadTemplates() {
         const templateFiles = [
             'welcome-email.html',
+            'staff-welcome-email.html',
             'otp-verification-email.html',
             'password-reset-confirmation.html',
             'admin-promotion-email.html',
@@ -116,6 +118,7 @@ class EmailTemplateManager {
         // Template-specific required variables
         const templateRequirements = {
             'welcome-email': ['FIRSTNAME', 'LASTNAME', 'STUDENT_ID', 'EMAIL', 'REGISTRATION_DATE'],
+            'staff-welcome-email': ['FIRSTNAME', 'LASTNAME', 'STAFF_ID', 'EMAIL', 'ROLE', 'DEPARTMENT', 'REGISTRATION_DATE'],
             'otp-verification-email': ['FIRSTNAME', 'EMAIL', 'OTP', 'REQUEST_TIME'],
             'password-reset-confirmation': ['FIRSTNAME', 'LASTNAME', 'EMAIL', 'RESET_TIME'],
             'admin-promotion-email': ['FIRSTNAME', 'LASTNAME', 'STUDENT_ID', 'EMAIL', 'PROMOTION_DATE'],
@@ -143,12 +146,15 @@ class EmailTemplateManager {
 // Common email variables and their descriptions
 const EMAIL_VARIABLES = {
     // Personal Information
-    FIRSTNAME: 'Student\'s first name',
-    LASTNAME: 'Student\'s last name',
-    EMAIL: 'Student\'s email address',
+    FIRSTNAME: 'Person\'s first name',
+    LASTNAME: 'Person\'s last name',
+    EMAIL: 'Person\'s email address',
     STUDENT_ID: 'Unique student identifier',
-    AGE: 'Student\'s age',
-    PHONE: 'Student\'s phone number',
+    STAFF_ID: 'Unique staff identifier',
+    AGE: 'Person\'s age',
+    PHONE: 'Person\'s phone number',
+    ROLE: 'Staff member\'s role/position',
+    DEPARTMENT: 'Staff member\'s department',
 
     // System Information
     REGISTRATION_DATE: 'Date when student registered',
