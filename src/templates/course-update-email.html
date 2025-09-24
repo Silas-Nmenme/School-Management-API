@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Course Updated - Student Management System</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            max-width: 600px;
+            margin: 0 auto;
+            background-color: #f4f4f4;
+        }
+        .container {
+            background-color: #ffffff;
+            margin: 20px;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 0 20px rgba(0,0,0,0.1);
+        }
+        .header {
+            text-align: center;
+            border-bottom: 3px solid #007bff;
+            padding-bottom: 20px;
+            margin-bottom: 30px;
+        }
+        .header h1 {
+            color: #007bff;
+            margin: 0;
+            font-size: 28px;
+        }
+        .content {
+            margin: 20px 0;
+        }
+        .highlight-box {
+            background-color: #e7f3ff;
+            border-left: 4px solid #007bff;
+            padding: 20px;
+            margin: 20px 0;
+            border-radius: 5px;
+        }
+        .course-details {
+            background-color: #f8f9fa;
+            padding: 15px;
+            border-radius: 5px;
+            margin: 15px 0;
+        }
+        .footer {
+            margin-top: 30px;
+            padding-top: 20px;
+            border-top: 1px solid #eee;
+            text-align: center;
+            color: #666;
+            font-size: 14px;
+        }
+        .button {
+            display: inline-block;
+            padding: 12px 30px;
+            background-color: #007bff;
+            color: white;
+            text-decoration: none;
+            border-radius: 5px;
+            margin: 10px 0;
+        }
+        .warning {
+            background-color: #fff3cd;
+            border-left: 4px solid #ffc107;
+            padding: 15px;
+            margin: 15px 0;
+            border-radius: 5px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>📚 Course Updated</h1>
+            <p>Course Information Has Been Modified</p>
+        </div>
+
+        <div class="content">
+            <p>Dear {{instructorName}},</p>
+
+            <p>We wanted to inform you that the following course has been updated in the Student Management System:</p>
+
+            <div class="highlight-box">
+                <h3>Course Information:</h3>
+                <div class="course-details">
+                    <p><strong>Course Name:</strong> {{courseName}}</p>
+                    <p><strong>Course ID:</strong> {{courseId}}</p>
+                    <p><strong>Instructor:</strong> {{instructorName}}</p>
+                    <p><strong>Updated On:</strong> {{updateDate}} at {{updateTime}}</p>
+                </div>
+            </div>
+
+            <div class="warning">
+                <strong>Important:</strong> Please review the course details to ensure all information is accurate and up-to-date. If you notice any discrepancies, please contact the system administrator immediately.
+            </div>
+
+            <p>You can view the updated course details by logging into the system:</p>
+
+            <div style="text-align: center; margin: 30px 0;">
+                <a href="{{courseUrl}}" class="button">View Course Details</a>
+            </div>
+
+            <p>If you have any questions or concerns about this update, please don't hesitate to contact our support team:</p>
+
+            <div style="text-align: center; margin: 20px 0;">
+                <p><strong>Support Email:</strong> <a href="mailto:{{supportEmail}}">{{supportEmail}}</a></p>
+                <p><strong>Support Phone:</strong> {{supportPhone}}</p>
+            </div>
+        </div>
+
+        <div class="footer">
+            <p>This is an automated message from the Student Management System.</p>
+            <p>Please do not reply to this email.</p>
+            <p>&copy; 2024 Student Management System. All rights reserved.</p>
+        </div>
+    </div>
+</body>
+</html>

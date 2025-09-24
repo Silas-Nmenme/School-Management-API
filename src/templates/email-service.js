@@ -223,6 +223,94 @@ class EmailService {
             return { success: false, error: error.message };
         }
     }
+
+    // Course update notification email
+    async sendCourseUpdateEmail(courseData) {
+        try {
+            const variables = {
+                courseName: courseData.name,
+                courseId: courseData.courseId,
+                instructorName: courseData.instructor?.firstName + ' ' + courseData.instructor?.lastName || 'Unknown',
+                updateDate: new Date().toLocaleDateString(),
+                updateTime: new Date().toLocaleString(),
+                courseUrl: `${process.env.APP_URL}/courses/${courseData._id}`,
+                adminDashboardUrl: `${process.env.APP_URL}/admin/courses`,
+                supportEmail: process.env.SUPPORT_EMAIL,
+                supportPhone: process.env.SUPPORT_PHONE
+            };
+
+            const html = this.emailManager.processTemplate('course-update-email', variables);
+            return await this.sendEmail(courseData.instructor?.email, `Course Updated: ${courseData.name}`, html);
+        } catch (error) {
+            console.error('Error sending course update email:', error);
+            return { success: false, error: error.message };
+        }
+    }
+
+    // Course deletion notification email
+    async sendCourseDeletionEmail(courseData) {
+        try {
+            const variables = {
+                courseName: courseData.name,
+                courseId: courseData.courseId,
+                instructorName: courseData.instructor?.firstName + ' ' + courseData.instructor?.lastName || 'Unknown',
+                deletionDate: new Date().toLocaleDateString(),
+                deletionTime: new Date().toLocaleString(),
+                adminDashboardUrl: `${process.env.APP_URL}/admin/courses`,
+                supportEmail: process.env.SUPPORT_EMAIL,
+                supportPhone: process.env.SUPPORT_PHONE
+            };
+
+            const html = this.emailManager.processTemplate('course-deletion-email', variables);
+            return await this.sendEmail(courseData.instructor?.email, `Course Deleted: ${courseData.name}`, html);
+        } catch (error) {
+            console.error('Error sending course deletion email:', error);
+            return { success: false, error: error.message };
+        }
+    }
+
+    // Settings update notification email
+    async sendSettingsUpdateEmail(settingsData, updatedBy) {
+        try {
+            const variables = {
+                updateDate: new Date().toLocaleDateString(),
+                updateTime: new Date().toLocaleString(),
+                updatedBy: updatedBy || 'System Administrator',
+                adminDashboardUrl: `${process.env.APP_URL}/admin/settings`,
+                supportEmail: process.env.SUPPORT_EMAIL,
+                supportPhone: process.env.SUPPORT_PHONE
+            };
+
+            const html = this.emailManager.processTemplate('settings-update-email', variables);
+            return await this.sendEmail(process.env.ADMIN_EMAIL || process.env.SUPPORT_EMAIL, 'System Settings Updated', html);
+        } catch (error) {
+            console.error('Error sending settings update email:', error);
+            return { success: false, error: error.message };
+        }
+    }
+
+    // Admin registration notification email
+    async sendAdminRegistrationEmail(adminData, registeredBy) {
+        try {
+            const variables = {
+                firstname: adminData.Fistname,
+                lastname: adminData.Lastname,
+                email: adminData.email,
+                registrationDate: new Date().toLocaleDateString(),
+                registrationTime: new Date().toLocaleString(),
+                registeredBy: registeredBy || 'System Administrator',
+                adminDashboardUrl: `${process.env.APP_URL}/admin`,
+                supportEmail: process.env.SUPPORT_EMAIL,
+                supportPhone: process.env.SUPPORT_PHONE
+            };
+
+            const html = this.emailManager.processTemplate('admin-registration-email', variables);
+            return await this.sendEmail(adminData.email, 'Admin Registration Confirmation', html);
+        } catch (error) {
+            console.error('Error sending admin registration email:', error);
+            return { success: false, error: error.message };
+        }
+    }
 }
 
 module.exports = EmailService;

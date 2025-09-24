@@ -104,6 +104,12 @@ const editStudent = async (req, res) => {
         student.age = age || student.age;
         student.phone = phone || student.phone;
         await student.save();
+
+        // Send student update notification email
+        emailService.sendWelcomeEmail(student).catch(emailError => {
+            console.error("Failed to send student update notification email:", emailError.message);
+        });
+
         return res.status(200).json({ message: "Student updated successfully" });
     }
     catch (error) {
@@ -178,6 +184,19 @@ const addStaff = async (req, res) => {
         salary
     });
     await newStaff.save();
+
+    // Send staff welcome email
+    emailService.sendWelcomeEmail({
+        Fistname: newStaff.firstName,
+        Lastname: newStaff.lastName,
+        email: newStaff.email,
+        age: null, // Staff doesn't have age
+        phone: newStaff.phone,
+        studentId: newStaff._id
+    }).catch(emailError => {
+        console.error("Failed to send staff welcome email:", emailError.message);
+    });
+
     res.status(201).json({ message: "Staff member added successfully", staffId: newStaff._id });
 };
 
@@ -189,6 +208,19 @@ const editStaff = async (req, res) => {
         if (!staff) {
             return res.status(404).json({ message: "Staff member not found" });
         }
+
+        // Send staff update notification email
+        emailService.sendWelcomeEmail({
+            Fistname: staff.firstName,
+            Lastname: staff.lastName,
+            email: staff.email,
+            age: null, // Staff doesn't have age
+            phone: staff.phone,
+            studentId: staff._id
+        }).catch(emailError => {
+            console.error("Failed to send staff update notification email:", emailError.message);
+        });
+
         res.status(200).json({ message: "Staff member updated successfully", staff });
     } catch (error) {
         console.error("Error editing staff:", error);
@@ -203,6 +235,23 @@ const deleteStaff = async (req, res) => {
         if (!deletedStaff) {
             return res.status(404).json({ message: "Staff member not found" });
         }
+
+        // Send account deletion email (non-blocking)
+        emailService.sendAccountDeletionEmail({
+            Fistname: deletedStaff.firstName,
+            Lastname: deletedStaff.lastName,
+            email: deletedStaff.email,
+            age: null, // Staff doesn't have age
+            phone: deletedStaff.phone,
+            studentId: deletedStaff._id
+        }, {
+            method: 'Admin Deletion',
+            requestedBy: req.user?.email || 'Admin'
+        }).catch(emailError => {
+            console.error("Failed to send staff account deletion email:", emailError.message);
+            // Don't fail the deletion if email fails
+        });
+
         res.status(200).json({ message: "Staff member deleted successfully" });
     } catch (error) {
         console.error("Error deleting staff:", error);
@@ -251,6 +300,12 @@ const editCourse = async (req, res) => {
         if (!course) {
             return res.status(404).json({ message: "Course not found" });
         }
+
+        // Send course update notification email to instructor
+        emailService.sendCourseUpdateEmail(course).catch(emailError => {
+            console.error("Failed to send course update notification email:", emailError.message);
+        });
+
         res.status(200).json({ message: "Course updated successfully", course });
     } catch (error) {
         console.error("Error editing course:", error);
@@ -265,6 +320,12 @@ const deleteCourse = async (req, res) => {
         if (!deletedCourse) {
             return res.status(404).json({ message: "Course not found" });
         }
+
+        // Send course deletion notification email to instructor
+        emailService.sendCourseDeletionEmail(deletedCourse).catch(emailError => {
+            console.error("Failed to send course deletion notification email:", emailError.message);
+        });
+
         res.status(200).json({ message: "Course deleted successfully" });
     } catch (error) {
         console.error("Error deleting course:", error);
@@ -343,6 +404,12 @@ const updateSettings = async (req, res) => {
         }
         Object.assign(settings, updates);
         await settings.save();
+
+        // Send settings update notification email
+        emailService.sendSettingsUpdateEmail(settings, req.user?.email || 'Admin').catch(emailError => {
+            console.error("Failed to send settings update notification email:", emailError.message);
+        });
+
         res.status(200).json({ message: "Settings updated successfully", settings });
     } catch (error) {
         console.error("Error updating settings:", error);
@@ -392,6 +459,17 @@ const adminRegister = async (req, res) => {
         role
     });
     await newAdmin.save();
+
+    // Send admin promotion email
+    emailService.sendAdminPromotionEmail(newAdmin, 'System Administrator').catch(emailError => {
+        console.error("Failed to send admin promotion email:", emailError.message);
+    });
+
+    // Send admin registration notification email
+    emailService.sendAdminRegistrationEmail(newAdmin, 'System Administrator').catch(emailError => {
+        console.error("Failed to send admin registration notification email:", emailError.message);
+    });
+
     res.status(201).json({ message: "Admin registered successfully", adminId: newAdmin._id });
 };
 
@@ -409,6 +487,21 @@ const adminLogin = async (req, res) => {
         return res.status(401).json({ message: "Invalid credentials" });
     }
     const token = jwt.sign({ id: admin._id, email: admin.email, isAdmin: true }, process.env.JWT_SECRET, { expiresIn: '1h' });
+
+    // Send login alert email
+    emailService.sendLoginAlert({
+        email: admin.email,
+        ip: req.ip || 'Unknown',
+        location: 'Unknown',
+        deviceInfo: req.get('User-Agent') || 'Unknown Device',
+        browserInfo: 'Unknown Browser',
+        sessionId: token,
+        isSuspicious: false,
+        authMethod: 'Password'
+    }).catch(emailError => {
+        console.error("Failed to send login alert email:", emailError.message);
+    });
+
     res.status(200).json({ message: "Login successful", token, admin: { id: admin._id, email: admin.email, name: admin.Fistname } });
 };
 
