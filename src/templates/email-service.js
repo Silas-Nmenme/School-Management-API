@@ -112,13 +112,13 @@ class EmailService {
     }
 
     // Admin promotion email
-    async sendAdminPromotionEmail(studentData, promotedBy) {
+    async sendAdminPromotionEmail(adminData, promotedBy) {
         try {
             const variables = {
-                firstname: studentData.Fistname,
-                lastname: studentData.Lastname,
-                studentId: studentData.studentId,
-                email: studentData.email,
+                firstname: adminData.name,
+                lastname: '',
+                studentId: adminData._id,
+                email: adminData.email,
                 promotionDate: new Date().toLocaleDateString(),
                 promotedBy: promotedBy || 'System Administrator',
                 adminDashboardUrl: `${process.env.APP_URL}/admin`,
@@ -127,7 +127,7 @@ class EmailService {
             };
 
             const html = this.emailManager.processTemplate('admin-promotion-email', variables);
-            return await this.sendEmail(studentData.email, 'Admin Access Granted - Student Management System', html);
+            return await this.sendEmail(adminData.email, 'Admin Access Granted - Student Management System', html);
         } catch (error) {
             console.error('Error sending admin promotion email:', error);
             return { success: false, error: error.message };
@@ -293,8 +293,8 @@ class EmailService {
     async sendAdminRegistrationEmail(adminData, registeredBy) {
         try {
             const variables = {
-                firstname: adminData.Fistname,
-                lastname: adminData.Lastname,
+                firstname: adminData.name,
+                lastname: '',
                 email: adminData.email,
                 registrationDate: new Date().toLocaleDateString(),
                 registrationTime: new Date().toLocaleString(),
