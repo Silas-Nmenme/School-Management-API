@@ -275,8 +275,13 @@ const getAllStaff = async (req, res) => {
 // Course Management Functions
 const addCourse = async (req, res) => {
     const { courseId, name, description, instructor, maxStudents, duration, schedule } = req.body;
-    if (!courseId || !name || !instructor || !maxStudents || !duration || !schedule) {
-        return res.status(400).json({ message: "All required fields must be provided" });
+    if (
+        !courseId || !name || !instructor || !maxStudents || !duration ||
+        !schedule || !schedule.startTime || !schedule.endTime
+    ) {
+        return res.status(400).json({
+            message: "All required fields must be provided, including schedule.startTime and schedule.endTime."
+        });
     }
     const existingCourse = await Course.findOne({ courseId });
     if (existingCourse) {
