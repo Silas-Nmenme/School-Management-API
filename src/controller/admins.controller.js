@@ -3,6 +3,7 @@ const Staff = require("../models/staff.schema.js");
 const Course = require("../models/course.schema.js");
 const Settings = require("../models/settings.schema.js");
 const bcrypt = require("bcryptjs");
+const jwt = require("jsonwebtoken");
 const saltRounds = 10;
 const uuid = require("uuid").v4;
 const token = uuid(); // Generate a unique token for the student
@@ -368,6 +369,49 @@ const getDashboardOverview = async (req, res) => {
     }
 };
 
+// Admin Authentication Functions
+const adminRegister = async (req, res) => {
+    const { name, email, password, role } = req.body;
+    if (!name || !email || !password || !role) {
+        return res.status(400).json({ message: "All fields are required" });
+    }
+    if (password.length < 6) {
+        return res.status(400).json({ message: "Password must be at least 6 characters long" });
+    }
+    const existingAdmin = await Student.findOne({ email });
+    if (existingAdmin) {
+        return res.status(400).json({ message: "Admin already exists" });
+    }
+    const hashedPassword = await bcrypt.hash(password, saltRounds);
+    const newAdmin = new Student({
+        Fistname: name,
+        Lastname: '',
+        email,
+        password: hashedPassword,
+        isAdmin: true,
+        role
+    });
+    await newAdmin.save();
+    res.status(201).json({ message: "Admin registered successfully", adminId: newAdmin._id });
+};
+
+const adminLogin = async (req, res) => {
+    const { email, password } = req.body;
+    if (!email || !password) {
+        return res.status(400).json({ message: "Email and password are required" });
+    }
+    const admin = await Student.findOne({ email, isAdmin: true });
+    if (!admin) {
+        return res.status(404).json({ message: "Admin not found" });
+    }
+    const isPasswordValid = await bcrypt.compare(password, admin.password);
+    if (!isPasswordValid) {
+        return res.status(401).json({ message: "Invalid credentials" });
+    }
+    const token = jwt.sign({ id: admin._id, email: admin.email, isAdmin: true }, process.env.JWT_SECRET, { expiresIn: '1h' });
+    res.status(200).json({ message: "Login successful", token, admin: { id: admin._id, email: admin.email, name: admin.Fistname } });
+};
+
 module.exports = {
     addStudent,
     editStudent,
@@ -385,5 +429,7 @@ module.exports = {
     generateCourseAnalytics,
     getSettings,
     updateSettings,
-    getDashboardOverview
+    getDashboardOverview,
+    adminRegister,
+    adminLogin
 };

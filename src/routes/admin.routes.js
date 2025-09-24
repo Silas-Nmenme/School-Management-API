@@ -6,7 +6,8 @@ const {
     addCourse, editCourse, deleteCourse, getAllCourses,
     generateStudentReport, generateCourseAnalytics,
     getSettings, updateSettings,
-    getDashboardOverview
+    getDashboardOverview,
+    adminRegister, adminLogin
 } = require('../controller/admins.controller.js');
 const {isAuthenticated} = require('../middlewares/isAuth.js');
 
@@ -38,5 +39,9 @@ router.put('/settings', isAuthenticated, updateSettings);
 
 // Dashboard Routes
 router.get('/dashboard/overview', isAuthenticated, getDashboardOverview);
+
+// Admin Authentication Routes
+router.post('/register', adminRegister);
+router.post('/login', adminLogin);
 
 module.exports = router;
