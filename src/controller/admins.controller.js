@@ -297,7 +297,25 @@ const addCourse = async (req, res) => {
         schedule
     });
     await newCourse.save();
-    res.status(201).json({ message: "Course added successfully", courseId: newCourse._id });
+
+    // Format schedule for response
+    const formattedSchedule = {
+        startTime: newCourse.schedule.startTime,
+        endTime: newCourse.schedule.endTime
+    };
+
+    res.status(201).json({
+        message: "Course added successfully",
+        course: {
+            courseId: newCourse.courseId,
+            name: newCourse.name,
+            description: newCourse.description,
+            instructor: newCourse.instructor,
+            maxStudents: newCourse.maxStudents,
+            duration: newCourse.duration,
+            schedule: formattedSchedule
+        }
+    });
 };
 
 const editCourse = async (req, res) => {
@@ -344,7 +362,20 @@ const deleteCourse = async (req, res) => {
 const getAllCourses = async (req, res) => {
     try {
         const courses = await Course.find().populate('instructor', 'firstName lastName');
-        res.status(200).json({ courses });
+        // Format each course's schedule for response
+        const formattedCourses = courses.map(course => ({
+            courseId: course.courseId,
+            name: course.name,
+            description: course.description,
+            instructor: course.instructor,
+            maxStudents: course.maxStudents,
+            duration: course.duration,
+            schedule: {
+                startTime: course.schedule?.startTime,
+                endTime: course.schedule?.endTime
+            }
+        }));
+        res.status(200).json({ courses: formattedCourses });
     } catch (error) {
         console.error("Error fetching courses:", error);
         res.status(500).json({ message: "Internal server error" });
