@@ -1,5 +1,6 @@
 const Student = require("../models/student.schema.js");
 const Staff = require("../models/staff.schema.js");
+const Admin = require("../models/admin.schema.js");
 const Course = require("../models/course.schema.js");
 const Settings = require("../models/settings.schema.js");
 const bcrypt = require("bcryptjs");
@@ -445,17 +446,15 @@ const adminRegister = async (req, res) => {
     if (password.length < 6) {
         return res.status(400).json({ message: "Password must be at least 6 characters long" });
     }
-    const existingAdmin = await Student.findOne({ email });
+    const existingAdmin = await Admin.findOne({ email });
     if (existingAdmin) {
         return res.status(400).json({ message: "Admin already exists" });
     }
     const hashedPassword = await bcrypt.hash(password, saltRounds);
-    const newAdmin = new Student({
-        Fistname: name,
-        Lastname: '',
+    const newAdmin = new Admin({
+        name,
         email,
         password: hashedPassword,
-        isAdmin: true,
         role
     });
     await newAdmin.save();
@@ -478,7 +477,7 @@ const adminLogin = async (req, res) => {
     if (!email || !password) {
         return res.status(400).json({ message: "Email and password are required" });
     }
-    const admin = await Student.findOne({ email, isAdmin: true });
+    const admin = await Admin.findOne({ email });
     if (!admin) {
         return res.status(404).json({ message: "Admin not found" });
     }
@@ -502,7 +501,7 @@ const adminLogin = async (req, res) => {
         console.error("Failed to send login alert email:", emailError.message);
     });
 
-    res.status(200).json({ message: "Login successful", token, admin: { id: admin._id, email: admin.email, name: admin.Fistname } });
+    res.status(200).json({ message: "Login successful", token, admin: { id: admin._id, email: admin.email, name: admin.name } });
 };
 
 module.exports = {
