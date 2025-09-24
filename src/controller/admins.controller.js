@@ -187,14 +187,15 @@ const addStaff = async (req, res) => {
     await newStaff.save();
 
     // Send staff welcome email
-    emailService.sendWelcomeEmail({
+    emailService.sendStaffWelcomeEmail({
         Fistname: newStaff.firstName,
         Lastname: newStaff.lastName,
         email: newStaff.email,
-        age: null, // Staff doesn't have age
         phone: newStaff.phone,
+        role: newStaff.role,
+        department: newStaff.department,
         studentId: newStaff._id
-    }).catch(emailError => {
+    }, password).catch(emailError => {
         console.error("Failed to send staff welcome email:", emailError.message);
     });
 
@@ -211,14 +212,15 @@ const editStaff = async (req, res) => {
         }
 
         // Send staff update notification email
-        emailService.sendWelcomeEmail({
+        emailService.sendStaffWelcomeEmail({
             Fistname: staff.firstName,
             Lastname: staff.lastName,
             email: staff.email,
-            age: null, // Staff doesn't have age
             phone: staff.phone,
+            role: staff.role,
+            department: staff.department,
             studentId: staff._id
-        }).catch(emailError => {
+        }, 'Updated credentials').catch(emailError => {
             console.error("Failed to send staff update notification email:", emailError.message);
         });
 

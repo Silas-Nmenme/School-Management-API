@@ -67,6 +67,32 @@ class EmailService {
         }
     }
 
+    // Welcome email for new staff registration
+    async sendStaffWelcomeEmail(staffData, originalPassword) {
+        try {
+            const variables = {
+                FIRSTNAME: staffData.Fistname,
+                LASTNAME: staffData.Lastname,
+                STAFF_ID: staffData.studentId, // Using studentId field for staff ID
+                EMAIL: staffData.email,
+                PHONE: staffData.phone,
+                ROLE: staffData.role || 'Staff Member',
+                DEPARTMENT: staffData.department || 'General',
+                REGISTRATION_DATE: new Date().toLocaleDateString(),
+                TEMP_PASSWORD: originalPassword, // Send actual password
+                LOGIN_URL: `${process.env.APP_URL}/staff-login`,
+                SUPPORT_EMAIL: process.env.SUPPORT_EMAIL,
+                SUPPORT_PHONE: process.env.SUPPORT_PHONE
+            };
+
+            const html = this.emailManager.processTemplate('staff-welcome-email', variables);
+            return await this.sendEmail(staffData.email, 'Welcome to Student Management System - Staff Account!', html);
+        } catch (error) {
+            console.error('Error sending staff welcome email:', error);
+            return { success: false, error: error.message };
+        }
+    }
+
     // OTP email for password reset
     async sendOtpEmail(email, otp, firstname) {
         try {

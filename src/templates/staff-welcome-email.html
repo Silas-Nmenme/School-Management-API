@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Welcome to Student Management System - Staff Account</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            max-width: 600px;
+            margin: 0 auto;
+            background-color: #f4f4f4;
+            padding: 20px;
+        }
+        .container {
+            background-color: #ffffff;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 0 20px rgba(0,0,0,0.1);
+        }
+        .header {
+            text-align: center;
+            border-bottom: 3px solid #28a745;
+            padding-bottom: 20px;
+            margin-bottom: 30px;
+        }
+        .header h1 {
+            color: #28a745;
+            margin: 0;
+            font-size: 28px;
+        }
+        .staff-info {
+            background-color: #f8f9fa;
+            padding: 20px;
+            border-radius: 8px;
+            margin: 20px 0;
+            border-left: 4px solid #28a745;
+        }
+        .staff-info h3 {
+            margin-top: 0;
+            color: #28a745;
+        }
+        .role-badge {
+            background: linear-gradient(135deg, #28a745, #20c997);
+            color: white;
+            padding: 15px;
+            border-radius: 10px;
+            text-align: center;
+            margin: 20px 0;
+            box-shadow: 0 4px 15px rgba(40, 167, 69, 0.3);
+        }
+        .credentials {
+            background-color: #fff3cd;
+            border: 1px solid #ffeaa7;
+            padding: 15px;
+            border-radius: 5px;
+            margin: 20px 0;
+        }
+        .credentials h4 {
+            margin-top: 0;
+            color: #856404;
+        }
+        .button {
+            display: inline-block;
+            background-color: #28a745;
+            color: white;
+            padding: 12px 30px;
+            text-decoration: none;
+            border-radius: 5px;
+            margin: 20px 0;
+            font-weight: bold;
+        }
+        .footer {
+            text-align: center;
+            margin-top: 30px;
+            padding-top: 20px;
+            border-top: 1px solid #eee;
+            color: #666;
+            font-size: 14px;
+        }
+        .warning {
+            background-color: #f8d7da;
+            border: 1px solid #f5c6cb;
+            color: #721c24;
+            padding: 15px;
+            border-radius: 5px;
+            margin: 20px 0;
+        }
+        .responsibilities {
+            background-color: #d1ecf1;
+            border: 1px solid #bee5eb;
+            color: #0c5460;
+            padding: 20px;
+            border-radius: 8px;
+            margin: 20px 0;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>👨‍💼 Welcome to the Team!</h1>
+            <p style="margin: 10px 0 0 0; color: #666;">Your staff account has been successfully created</p>
+        </div>
+
+        <h2>Hello {{FIRSTNAME}} {{LASTNAME}}!</h2>
+
+        <p>Congratulations! You have been successfully registered as a staff member in our Student Management System. Welcome to the team!</p>
+
+        <div class="role-badge">
+            <h3 style="margin: 0; color: white;">🎯 Staff Member Activated</h3>
+            <p style="margin-bottom: 0; opacity: 0.9;">Ready to contribute to student success</p>
+        </div>
+
+        <div class="staff-info">
+            <h3>👤 Your Staff Profile:</h3>
+            <ul style="list-style: none; padding: 0;">
+                <li><strong>Staff ID:</strong> {{STAFF_ID}}</li>
+                <li><strong>Name:</strong> {{FIRSTNAME}} {{LASTNAME}}</li>
+                <li><strong>Email:</strong> {{EMAIL}}</li>
+                <li><strong>Phone:</strong> {{PHONE}}</li>
+                <li><strong>Role:</strong> {{ROLE}}</li>
+                <li><strong>Department:</strong> {{DEPARTMENT}}</li>
+                <li><strong>Registration Date:</strong> {{REGISTRATION_DATE}}</li>
+            </ul>
+        </div>
+
+        <div class="responsibilities">
+            <h4 style="margin-top: 0;">📋 Your Responsibilities:</h4>
+            <ul>
+                <li>Manage and support student activities</li>
+                <li>Maintain accurate records and documentation</li>
+                <li>Collaborate with other team members</li>
+                <li>Follow system protocols and procedures</li>
+                <li>Ensure data privacy and security</li>
+            </ul>
+        </div>
+
+        <div class="credentials">
+            <h4>🔐 Account Credentials</h4>
+            <p><strong>Important:</strong> Please keep your login credentials secure and do not share them with anyone.</p>
+            <ul style="list-style: none; padding: 0;">
+                <li><strong>Email:</strong> {{EMAIL}}</li>
+                <li><strong>Temporary Password:</strong> {{TEMP_PASSWORD}}</li>
+            </ul>
+        </div>
+
+        <div style="text-align: center; margin: 30px 0;">
+            <a href="{{LOGIN_URL}}" class="button">Login to Staff Portal</a>
+        </div>
+
+        <div class="warning">
+            <strong>⚠️ Security Notice:</strong>
+            <ul>
+                <li>Change your password after first login</li>
+                <li>Enable two-factor authentication if available</li>
+                <li>Never share your credentials with anyone</li>
+                <li>Contact support if you notice any suspicious activity</li>
+                <li>Review your role permissions and access levels</li>
+            </ul>
+        </div>
+
+        <p>As a valued member of our staff, you now have access to manage student information and contribute to our educational mission. If you have any questions about your role or need assistance, please don't hesitate to contact our support team.</p>
+
+        <div class="footer">
+            <p><strong>Student Management System - Staff Portal</strong></p>
+            <p>This is an automated message. Please do not reply to this email.</p>
+            <p>For support: {{SUPPORT_EMAIL}} | {{SUPPORT_PHONE}}</p>
+        </div>
+    </div>
+</body>
+</html>
