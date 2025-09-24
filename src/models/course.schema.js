@@ -30,9 +30,8 @@ const courseSchema = new mongoose.Schema({
     min: 1
   },
   duration: {
-    type: Number, // in weeks
-    required: true,
-    min: 1
+    type: String,
+    required: true
   },
   schedule: {
     days: [{
