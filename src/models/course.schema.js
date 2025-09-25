@@ -17,8 +17,13 @@ const courseSchema = new mongoose.Schema({
   },
   instructor: {
     type: mongoose.Schema.Types.ObjectId,
-    ref: 'Staff',
-    required: true
+    required: true,
+    refPath: 'instructorModel'
+  },
+  instructorModel: {
+    type: String,
+    required: true,
+    enum: ['Staff', 'Student', 'Admin']
   },
   students: [{
     type: mongoose.Schema.Types.ObjectId,
@@ -30,10 +35,6 @@ const courseSchema = new mongoose.Schema({
     min: 1
   },
   duration: {
-    type: String,
-    required: true
-  },
-  schedule: {
     type: String,
     required: true
   },
