@@ -274,13 +274,13 @@ const getAllStaff = async (req, res) => {
 
 // Course Management Functions
 const addCourse = async (req, res) => {
-    const { courseId, name, description, instructor, maxStudents, duration, schedule } = req.body;
+    const { courseId, name, description, instructor, instructorModel, maxStudents, duration, startTime, endTime, days } = req.body;
     if (
-        !courseId || !name || !instructor || !maxStudents || !duration ||
-        !schedule || !schedule.startTime || !schedule.endTime
+        !courseId || !name || !instructor || !instructorModel || !maxStudents || !duration ||
+        !startTime || !endTime || !days || !Array.isArray(days) || days.length === 0
     ) {
         return res.status(400).json({
-            message: "All required fields must be provided, including schedule.startTime and schedule.endTime."
+            message: "All required fields must be provided, including instructor, instructorModel, startTime, endTime, and days."
         });
     }
     const existingCourse = await Course.findOne({ courseId });
@@ -292,17 +292,14 @@ const addCourse = async (req, res) => {
         name,
         description,
         instructor,
+        instructorModel,
         maxStudents,
         duration,
-        schedule
+        startTime,
+        endTime,
+        days
     });
     await newCourse.save();
-
-    // Format schedule for response
-    const formattedSchedule = {
-        startTime: newCourse.schedule.startTime,
-        endTime: newCourse.schedule.endTime
-    };
 
     res.status(201).json({
         message: "Course added successfully",
@@ -311,9 +308,12 @@ const addCourse = async (req, res) => {
             name: newCourse.name,
             description: newCourse.description,
             instructor: newCourse.instructor,
+            instructorModel: newCourse.instructorModel,
             maxStudents: newCourse.maxStudents,
             duration: newCourse.duration,
-            schedule: formattedSchedule
+            startTime: newCourse.startTime,
+            endTime: newCourse.endTime,
+            days: newCourse.days
         }
     });
 };
@@ -361,19 +361,21 @@ const deleteCourse = async (req, res) => {
 
 const getAllCourses = async (req, res) => {
     try {
-        const courses = await Course.find().populate('instructor', 'firstName lastName');
-        // Format each course's schedule for response
+        const courses = await Course.find().populate({
+            path: 'instructor',
+            select: 'firstName lastName email'
+        });
         const formattedCourses = courses.map(course => ({
             courseId: course.courseId,
             name: course.name,
             description: course.description,
             instructor: course.instructor,
+            instructorModel: course.instructorModel,
             maxStudents: course.maxStudents,
             duration: course.duration,
-            schedule: {
-                startTime: course.schedule?.startTime,
-                endTime: course.schedule?.endTime
-            }
+            startTime: course.startTime,
+            endTime: course.endTime,
+            days: course.days
         }));
         res.status(200).json({ courses: formattedCourses });
     } catch (error) {
