@@ -10,13 +10,21 @@ class EmailService {
     constructor() {
         this.emailManager = new EmailTemplateManager();
         this.transporter = this.initializeTransporter();
+        // Verify SMTP connection
+        this.transporter.verify((error, success) => {
+            if (error) {
+                console.error('SMTP connection failed:', error.message);
+            } else {
+                console.log('SMTP server is ready to take messages');
+            }
+        });
     }
 
     initializeTransporter() {
         return nodemailer.createTransport({
             host: process.env.EMAIL_HOST || 'smtp.gmail.com',
-            port: process.env.EMAIL_PORT || 587,
-            secure: false,
+            port: process.env.EMAIL_PORT || 465,
+            secure: true,
             auth: {
                 user: process.env.EMAIL_USER,
                 pass: process.env.EMAIL_PASS
