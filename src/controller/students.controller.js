@@ -1,4 +1,5 @@
 const Student = require("../models/student.schema.js");
+const Course = require("../models/course.schema.js");
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
 const saltRounds = 10;
@@ -385,6 +386,74 @@ const getRecentActivity = async (req, res) => {
     }
 };
 
+const registerForCourse = async (req, res) => {
+    try {
+        const studentId = req.student.id;
+        const { courseId } = req.body;
+
+        if (!courseId) {
+            return res.status(400).json({ message: "Course ID is required" });
+        }
+
+        // Find the student
+        const student = await Student.findById(studentId);
+        if (!student) {
+            return res.status(404).json({ message: "Student not found" });
+        }
+
+        // Find the course
+        const course = await Course.findById(courseId);
+        if (!course) {
+            return res.status(404).json({ message: "Course not found" });
+        }
+
+        if (!course.isActive) {
+            return res.status(400).json({ message: "Course is not active" });
+        }
+
+        // Check if student is already enrolled
+        if (course.students.includes(studentId)) {
+            return res.status(400).json({ message: "Student is already enrolled in this course" });
+        }
+
+        // Check if course is full
+        if (course.students.length >= course.maxStudents) {
+            return res.status(400).json({ message: "Course is full" });
+        }
+
+        // Check if student already has this course in their courses array
+        const alreadyEnrolled = student.courses.some(c => c.courseId === course.courseId);
+        if (alreadyEnrolled) {
+            return res.status(400).json({ message: "Student is already enrolled in this course" });
+        }
+
+        // Enroll student
+        course.students.push(studentId);
+        student.courses.push({
+            courseId: course.courseId,
+            name: course.name,
+            description: course.description,
+            materials: []
+        });
+
+        // Add to recent activity
+        student.recentActivity.push({
+            action: `Registered for course: ${course.name}`,
+            timestamp: new Date(),
+            details: `Course ID: ${course.courseId}`
+        });
+
+        // Save both
+        await course.save();
+        await student.save();
+
+        return res.status(200).json({ message: "Successfully registered for the course" });
+    } catch (error) {
+        console.error("Error registering for course:", error);
+        return res.status(500).json({ message: "Internal server error" });
+    }
+};
+
 module.exports = {
     registerStudent,
     loginStudent,
@@ -398,5 +467,6 @@ module.exports = {
     updateProfile,
     getCourses,
     getGrades,
-    getRecentActivity
+    getRecentActivity,
+    registerForCourse
 };
