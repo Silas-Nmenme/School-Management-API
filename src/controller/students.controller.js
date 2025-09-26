@@ -430,6 +430,7 @@ const registerForCourse = async (req, res) => {
         // Enroll student
         course.students.push(studentId);
         student.courses.push({
+            _id: course._id,
             courseId: course.courseId,
             name: course.name,
             description: course.description,
@@ -454,6 +455,60 @@ const registerForCourse = async (req, res) => {
     }
 };
 
+const unregisterForCourse = async (req, res) => {
+    try {
+        const studentId = req.student.id;
+        const { courseId } = req.body;
+
+        if (!courseId) {
+            return res.status(400).json({ message: "Course ID is required" });
+        }
+
+        // Find the student
+        const student = await Student.findById(studentId);
+        if (!student) {
+            return res.status(404).json({ message: "Student not found" });
+        }
+
+        // Find the course
+        const course = await Course.findById(courseId);
+        if (!course) {
+            return res.status(404).json({ message: "Course not found" });
+        }
+
+        // Check if student is enrolled
+        if (!course.students.includes(studentId)) {
+            return res.status(400).json({ message: "Student is not enrolled in this course" });
+        }
+
+        // Check if student has this course in their courses array
+        const courseIndex = student.courses.findIndex(c => c.courseId === course.courseId);
+        if (courseIndex === -1) {
+            return res.status(400).json({ message: "Student is not enrolled in this course" });
+        }
+
+        // Unenroll student
+        course.students.pull(studentId);
+        student.courses.splice(courseIndex, 1);
+
+        // Add to recent activity
+        student.recentActivity.push({
+            action: `Unregistered from course: ${course.name}`,
+            timestamp: new Date(),
+            details: `Course ID: ${course.courseId}`
+        });
+
+        // Save both
+        await course.save();
+        await student.save();
+
+        return res.status(200).json({ message: "Successfully unregistered from the course" });
+    } catch (error) {
+        console.error("Error unregistering for course:", error);
+        return res.status(500).json({ message: "Internal server error" });
+    }
+};
+
 module.exports = {
     registerStudent,
     loginStudent,
@@ -468,5 +523,6 @@ module.exports = {
     getCourses,
     getGrades,
     getRecentActivity,
-    registerForCourse
+    registerForCourse,
+    unregisterForCourse
 };
