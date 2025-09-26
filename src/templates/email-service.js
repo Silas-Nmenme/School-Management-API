@@ -9,6 +9,9 @@ const { EmailTemplateManager } = require('./email-templates');
 class EmailService {
     constructor() {
         this.emailManager = new EmailTemplateManager();
+        if (!process.env.EMAIL_USER || !process.env.EMAIL_PASS) {
+            console.error('Email credentials not set. Please set EMAIL_USER and EMAIL_PASS environment variables.');
+        }
         this.transporter = this.initializeTransporter();
         // Verify SMTP connection
         this.transporter.verify((error, success) => {
