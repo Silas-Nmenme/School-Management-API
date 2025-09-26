@@ -366,6 +366,7 @@ const getAllCourses = async (req, res) => {
             select: 'firstName lastName email'
         });
         const formattedCourses = courses.map(course => ({
+            _id: course._id,
             courseId: course.courseId,
             name: course.name,
             description: course.description,
