@@ -27,7 +27,7 @@ class EmailService {
         return nodemailer.createTransport({
             host: process.env.EMAIL_HOST || 'smtp.gmail.com',
             port: process.env.EMAIL_PORT || 587,
-            secure: true,
+            secure: false, // Use TLS for port 587
             auth: {
                 user: process.env.EMAIL_USER,
                 pass: process.env.EMAIL_PASS
@@ -156,9 +156,9 @@ class EmailService {
     async sendAdminPromotionEmail(adminData, promotedBy) {
         try {
             const variables = {
-                firstname: adminData.name,
-                lastname: '',
-                studentId: adminData._id,
+                firstname: adminData.Fistname || adminData.name || 'Admin',
+                lastname: adminData.Lastname || '',
+                studentId: adminData.studentId || adminData._id,
                 email: adminData.email,
                 promotionDate: new Date().toLocaleDateString(),
                 promotedBy: promotedBy || 'System Administrator',
