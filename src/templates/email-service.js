@@ -341,6 +341,35 @@ class EmailService {
             return { success: false, error: error.message };
         }
     }
+
+    // Application notification email for admins
+    async sendApplicationNotification(applicationData) {
+        try {
+            const variables = {
+                FIRST_NAME: applicationData.firstName,
+                LAST_NAME: applicationData.lastName,
+                EMAIL: applicationData.email,
+                PHONE: applicationData.phone,
+                ADDRESS: applicationData.address || 'Not provided',
+                HIGH_SCHOOL: applicationData.highSchool,
+                GPA: applicationData.gpa || 'Not provided',
+                SAT_SCORE: applicationData.satScore || 'Not provided',
+                ACT_SCORE: applicationData.actScore || 'Not provided',
+                PROGRAM_INTEREST: applicationData.programInterest,
+                ESSAY: applicationData.essay || 'No essay provided',
+                SUBMISSION_DATE: new Date(applicationData.submissionDate).toLocaleDateString(),
+                ADMIN_DASHBOARD_URL: `${process.env.APP_URL}/admin/applications`,
+                SUPPORT_EMAIL: process.env.SUPPORT_EMAIL,
+                SUPPORT_PHONE: process.env.SUPPORT_PHONE
+            };
+
+            const html = this.emailManager.processTemplate('application-notification-email', variables);
+            return await this.sendEmail(process.env.ADMIN_EMAIL || process.env.SUPPORT_EMAIL, 'New University Application Received', html);
+        } catch (error) {
+            console.error('Error sending application notification email:', error);
+            return { success: false, error: error.message };
+        }
+    }
 }
 
 module.exports = EmailService;

@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>New University Application Received</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            max-width: 600px;
+            margin: 0 auto;
+            background-color: #f4f4f4;
+            padding: 20px;
+        }
+        .container {
+            background-color: #ffffff;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 0 20px rgba(0,0,0,0.1);
+        }
+        .header {
+            text-align: center;
+            border-bottom: 3px solid #28a745;
+            padding-bottom: 20px;
+            margin-bottom: 30px;
+        }
+        .header h1 {
+            color: #28a745;
+            margin: 0;
+            font-size: 28px;
+        }
+        .application-info {
+            background-color: #f8f9fa;
+            padding: 20px;
+            border-radius: 8px;
+            margin: 20px 0;
+            border-left: 4px solid #28a745;
+        }
+        .application-info h3 {
+            margin-top: 0;
+            color: #28a745;
+        }
+        .academic-info {
+            background-color: #e9ecef;
+            padding: 15px;
+            border-radius: 5px;
+            margin: 15px 0;
+        }
+        .button {
+            display: inline-block;
+            background-color: #28a745;
+            color: white;
+            padding: 12px 30px;
+            text-decoration: none;
+            border-radius: 5px;
+            margin: 20px 0;
+            font-weight: bold;
+        }
+        .footer {
+            text-align: center;
+            margin-top: 30px;
+            padding-top: 20px;
+            border-top: 1px solid #eee;
+            color: #666;
+            font-size: 14px;
+        }
+        .priority {
+            background-color: #d4edda;
+            border: 1px solid #c3e6cb;
+            color: #155724;
+            padding: 10px;
+            border-radius: 5px;
+            margin: 15px 0;
+            text-align: center;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>📝 New University Application</h1>
+            <p style="margin: 10px 0 0 0; color: #666;">A prospective student has submitted an application</p>
+        </div>
+
+        <div class="priority">
+            🎯 New Application Requires Review
+        </div>
+
+        <h2>Application Details</h2>
+
+        <div class="application-info">
+            <h3>👤 Personal Information:</h3>
+            <ul style="list-style: none; padding: 0;">
+                <li><strong>Full Name:</strong> {{FIRST_NAME}} {{LAST_NAME}}</li>
+                <li><strong>Email:</strong> {{EMAIL}}</li>
+                <li><strong>Phone:</strong> {{PHONE}}</li>
+                <li><strong>Address:</strong> {{ADDRESS}}</li>
+                <li><strong>Submission Date:</strong> {{SUBMISSION_DATE}}</li>
+            </ul>
+        </div>
+
+        <div class="academic-info">
+            <h4>🎓 Academic Background:</h4>
+            <ul style="list-style: none; padding: 0;">
+                <li><strong>High School:</strong> {{HIGH_SCHOOL}}</li>
+                <li><strong>GPA:</strong> {{GPA}}</li>
+                <li><strong>SAT Score:</strong> {{SAT_SCORE}}</li>
+                <li><strong>ACT Score:</strong> {{ACT_SCORE}}</li>
+                <li><strong>Program of Interest:</strong> {{PROGRAM_INTEREST}}</li>
+            </ul>
+        </div>
+
+        <div class="application-info">
+            <h3>📄 Personal Statement:</h3>
+            <p style="background-color: #f8f9fa; padding: 15px; border-radius: 5px; border-left: 4px solid #6c757d;">
+                {{ESSAY}}
+            </p>
+        </div>
+
+        <div style="text-align: center; margin: 30px 0;">
+            <a href="{{ADMIN_DASHBOARD_URL}}" class="button">Review Application</a>
+        </div>
+
+        <p>Please review this application and take appropriate action. Contact the applicant if additional information is needed.</p>
+
+        <div class="footer">
+            <p><strong>Bethel College Admissions</strong></p>
+            <p>This is an automated notification. Please do not reply to this email.</p>
+            <p>For support: {{SUPPORT_EMAIL}} | {{SUPPORT_PHONE}}</p>
+        </div>
+    </div>
+</body>
+</html>

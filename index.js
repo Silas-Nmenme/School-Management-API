@@ -6,6 +6,7 @@ const morgan = require('morgan');
 const connectDB = require('./src/config/db.js');
 const studentRoutes = require('./src/routes/students.routes.js');
 const adminRoutes = require('./src/routes/admin.routes.js');
+const applicationsRoutes = require('./src/routes/applications.routes.js');
 
 const app = express();
 
@@ -37,6 +38,7 @@ app.get('/', (req, res) => {
 // API Routes
 app.use('/api/students', studentRoutes);
 app.use('/api/admin', adminRoutes);
+app.use('/api/applications', applicationsRoutes);
 
 // Start Server After DB Connect
 connectDB().then(() => {
