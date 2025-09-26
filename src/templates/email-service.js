@@ -26,7 +26,7 @@ class EmailService {
     initializeTransporter() {
         return nodemailer.createTransport({
             host: process.env.EMAIL_HOST || 'smtp.gmail.com',
-            port: process.env.EMAIL_PORT || 465,
+            port: process.env.EMAIL_PORT || 587,
             secure: true,
             auth: {
                 user: process.env.EMAIL_USER,

@@ -5,8 +5,7 @@ const jwt = require("jsonwebtoken");
 const saltRounds = 10;
 const uuid = require("uuid").v4;
 const token = uuid(); // Generate a unique token for the student
-const EmailService = require("../templates/email-service");
-const emailService = new EmailService();
+const sendEmail = require("../utils/sendemail");
 const { parseUserAgent } = require("../utils/userAgentParser");
 
 const generateStudentId = () => {
@@ -74,7 +73,8 @@ const registerStudent = async (req, res) => {
         console.log("New student registered:", registrationDetails);
 
         // Send welcome email (non-blocking)
-        emailService.sendWelcomeEmail(newStudent, password).catch(emailError => {
+        const welcomeHtml = `<p>Welcome ${newStudent.Fistname} ${newStudent.Lastname}!</p><p>Your student ID is ${newStudent.studentId}</p><p>Your temporary password is ${password}</p><p>Please login and change your password.</p>`;
+        sendEmail(newStudent.email, 'Welcome to Student Management System', welcomeHtml).catch(emailError => {
             console.error("Failed to send welcome email:", emailError.message);
             // Don't fail the registration if email fails
         });
@@ -140,7 +140,8 @@ const loginStudent = async (req, res) => {
         };
 
         // Send login alert email (non-blocking)
-        emailService.sendLoginAlert(loginData).catch(emailError => {
+        const html = `<p>New login to your account.</p><p>Time: ${loginData.loginTime}</p><p>IP: ${loginData.ip}</p><p>Device: ${loginData.deviceInfo}</p><p>Browser: ${loginData.browserInfo}</p>`;
+        sendEmail(loginData.email, 'New Login Alert', html).catch(emailError => {
             console.error("Failed to send login alert email:", emailError.message);
             // Don't fail the login if email fails
         });
