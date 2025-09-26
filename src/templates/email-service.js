@@ -13,14 +13,6 @@ class EmailService {
             console.error('Email credentials not set. Please set EMAIL_USER and EMAIL_PASS environment variables.');
         }
         this.transporter = this.initializeTransporter();
-        // Verify SMTP connection
-        this.transporter.verify((error, success) => {
-            if (error) {
-                console.error('SMTP connection failed:', error.message);
-            } else {
-                console.log('SMTP server is ready to take messages');
-            }
-        });
     }
 
     initializeTransporter() {
@@ -32,11 +24,7 @@ class EmailService {
             auth: {
                 user: process.env.EMAIL_USER || 'apikey', // SendGrid uses 'apikey' as username
                 pass: process.env.EMAIL_PASS // SendGrid API key as password
-            },
-            connectionTimeout: 60000,
-            greetingTimeout: 30000,
-            socketTimeout: 60000,
-            debug: true
+            }
         });
     }
 
