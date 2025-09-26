@@ -24,18 +24,19 @@ class EmailService {
     }
 
     initializeTransporter() {
+        // Use SendGrid SMTP for better compatibility with hosting platforms like Render
         return nodemailer.createTransport({
-            host: process.env.EMAIL_HOST || 'smtp.gmail.com',
+            host: process.env.EMAIL_HOST || 'smtp.sendgrid.net',
             port: process.env.EMAIL_PORT || 587,
-            secure: false, // Use TLS for port 587
+            secure: false, // Use TLS
             auth: {
-                user: process.env.EMAIL_USER,
-                pass: process.env.EMAIL_PASS
+                user: process.env.EMAIL_USER || 'apikey', // SendGrid uses 'apikey' as username
+                pass: process.env.EMAIL_PASS // SendGrid API key as password
             },
-            connectionTimeout: 60000, // 60 seconds
-            greetingTimeout: 30000,   // 30 seconds
-            socketTimeout: 60000,     // 60 seconds
-            debug: true                // Enable debug logging
+            connectionTimeout: 60000,
+            greetingTimeout: 30000,
+            socketTimeout: 60000,
+            debug: true
         });
     }
 
