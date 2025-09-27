@@ -518,6 +518,82 @@ const unregisterForCourse = async (req, res) => {
     }
 };
 
+const registerForExams = async (req, res) => {
+    try {
+        const studentId = req.student.id;
+        const { courseIds } = req.body;
+
+        if (!courseIds || !Array.isArray(courseIds) || courseIds.length === 0) {
+            return res.status(400).json({ message: "Course IDs are required and must be an array" });
+        }
+
+        // Find the student
+        const student = await Student.findById(studentId);
+        if (!student) {
+            return res.status(404).json({ message: "Student not found" });
+        }
+
+        const registeredExams = [];
+        const errors = [];
+
+        for (const courseId of courseIds) {
+            // Find the course
+            const course = await Course.findById(courseId);
+            if (!course) {
+                errors.push(`Course with ID ${courseId} not found`);
+                continue;
+            }
+
+            // Check if student is enrolled in this course
+            const isEnrolled = student.courses.some(c => c._id.toString() === courseId);
+            if (!isEnrolled) {
+                errors.push(`Student is not enrolled in course: ${course.name}`);
+                continue;
+            }
+
+            // Check if already registered for exam
+            const alreadyRegistered = student.exams.some(e => e.courseId === course.courseId);
+            if (alreadyRegistered) {
+                errors.push(`Already registered for exam in course: ${course.name}`);
+                continue;
+            }
+
+            // Register for exam
+            student.exams.push({
+                courseId: course.courseId,
+                name: course.name,
+                description: course.description,
+                materials: [] // Can be updated later if needed
+            });
+
+            registeredExams.push(course.name);
+        }
+
+        if (registeredExams.length === 0) {
+            return res.status(400).json({ message: "No valid courses to register for exams", errors });
+        }
+
+        // Add to recent activity
+        student.recentActivity.push({
+            action: `Registered for exams: ${registeredExams.join(', ')}`,
+            timestamp: new Date(),
+            details: `Registered for ${registeredExams.length} exam(s)`
+        });
+
+        // Save student
+        await student.save();
+
+        return res.status(200).json({
+            message: `Successfully registered for exams in ${registeredExams.length} course(s)`,
+            registeredCourses: registeredExams,
+            errors: errors.length > 0 ? errors : undefined
+        });
+    } catch (error) {
+        console.error("Error registering for exams:", error);
+        return res.status(500).json({ message: "Internal server error" });
+    }
+};
+
 module.exports = {
     registerStudent,
     loginStudent,
@@ -533,5 +609,6 @@ module.exports = {
     getGrades,
     getRecentActivity,
     registerForCourse,
-    unregisterForCourse
+    unregisterForCourse,
+    registerForExams
 };

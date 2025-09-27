@@ -74,6 +74,22 @@ const studentSchema = new mongoose.Schema({
       type: String
     }]
   }],
+  exams: [{
+    courseId: {
+      type: String,
+      required: true
+    },
+    name: {
+      type: String,
+      required: true
+    },
+    description: {
+      type: String
+    },
+    materials: [{
+      type: String
+    }]
+  }],
   grades: [{
     courseId: {
       type: String,
