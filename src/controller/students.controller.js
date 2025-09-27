@@ -538,14 +538,14 @@ const registerForExams = async (req, res) => {
 
         for (const courseId of courseIds) {
             // Find the course
-            const course = await Course.findById(courseId);
+            const course = await Course.findOne({ courseId: courseId });
             if (!course) {
                 errors.push(`Course with ID ${courseId} not found`);
                 continue;
             }
 
             // Check if student is enrolled in this course
-            const isEnrolled = student.courses.some(c => c._id.toString() === courseId);
+            const isEnrolled = student.courses.some(c => c.courseId === courseId);
             if (!isEnrolled) {
                 errors.push(`Student is not enrolled in course: ${course.name}`);
                 continue;
