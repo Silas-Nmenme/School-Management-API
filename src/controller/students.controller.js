@@ -411,7 +411,12 @@ const registerForCourse = async (req, res) => {
         }
 
         // Find the course
-        const course = await Course.findOne({ courseId: courseId });
+        let course;
+        if (/^[0-9a-fA-F]{24}$/.test(courseId)) {
+            course = await Course.findById(courseId);
+        } else {
+            course = await Course.findOne({ courseId: courseId });
+        }
         if (!course) {
             return res.status(404).json({ message: "Course not found" });
         }
@@ -480,7 +485,12 @@ const unregisterForCourse = async (req, res) => {
         }
 
         // Find the course
-        const course = await Course.findOne({ courseId: courseId });
+        let course;
+        if (/^[0-9a-fA-F]{24}$/.test(courseId)) {
+            course = await Course.findById(courseId);
+        } else {
+            course = await Course.findOne({ courseId: courseId });
+        }
         if (!course) {
             return res.status(404).json({ message: "Course not found" });
         }
