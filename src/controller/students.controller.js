@@ -411,7 +411,7 @@ const registerForCourse = async (req, res) => {
         }
 
         // Find the course
-        const course = await Course.findById(courseId);
+        const course = await Course.findOne({ courseId: courseId });
         if (!course) {
             return res.status(404).json({ message: "Course not found" });
         }
@@ -480,7 +480,7 @@ const unregisterForCourse = async (req, res) => {
         }
 
         // Find the course
-        const course = await Course.findById(courseId);
+        const course = await Course.findOne({ courseId: courseId });
         if (!course) {
             return res.status(404).json({ message: "Course not found" });
         }
