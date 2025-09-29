@@ -3,43 +3,31 @@
  * Handles sending emails using templates for various system events
  */
 
-const nodemailer = require('nodemailer');
+const sgMail = require('@sendgrid/mail');
 const { EmailTemplateManager } = require('./email-templates');
 
 class EmailService {
     constructor() {
         this.emailManager = new EmailTemplateManager();
-        if (!process.env.EMAIL_USER || !process.env.EMAIL_PASS) {
-            console.error('Email credentials not set. Please set EMAIL_USER and EMAIL_PASS environment variables.');
+        if (!process.env.EMAIL_PASS) {
+            console.error('SendGrid API key not set. Please set EMAIL_PASS environment variable.');
+        } else {
+            sgMail.setApiKey(process.env.EMAIL_PASS);
         }
-        this.transporter = this.initializeTransporter();
-    }
-
-    initializeTransporter() {
-        // Use SendGrid SMTP for better compatibility with hosting platforms like Render
-        return nodemailer.createTransport({
-            host: process.env.EMAIL_HOST || 'smtp.sendgrid.net',
-            port: process.env.EMAIL_PORT || 587,
-            secure: false, // Use TLS
-            auth: {
-                user: process.env.EMAIL_USER || 'apikey', // SendGrid uses 'apikey' as username
-                pass: process.env.EMAIL_PASS // SendGrid API key as password
-            }
-        });
     }
 
     async sendEmail(to, subject, htmlContent) {
         try {
-            const mailOptions = {
-                from: `"Student Management System" <${process.env.FROM_EMAIL || process.env.EMAIL_USER}>`,
+            const msg = {
                 to,
+                from: process.env.FROM_EMAIL || 'noreply@bethelcollege.edu', // Use a verified sender
                 subject,
                 html: htmlContent
             };
 
-            const info = await this.transporter.sendMail(mailOptions);
-            console.log('Email sent:', info.messageId);
-            return { success: true, messageId: info.messageId };
+            const result = await sgMail.send(msg);
+            console.log('Email sent:', result[0].headers['x-message-id']);
+            return { success: true, messageId: result[0].headers['x-message-id'] };
         } catch (error) {
             console.error('Error sending email:', error);
             return { success: false, error: error.message };
