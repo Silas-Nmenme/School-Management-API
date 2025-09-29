@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Campus Visit Status Update</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            max-width: 600px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f4f4f4;
+        }
+        .container {
+            background-color: #ffffff;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+        }
+        .header {
+            text-align: center;
+            padding-bottom: 20px;
+            margin-bottom: 30px;
+        }
+        .status-confirmed .header {
+            border-bottom: 2px solid #28a745;
+        }
+        .status-cancelled .header {
+            border-bottom: 2px solid #dc3545;
+        }
+        .status-pending .header {
+            border-bottom: 2px solid #ffc107;
+        }
+        .header h1 {
+            margin: 0;
+            font-size: 24px;
+        }
+        .status-confirmed h1 { color: #28a745; }
+        .status-cancelled h1 { color: #dc3545; }
+        .status-pending h1 { color: #ffc107; }
+        .content {
+            margin-bottom: 30px;
+        }
+        .visit-details {
+            background-color: #f8f9fa;
+            padding: 20px;
+            border-radius: 5px;
+            margin: 20px 0;
+        }
+        .detail-row {
+            margin-bottom: 10px;
+        }
+        .detail-label {
+            font-weight: bold;
+            color: #495057;
+        }
+        .status-message {
+            background-color: #d4edda;
+            border: 1px solid #c3e6cb;
+            color: #155724;
+            padding: 15px;
+            border-radius: 5px;
+            margin: 20px 0;
+        }
+        .status-cancelled .status-message {
+            background-color: #f8d7da;
+            border-color: #f5c6cb;
+            color: #721c24;
+        }
+        .status-pending .status-message {
+            background-color: #fff3cd;
+            border-color: #ffeaa7;
+            color: #856404;
+        }
+        .next-steps {
+            background-color: #e9ecef;
+            padding: 20px;
+            border-radius: 5px;
+            margin: 20px 0;
+        }
+        .footer {
+            border-top: 1px solid #dee2e6;
+            padding-top: 20px;
+            text-align: center;
+            color: #6c757d;
+            font-size: 14px;
+        }
+        .contact-info {
+            background-color: #f8f9fa;
+            padding: 15px;
+            border-radius: 5px;
+            margin: 20px 0;
+        }
+    </style>
+</head>
+<body>
+    <div class="container status-{{STATUS}}">
+        <div class="header">
+            <h1>Campus Visit {{STATUS}}</h1>
+            <p>Update on Your Bethel College Visit Request</p>
+        </div>
+
+        <div class="content">
+            <p>Dear {{FIRST_NAME}} {{LAST_NAME}},</p>
+
+            {{#STATUS:confirmed}}
+            <div class="status-message">
+                <strong>Great news!</strong> Your campus visit request has been confirmed. We're excited to welcome you to Bethel College!
+            </div>
+            {{/STATUS:confirmed}}
+
+            {{#STATUS:cancelled}}
+            <div class="status-message">
+                <strong>Visit Cancelled:</strong> Your campus visit request has been cancelled as requested.
+            </div>
+            {{/STATUS:cancelled}}
+
+            {{#STATUS:pending}}
+            <div class="status-message">
+                <strong>Update:</strong> Your campus visit request is still being processed. We'll contact you soon with confirmation details.
+            </div>
+            {{/STATUS:pending}}
+
+            <div class="visit-details">
+                <h3>Your Visit Details:</h3>
+                <div class="detail-row">
+                    <span class="detail-label">Visit Date:</span> {{VISIT_DATE}}
+                </div>
+                <div class="detail-row">
+                    <span class="detail-label">Time:</span> {{VISIT_TIME}}
+                </div>
+                <div class="detail-row">
+                    <span class="detail-label">Visit Type:</span> {{VISIT_TYPE}}
+                </div>
+                <div class="detail-row">
+                    <span class="detail-label">Group Size:</span> {{GROUP_SIZE}}
+                </div>
+            </div>
+
+            {{#STATUS:confirmed}}
+            <div class="next-steps">
+                <h3>What to Expect:</h3>
+                <ul>
+                    <li><strong>Arrival:</strong> Please arrive 15 minutes before your scheduled visit time</li>
+                    <li><strong>Duration:</strong> Plan for 1.5-2 hours for your campus tour and information session</li>
+                    <li><strong>Parking:</strong> Visitor parking is available in the main lot near the admissions building</li>
+                    <li><strong>ID:</strong> Bring a valid photo ID for check-in</li>
+                </ul>
+                <p><strong>Meeting Point:</strong> Admissions Office, Main Building</p>
+            </div>
+            {{/STATUS:confirmed}}
+
+            {{#ADMIN_NOTES}}
+            <div class="next-steps">
+                <h3>Additional Notes from Admissions:</h3>
+                <p>{{ADMIN_NOTES}}</p>
+            </div>
+            {{/ADMIN_NOTES}}
+
+            <div class="contact-info">
+                <p><strong>Questions or Need to Reschedule?</strong></p>
+                <p>Contact our Admissions Office:<br>
+                Email: {{SUPPORT_EMAIL}}<br>
+                Phone: {{SUPPORT_PHONE}}</p>
+            </div>
+
+            {{#STATUS:confirmed}}
+            <p>We look forward to seeing you on campus and showing you what makes Bethel College special!</p>
+            {{/STATUS:confirmed}}
+
+            {{#STATUS:cancelled}}
+            <p>We're sorry we won't be able to host your visit at this time. Please don't hesitate to contact us if you'd like to schedule a visit for a different date.</p>
+            {{/STATUS:cancelled}}
+
+            {{#STATUS:pending}}
+            <p>We'll be in touch soon with more details about your visit. Thank you for your patience.</p>
+            {{/STATUS:pending}}
+
+            <p>Best regards,<br>
+            The Admissions Team<br>
+            Bethel College</p>
+        </div>
+
+        <div class="footer">
+            <p>This email was sent to {{EMAIL}}</p>
+            <p>© 2024 Bethel College. All rights reserved.</p>
+        </div>
+    </div>
+</body>
+</html>

@@ -8,6 +8,7 @@ const studentRoutes = require('./src/routes/students.routes.js');
 const adminRoutes = require('./src/routes/admin.routes.js');
 const applicationsRoutes = require('./src/routes/applications.routes.js');
 const contactRoutes = require('./src/routes/contact.routes.js');
+const visitRoutes = require('./src/routes/visit.routes.js');
 
 const app = express();
 
@@ -41,6 +42,7 @@ app.use('/api/students', studentRoutes);
 app.use('/api/admin', adminRoutes);
 app.use('/api/applications', applicationsRoutes);
 app.use('/api/contact', contactRoutes);
+app.use('/api/visits', visitRoutes);
 
 // Start Server After DB Connect
 connectDB().then(() => {

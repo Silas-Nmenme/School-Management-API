@@ -3,31 +3,42 @@
  * Handles sending emails using templates for various system events
  */
 
-const sgMail = require('@sendgrid/mail');
+const nodemailer = require('nodemailer');
 const { EmailTemplateManager } = require('./email-templates');
 
 class EmailService {
     constructor() {
         this.emailManager = new EmailTemplateManager();
-        if (!process.env.EMAIL_PASS) {
-            console.error('SendGrid API key not set. Please set EMAIL_PASS environment variable.');
-        } else {
-            sgMail.setApiKey(process.env.EMAIL_PASS);
+        if (!process.env.EMAIL_USER || !process.env.EMAIL_PASS) {
+            console.error('Email credentials not set. Please set EMAIL_USER and EMAIL_PASS environment variables.');
         }
+        this.transporter = this.initializeTransporter();
+    }
+
+    initializeTransporter() {
+        return nodemailer.createTransporter({
+            host: process.env.EMAIL_HOST || 'smtp.mailgun.org',
+            port: process.env.EMAIL_PORT ? parseInt(process.env.EMAIL_PORT) : 587,
+            secure: process.env.EMAIL_PORT == 465,
+            auth: {
+                user: process.env.EMAIL_USER,
+                pass: process.env.EMAIL_PASS
+            }
+        });
     }
 
     async sendEmail(to, subject, htmlContent) {
         try {
-            const msg = {
+            const mailOptions = {
+                from: `"Student Management System" <${process.env.FROM_EMAIL || process.env.EMAIL_USER}>`,
                 to,
-                from: process.env.FROM_EMAIL || 'noreply@bethelcollege.edu', // Use a verified sender
                 subject,
                 html: htmlContent
             };
 
-            const result = await sgMail.send(msg);
-            console.log('Email sent:', result[0].headers['x-message-id']);
-            return { success: true, messageId: result[0].headers['x-message-id'] };
+            const info = await this.transporter.sendMail(mailOptions);
+            console.log('Email sent:', info.messageId);
+            return { success: true, messageId: info.messageId };
         } catch (error) {
             console.error('Error sending email:', error);
             return { success: false, error: error.message };
@@ -357,6 +368,93 @@ class EmailService {
             return await this.sendEmail(process.env.ADMIN_EMAIL || process.env.SUPPORT_EMAIL, 'New University Application Received', html);
         } catch (error) {
             console.error('Error sending application notification email:', error);
+            return { success: false, error: error.message };
+        }
+    }
+
+    // Visit confirmation email for visitors
+    async sendVisitConfirmationEmail(visitData) {
+        try {
+            const variables = {
+                FIRST_NAME: visitData.firstName,
+                LAST_NAME: visitData.lastName,
+                EMAIL: visitData.email,
+                PHONE: visitData.phone,
+                VISIT_DATE: new Date(visitData.visitDate).toLocaleDateString(),
+                VISIT_TIME: visitData.visitTime,
+                VISIT_TYPE: visitData.visitType,
+                GROUP_SIZE: visitData.groupSize,
+                INTERESTS: visitData.interests.join(', ') || 'General inquiry',
+                MESSAGE: visitData.message || 'No additional message',
+                STATUS: visitData.status,
+                SUBMISSION_DATE: new Date(visitData.submittedAt).toLocaleDateString(),
+                SUPPORT_EMAIL: process.env.SUPPORT_EMAIL,
+                SUPPORT_PHONE: process.env.SUPPORT_PHONE
+            };
+
+            const html = this.emailManager.processTemplate('visit-confirmation-email', variables);
+            return await this.sendEmail(visitData.email, 'Campus Visit Request Confirmation - Bethel College', html);
+        } catch (error) {
+            console.error('Error sending visit confirmation email:', error);
+            return { success: false, error: error.message };
+        }
+    }
+
+    // Visit notification email for admins
+    async sendVisitNotificationEmail(visitData) {
+        try {
+            const variables = {
+                FIRST_NAME: visitData.firstName,
+                LAST_NAME: visitData.lastName,
+                EMAIL: visitData.email,
+                PHONE: visitData.phone,
+                VISIT_DATE: new Date(visitData.visitDate).toLocaleDateString(),
+                VISIT_TIME: visitData.visitTime,
+                VISIT_TYPE: visitData.visitType,
+                GROUP_SIZE: visitData.groupSize,
+                INTERESTS: visitData.interests.join(', ') || 'General inquiry',
+                MESSAGE: visitData.message || 'No additional message',
+                STATUS: visitData.status,
+                SUBMISSION_DATE: new Date(visitData.submittedAt).toLocaleDateString(),
+                ADMIN_DASHBOARD_URL: `${process.env.APP_URL}/admin/visits`,
+                SUPPORT_EMAIL: process.env.SUPPORT_EMAIL,
+                SUPPORT_PHONE: process.env.SUPPORT_PHONE
+            };
+
+            const html = this.emailManager.processTemplate('visit-notification-email', variables);
+            return await this.sendEmail(process.env.ADMIN_EMAIL || process.env.SUPPORT_EMAIL, 'New Campus Visit Request - Bethel College', html);
+        } catch (error) {
+            console.error('Error sending visit notification email:', error);
+            return { success: false, error: error.message };
+        }
+    }
+
+    // Visit status update email for visitors
+    async sendVisitStatusUpdateEmail(visitData) {
+        try {
+            const variables = {
+                FIRST_NAME: visitData.firstName,
+                LAST_NAME: visitData.lastName,
+                EMAIL: visitData.email,
+                VISIT_DATE: new Date(visitData.visitDate).toLocaleDateString(),
+                VISIT_TIME: visitData.visitTime,
+                VISIT_TYPE: visitData.visitType,
+                STATUS: visitData.status,
+                ADMIN_NOTES: visitData.adminNotes || 'No additional notes',
+                SUPPORT_EMAIL: process.env.SUPPORT_EMAIL,
+                SUPPORT_PHONE: process.env.SUPPORT_PHONE
+            };
+
+            const subject = visitData.status === 'confirmed' ?
+                'Campus Visit Confirmed - Bethel College' :
+                visitData.status === 'cancelled' ?
+                'Campus Visit Cancelled - Bethel College' :
+                'Campus Visit Status Update - Bethel College';
+
+            const html = this.emailManager.processTemplate('visit-status-update-email', variables);
+            return await this.sendEmail(visitData.email, subject, html);
+        } catch (error) {
+            console.error('Error sending visit status update email:', error);
             return { success: false, error: error.message };
         }
     }

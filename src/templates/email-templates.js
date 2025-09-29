@@ -31,7 +31,10 @@ class EmailTemplateManager {
             'course-deletion-email.html',
             'course-update-email.html',
             'settings-update-email.html',
-            'admin-registration-email.html'
+            'admin-registration-email.html',
+            'visit-confirmation-email.html',
+            'visit-notification-email.html',
+            'visit-status-update-email.html'
         ];
 
         templateFiles.forEach(file => {

@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>New Campus Visit Request</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            max-width: 600px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f4f4f4;
+        }
+        .container {
+            background-color: #ffffff;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+        }
+        .header {
+            text-align: center;
+            border-bottom: 2px solid #dc3545;
+            padding-bottom: 20px;
+            margin-bottom: 30px;
+        }
+        .header h1 {
+            color: #dc3545;
+            margin: 0;
+            font-size: 24px;
+        }
+        .content {
+            margin-bottom: 30px;
+        }
+        .visit-details {
+            background-color: #f8f9fa;
+            padding: 20px;
+            border-radius: 5px;
+            margin: 20px 0;
+            border-left: 4px solid #dc3545;
+        }
+        .detail-row {
+            margin-bottom: 10px;
+        }
+        .detail-label {
+            font-weight: bold;
+            color: #495057;
+        }
+        .action-button {
+            display: inline-block;
+            background-color: #007bff;
+            color: white;
+            padding: 12px 24px;
+            text-decoration: none;
+            border-radius: 5px;
+            margin: 10px 5px;
+            font-weight: bold;
+        }
+        .action-button:hover {
+            background-color: #0056b3;
+        }
+        .urgent {
+            background-color: #dc3545;
+        }
+        .urgent:hover {
+            background-color: #c82333;
+        }
+        .footer {
+            border-top: 1px solid #dee2e6;
+            padding-top: 20px;
+            text-align: center;
+            color: #6c757d;
+            font-size: 14px;
+        }
+        .contact-info {
+            background-color: #e9ecef;
+            padding: 15px;
+            border-radius: 5px;
+            margin: 20px 0;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🚨 New Campus Visit Request</h1>
+            <p>Action Required - Review and Confirm Visit</p>
+        </div>
+
+        <div class="content">
+            <p>A new campus visit request has been submitted and requires your attention.</p>
+
+            <div class="visit-details">
+                <h3>Visitor Information:</h3>
+                <div class="detail-row">
+                    <span class="detail-label">Name:</span> {{FIRST_NAME}} {{LAST_NAME}}
+                </div>
+                <div class="detail-row">
+                    <span class="detail-label">Email:</span> {{EMAIL}}
+                </div>
+                <div class="detail-row">
+                    <span class="detail-label">Phone:</span> {{PHONE}}
+                </div>
+
+                <h3>Visit Details:</h3>
+                <div class="detail-row">
+                    <span class="detail-label">Requested Date:</span> {{VISIT_DATE}}
+                </div>
+                <div class="detail-row">
+                    <span class="detail-label">Preferred Time:</span> {{VISIT_TIME}}
+                </div>
+                <div class="detail-row">
+                    <span class="detail-label">Visit Type:</span> {{VISIT_TYPE}}
+                </div>
+                <div class="detail-row">
+                    <span class="detail-label">Group Size:</span> {{GROUP_SIZE}}
+                </div>
+                <div class="detail-row">
+                    <span class="detail-label">Areas of Interest:</span> {{INTERESTS}}
+                </div>
+                {{#MESSAGE}}
+                <div class="detail-row">
+                    <span class="detail-label">Additional Message:</span><br>
+                    {{MESSAGE}}
+                </div>
+                {{/MESSAGE}}
+                <div class="detail-row">
+                    <span class="detail-label">Submission Date:</span> {{SUBMISSION_DATE}}
+                </div>
+            </div>
+
+            <p><strong>Next Steps:</strong></p>
+            <ol>
+                <li>Review the visit request details</li>
+                <li>Contact the visitor to confirm availability and details</li>
+                <li>Update the visit status in the admin dashboard</li>
+                <li>Send confirmation email to the visitor</li>
+            </ol>
+
+            <div style="text-align: center; margin: 30px 0;">
+                <a href="{{ADMIN_DASHBOARD_URL}}" class="action-button">View in Admin Dashboard</a>
+                <a href="mailto:{{EMAIL}}?subject=Re: Campus Visit Request - {{VISIT_DATE}}" class="action-button">Contact Visitor</a>
+            </div>
+
+            <div class="contact-info">
+                <p><strong>Visitor Contact Information:</strong></p>
+                <p>Email: {{EMAIL}}<br>
+                Phone: {{PHONE}}</p>
+            </div>
+
+            <p>Please process this request promptly to ensure the best experience for our prospective students.</p>
+        </div>
+
+        <div class="footer">
+            <p>This notification was generated on {{SUBMISSION_DATE}}</p>
+            <p>Student Management System - Admin Notification</p>
+        </div>
+    </div>
+</body>
+</html>
