@@ -26,7 +26,12 @@ class EmailTemplateManager {
             'admin-promotion-email.html',
             'admin-notification-email.html',
             'account-deletion-email.html',
-            'login-alert-email.html'
+            'login-alert-email.html',
+            'application-notification-email.html',
+            'course-deletion-email.html',
+            'course-update-email.html',
+            'settings-update-email.html',
+            'admin-registration-email.html'
         ];
 
         templateFiles.forEach(file => {
