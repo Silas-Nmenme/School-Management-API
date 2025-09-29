@@ -15,14 +15,16 @@ const submitApplication = async (req, res) => {
             gpa,
             satScore,
             actScore,
-            programInterest,
+            faculty,
+            department,
+            course,
             essay
         } = req.body;
 
         // Validate required fields
-        if (!firstName || !lastName || !email || !phone || !highSchool || !programInterest) {
+        if (!firstName || !lastName || !email || !phone || !highSchool || !faculty || !department || !course) {
             return res.status(400).json({
-                message: "Missing required fields: firstName, lastName, email, phone, highSchool, programInterest"
+                message: "Missing required fields: firstName, lastName, email, phone, highSchool, faculty, department, course"
             });
         }
 
@@ -60,7 +62,9 @@ const submitApplication = async (req, res) => {
             gpa,
             satScore,
             actScore,
-            programInterest,
+            faculty,
+            department,
+            course,
             essay
         });
 
@@ -83,7 +87,9 @@ const submitApplication = async (req, res) => {
         console.log("New application submitted:", {
             id: savedApplication._id,
             email: savedApplication.email,
-            program: savedApplication.programInterest
+            faculty: savedApplication.faculty,
+            department: savedApplication.department,
+            course: savedApplication.course
         });
 
     } catch (error) {

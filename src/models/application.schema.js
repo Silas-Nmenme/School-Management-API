@@ -47,10 +47,18 @@ const applicationSchema = new mongoose.Schema({
     min: 1,
     max: 36
   },
-  programInterest: {
+  faculty: {
     type: String,
     required: true,
-    enum: ['Computer Science', 'Business', 'Engineering', 'Arts', 'Science', 'Other']
+    enum: ['Science', 'Arts', 'Engineering', 'Business']
+  },
+  department: {
+    type: String,
+    required: true
+  },
+  course: {
+    type: String,
+    required: true
   },
   essay: {
     type: String,
