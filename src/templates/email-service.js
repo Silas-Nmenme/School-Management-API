@@ -1,48 +1,70 @@
-/**
- * Email Service for Student Management System
- * Handles sending emails using templates for various system events
- */
-
 const nodemailer = require('nodemailer');
-const { EmailTemplateManager } = require('./email-templates');
 
-class EmailService {
-    constructor() {
-        this.emailManager = new EmailTemplateManager();
-        if (!process.env.EMAIL_USER || !process.env.EMAIL_PASS) {
-            console.error('Email credentials not set. Please set EMAIL_USER and EMAIL_PASS environment variables.');
-        }
-        this.transporter = this.initializeTransporter();
-    }
-
-    initializeTransporter() {
-        return nodemailer.createTransporter({
-            host: process.env.EMAIL_HOST || 'smtp.mailgun.org',
-            port: process.env.EMAIL_PORT ? parseInt(process.env.EMAIL_PORT) : 587,
-            secure: process.env.EMAIL_PORT == 465,
+exports.sendEmail = async (to, subject, text) => {
+    try {
+        // Create a transporter object using SMTP
+        const transporter = nodemailer.createTransport({
+            host: process.env.EMAIL_HOST,
+            port: process.env.EMAIL_PORT,
+            secure: process.env.EMAIL_SECURE === 'true', // true for 465, false for other ports
             auth: {
                 user: process.env.EMAIL_USER,
                 pass: process.env.EMAIL_PASS
             }
         });
+
+        // Set up email data
+        const mailOptions = {
+            from: process.env.EMAIL_USER, // sender address
+            to, // list of receivers
+            subject, // Subject line
+            text // plain text body
+        };
+
+        // Send mail with defined transport object
+        await transporter.sendMail(mailOptions);
+        console.log('Email sent successfully');
+    } catch (error) {
+        console.log('Error sending email:', error);
     }
+}
 
-    async sendEmail(to, subject, htmlContent) {
-        try {
-            const mailOptions = {
-                from: `"Student Management System" <${process.env.FROM_EMAIL || process.env.EMAIL_USER}>`,
-                to,
-                subject,
-                html: htmlContent
-            };
+// Enhanced email function with HTML support
+exports.sendTemplateEmail = async (to, subject, htmlContent, textContent) => {
+    try {
+        // Create a transporter object using SMTP
+        const transporter = nodemailer.createTransport({
+            host: process.env.EMAIL_HOST,
+            port: process.env.EMAIL_PORT,
+            secure: process.env.EMAIL_SECURE === 'true', // true for 465, false for other ports
+            auth: {
+                user: process.env.EMAIL_USER,
+                pass: process.env.EMAIL_PASS
+            }
+        });
 
-            const info = await this.transporter.sendMail(mailOptions);
-            console.log('Email sent:', info.messageId);
-            return { success: true, messageId: info.messageId };
-        } catch (error) {
-            console.error('Error sending email:', error);
-            return { success: false, error: error.message };
-        }
+        // Set up email data with HTML support
+        const mailOptions = {
+            from: `Car Rental Service <${process.env.EMAIL_USER}>`, // sender address with name
+            to, // list of receivers
+            subject, // Subject line
+            text: textContent, // plain text body (fallback)
+            html: htmlContent // HTML body
+        };
+
+        // Send mail with defined transport object
+        await transporter.sendMail(mailOptions);
+        console.log('Template email sent successfully');
+        return { success: true, message: 'Email sent successfully' };
+    } catch (error) {
+        console.log('Error sending template email:', error);
+        return { success: false, message: error.message };
+    }
+}
+
+class EmailService {
+    constructor() {
+        this.emailManager = require('./email-templates');
     }
 
     // Welcome email for new student registration
@@ -50,6 +72,8 @@ class EmailService {
         try {
             const variables = {
                 FIRSTNAME: studentData.Fistname,
+                LASTNAME: studentData.Lastname,
+                STUDENT_ID: studentData.studentId,
                 LASTNAME: studentData.Lastname,
                 STUDENT_ID: studentData.studentId,
                 EMAIL: studentData.email,
