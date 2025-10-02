@@ -443,7 +443,7 @@ class EmailService {
                 VISIT_TYPE: visitData.visitType,
                 GROUP_SIZE: visitData.groupSize,
                 INTERESTS: visitData.interests.join(', ') || 'General inquiry',
-                MESSAGE: visitData.message || 'No additional message',
+                MESSAGE: visitData.message ? visitData.message : null,
                 STATUS: visitData.status,
                 SUBMISSION_DATE: new Date(visitData.submittedAt).toLocaleDateString(),
                 SUPPORT_EMAIL: process.env.SUPPORT_EMAIL,
@@ -471,7 +471,7 @@ class EmailService {
                 VISIT_TYPE: visitData.visitType,
                 GROUP_SIZE: visitData.groupSize,
                 INTERESTS: visitData.interests.join(', ') || 'General inquiry',
-                MESSAGE: visitData.message || 'No additional message',
+                MESSAGE: visitData.message ? visitData.message : null,
                 STATUS: visitData.status,
                 SUBMISSION_DATE: new Date(visitData.submittedAt).toLocaleDateString(),
                 ADMIN_DASHBOARD_URL: `${process.env.APP_URL}/admin/visits`,
@@ -513,6 +513,37 @@ class EmailService {
             return await this.sendEmail(visitData.email, subject, html);
         } catch (error) {
             console.error('Error sending visit status update email:', error);
+            return { success: false, error: error.message };
+        }
+    }
+
+    // Support request email
+    async sendSupportRequest(supportData) {
+        try {
+            const variables = {
+                STUDENT_NAME: supportData.studentName,
+                STUDENT_EMAIL: supportData.studentEmail,
+                SUBJECT: supportData.subject,
+                MESSAGE: supportData.message,
+                CATEGORY: supportData.category || 'General',
+                SUBMISSION_DATE: new Date().toLocaleDateString(),
+                SUPPORT_EMAIL: process.env.SUPPORT_EMAIL,
+                SUPPORT_PHONE: process.env.SUPPORT_PHONE
+            };
+
+            // For now, send a simple email. In real app, use template.
+            const html = `
+                <h2>New Support Request</h2>
+                <p><strong>From:</strong> ${supportData.studentName} (${supportData.studentEmail})</p>
+                <p><strong>Category:</strong> ${supportData.category || 'General'}</p>
+                <p><strong>Subject:</strong> ${supportData.subject}</p>
+                <p><strong>Message:</strong></p>
+                <p>${supportData.message}</p>
+                <p><strong>Submitted:</strong> ${new Date().toLocaleString()}</p>
+            `;
+            return await this.sendEmail(process.env.ADMIN_EMAIL || process.env.SUPPORT_EMAIL, `Support Request: ${supportData.subject}`, html);
+        } catch (error) {
+            console.error('Error sending support request email:', error);
             return { success: false, error: error.message };
         }
     }

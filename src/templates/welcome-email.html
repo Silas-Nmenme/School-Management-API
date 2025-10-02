@@ -88,19 +88,19 @@
             <p style="margin: 10px 0 0 0; color: #666;">Your account has been successfully created</p>
         </div>
 
-        <h2>Hello {{FIRSTNAME}} {{LASTNAME}}!</h2>
+        <h2>Hello {{firstname}} {{lastname}}!</h2>
 
         <p>Welcome to our Student Management System! Your account has been successfully created and you can now access all student features.</p>
 
         <div class="student-info">
             <h3>📋 Your Account Details:</h3>
             <ul style="list-style: none; padding: 0;">
-                <li><strong>Student ID:</strong> {{STUDENT_ID}}</li>
-                <li><strong>Name:</strong> {{FIRSTNAME}} {{LASTNAME}}</li>
-                <li><strong>Email:</strong> {{EMAIL}}</li>
-                <li><strong>Age:</strong> {{AGE}}</li>
-                <li><strong>Phone:</strong> {{PHONE}}</li>
-                <li><strong>Registration Date:</strong> {{REGISTRATION_DATE}}</li>
+                <li><strong>Student ID:</strong> {{studentId}}</li>
+                <li><strong>Name:</strong> {{firstname}} {{lastname}}</li>
+                <li><strong>Email:</strong> {{email}}</li>
+                <li><strong>Age:</strong> {{age}}</li>
+                <li><strong>Phone:</strong> {{phone}}</li>
+                <li><strong>Registration Date:</strong> {{registrationDate}}</li>
             </ul>
         </div>
 
@@ -108,13 +108,13 @@
             <h4>🔐 Account Credentials</h4>
             <p><strong>Important:</strong> Please keep your login credentials secure and do not share them with anyone.</p>
             <ul style="list-style: none; padding: 0;">
-                <li><strong>Email:</strong> {{EMAIL}}</li>
-                <li><strong>Temporary Password:</strong> {{TEMP_PASSWORD}}</li>
+                <li><strong>Email:</strong> {{email}}</li>
+                <li><strong>Temporary Password:</strong> {{tempPassword}}</li>
             </ul>
         </div>
 
         <div style="text-align: center; margin: 30px 0;">
-            <a href="{{LOGIN_URL}}" class="button">Login to Your Account</a>
+            <a href="{{loginUrl}}" class="button">Login to Your Account</a>
         </div>
 
         <div class="warning">
@@ -132,7 +132,7 @@
         <div class="footer">
             <p><strong>Student Management System</strong></p>
             <p>This is an automated message. Please do not reply to this email.</p>
-            <p>For support: {{SUPPORT_EMAIL}} | {{SUPPORT_PHONE}}</p>
+            <p>For support: {{supportEmail}} | {{supportPhone}}</p>
         </div>
     </div>
 </body>
