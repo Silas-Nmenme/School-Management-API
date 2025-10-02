@@ -84,7 +84,7 @@ class EmailService {
 
             // Set up email data with HTML support
             const mailOptions = {
-                from: `Car Rental Service <${process.env.EMAIL_USER}>`, // sender address with name
+                from: `Bethel College <${process.env.EMAIL_USER}>`, // sender address with name
                 to, // list of receivers
                 subject, // Subject line
                 text: '', // plain text body (fallback)

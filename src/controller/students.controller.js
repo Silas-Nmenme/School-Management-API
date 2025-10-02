@@ -154,7 +154,16 @@ const loginStudent = async (req, res) => {
             // Don't fail the login if email fails
         });
 
-        return res.status(200).json({ message: "Login successful", token });
+        const studentPayload = {
+            studentId: student.studentId,
+            Fistname: student.Fistname,
+            Lastname: student.Lastname,
+            email: student.email,
+            age: student.age,
+            phone: student.phone
+        };
+
+        return res.status(200).json({ message: "Login successful", token, student: studentPayload });
     } catch (error) {
         console.error("Error logging in student:", error);
         res.status(500).json({ message: "Internal server error" });
