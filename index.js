@@ -9,6 +9,7 @@ const adminRoutes = require('./src/routes/admin.routes.js');
 const applicationsRoutes = require('./src/routes/applications.routes.js');
 const contactRoutes = require('./src/routes/contact.routes.js');
 const visitRoutes = require('./src/routes/visit.routes.js');
+const supportRoutes = require('./src/routes/support.routes.js');
 
 const app = express();
 
@@ -43,6 +44,7 @@ app.use('/api/admin', adminRoutes);
 app.use('/api/applications', applicationsRoutes);
 app.use('/api/contact', contactRoutes);
 app.use('/api/visits', visitRoutes);
+app.use('/api/support', supportRoutes);
 
 // Start Server After DB Connect
 connectDB().then(() => {

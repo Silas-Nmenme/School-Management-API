@@ -613,6 +613,84 @@ const registerForExams = async (req, res) => {
     }
 };
 
+const getLibraryResources = async (req, res) => {
+    try {
+        // Dummy library resources
+        const resources = [
+            {
+                id: 1,
+                title: "Introduction to Computer Science",
+                type: "Book",
+                author: "John Doe",
+                available: true,
+                link: "https://example.com/book1"
+            },
+            {
+                id: 2,
+                title: "Mathematics for Beginners",
+                type: "E-book",
+                author: "Jane Smith",
+                available: true,
+                link: "https://example.com/ebook1"
+            },
+            {
+                id: 3,
+                title: "History of Science",
+                type: "Video",
+                author: "Dr. Alan",
+                available: false,
+                link: "https://example.com/video1"
+            }
+        ];
+        return res.status(200).json({ resources });
+    } catch (error) {
+        console.error("Error getting library resources:", error);
+        return res.status(500).json({ message: "Internal server error" });
+    }
+};
+
+const Support = require("../models/support.schema.js");
+
+const submitSupportRequest = async (req, res) => {
+    try {
+        const studentId = req.student.id;
+        const { studentName, studentEmail, subject, category, message } = req.body;
+
+        if (!studentName || !studentEmail || !subject || !category || !message) {
+            return res.status(400).json({ message: "All fields are required" });
+        }
+
+        // Create new support request
+        const newSupport = new Support({
+            studentId,
+            studentName,
+            studentEmail,
+            subject,
+            category,
+            message
+        });
+
+        await newSupport.save();
+
+        // Send email
+        const supportData = {
+            studentName,
+            studentEmail,
+            subject,
+            message,
+            category
+        };
+        emailService.sendSupportRequest(supportData).catch(emailError => {
+            console.error("Failed to send support email:", emailError);
+        });
+
+        return res.status(201).json({ message: "Support request submitted successfully" });
+    } catch (error) {
+        console.error("Error submitting support request:", error);
+        return res.status(500).json({ message: "Internal server error" });
+    }
+};
+
 module.exports = {
     registerStudent,
     loginStudent,
@@ -629,5 +707,7 @@ module.exports = {
     getRecentActivity,
     registerForCourse,
     unregisterForCourse,
-    registerForExams
+    registerForExams,
+    getLibraryResources,
+    submitSupportRequest
 };
