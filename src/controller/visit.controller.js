@@ -1,5 +1,5 @@
 const Visit = require('../models/visit.model');
-const { EmailService } = require('../templates/email-service');
+const EmailService = require('../templates/email-service');
 
 // Create a new visit request
 const createVisit = async (req, res) => {
