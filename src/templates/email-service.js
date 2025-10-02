@@ -45,7 +45,7 @@ exports.sendTemplateEmail = async (to, subject, htmlContent, textContent) => {
 
         // Set up email data with HTML support
         const mailOptions = {
-            from: `Brthel College <${process.env.EMAIL_USER}>`, // sender address with name
+            from: `Bethel College <${process.env.EMAIL_USER}>`, // sender address with name
             to, // list of receivers
             subject, // Subject line
             text: textContent, // plain text body (fallback)
@@ -62,9 +62,11 @@ exports.sendTemplateEmail = async (to, subject, htmlContent, textContent) => {
     }
 }
 
+const { EmailTemplateManager } = require('./email-templates');
+
 class EmailService {
     constructor() {
-        this.emailManager = require('./email-templates');
+        this.emailManager = new EmailTemplateManager();
     }
 
     async sendEmail(to, subject, html) {
