@@ -12,7 +12,6 @@ const visitRoutes = require('./src/routes/visit.routes.js');
 const supportRoutes = require('./src/routes/support.routes.js');
 const { getAllStudents, getAllCourses } = require('./src/controller/admins.controller.js');
 const { isAuthenticated } = require('./src/middlewares/isAuth.js');
-const settingsRoutes = require('./src/routes/settings.routes.js');
 
 const app = express();
 
@@ -48,7 +47,7 @@ app.use('/api/applications', applicationsRoutes);
 app.use('/api/contact', contactRoutes);
 app.use('/api/visits', visitRoutes);
 app.use('/api/support', supportRoutes);
-app.use('/api/settings', settingsRoutes);
+
 
 // Start Server After DB Connect
 connectDB().then(() => {

@@ -9,7 +9,6 @@ const {
     adminRegister, adminLogin
 } = require('../controller/admins.controller.js');
 const {isAuthenticated} = require('../middlewares/isAuth.js');
-const settingsRoutes = require('./settings.routes.js');
 
 // Student Management Routes
 router.post('/add-student', isAuthenticated, addStudent);
@@ -33,8 +32,6 @@ router.get('/get-all-courses', isAuthenticated, getAllCourses);
 router.get('/reports/students', isAuthenticated, generateStudentReport);
 router.get('/reports/courses', isAuthenticated, generateCourseAnalytics);
 
-// Settings Routes - using dedicated settings controller
-router.use('/settings', settingsRoutes);
 
 // Dashboard Routes
 router.get('/dashboard/overview', isAuthenticated, getDashboardOverview);
