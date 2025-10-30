@@ -48,10 +48,6 @@ app.use('/api/contact', contactRoutes);
 app.use('/api/visits', visitRoutes);
 app.use('/api/support', supportRoutes);
 
-// Backward compatibility routes for frontend
-app.get('/get-all-students', isAuthenticated, getAllStudents);
-app.get('/get-all-courses', isAuthenticated, getAllCourses);
-
 // Start Server After DB Connect
 connectDB().then(() => {
   app.listen(PORT, () => {
