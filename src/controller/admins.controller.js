@@ -86,15 +86,15 @@ const addStudent = async (req, res) => {
 
 //Edit a student
 const editStudent = async (req, res) => {
-    const { studentId } = req.params;
+    const { id } = req.params;
     const { Fistname, Lastname, email, age, phone } = req.body || {};
-    const id = req.student.id;
+    const adminId = req.student.id;
     try {
-        const admin = await Student.findById(id);
+        const admin = await Student.findById(adminId);
         if (admin.isAdmin !== true) {
             return res.status(403).json({ message: "Only admins can edit student" });
         }
-        const student = await Student.findById(studentId);
+        const student = await Student.findById(id);
         if (!student) {
             return res.status(404).json({ message: "Student not found" });
         }
@@ -120,14 +120,14 @@ const editStudent = async (req, res) => {
 };
 
 const deleteStudent = async (req, res) => {
-    const  {studentId } = req.params;
-    const id = req.student.id;
+    const { id } = req.params;
+    const adminId = req.student.id;
     try {
-        const student = await Student.findById(id);
-        if (student.isAdmin !== true) {
+        const admin = await Student.findById(adminId);
+        if (admin.isAdmin !== true) {
             return res.status(403).json({ message: "Only admin can delete student" });
         }
-        const deletedStudent = await Student.findByIdAndDelete(studentId);
+        const deletedStudent = await Student.findByIdAndDelete(id);
         if (!deletedStudent) {
             return res.status(404).json({ message: "Student not found" });
         }
