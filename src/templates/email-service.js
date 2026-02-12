@@ -71,14 +71,27 @@ class EmailService {
 
     async sendEmail(to, subject, html) {
         try {
-            // Create a transporter object using SMTP
+            // Check required env vars
+            const {
+                EMAIL_HOST,
+                EMAIL_PORT,
+                EMAIL_SECURE,
+                EMAIL_USER,
+                EMAIL_PASS
+            } = process.env;
+
+            if (!EMAIL_HOST || !EMAIL_PORT || !EMAIL_USER || !EMAIL_PASS) {
+                throw new Error("Missing required email environment variables: EMAIL_HOST, EMAIL_PORT, EMAIL_USER, EMAIL_PASS");
+            }
+
+            // Create a transporter object using Gmail SMTP
             const transporter = nodemailer.createTransport({
-                host: process.env.EMAIL_HOST,
-                port: process.env.EMAIL_PORT,
-                secure: process.env.EMAIL_SECURE === 'true', // true for 465, false for other ports
+                host: EMAIL_HOST,
+                port: parseInt(EMAIL_PORT),
+                secure: EMAIL_SECURE === 'true',
                 auth: {
-                    user: process.env.EMAIL_USER,
-                    pass: process.env.EMAIL_PASS
+                    user: EMAIL_USER,
+                    pass: EMAIL_PASS
                 }
             });
 
