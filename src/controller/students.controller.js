@@ -6,7 +6,6 @@ const saltRounds = 10;
 const uuid = require("uuid").v4;
 const token = uuid(); // Generate a unique token for the student
 const EmailService = require("../templates/email-service");
-const sendEmail = require("../utils/sendemail.js");
 const { parseUserAgent } = require("../utils/userAgentParser");
 
 const emailService = new EmailService();

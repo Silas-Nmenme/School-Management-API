@@ -1,121 +1,44 @@
 const nodemailer = require('nodemailer');
-
-exports.sendEmail = async (to, subject, text) => {
-    try {
-        // Create a transporter object using SMTP
-        const transporter = nodemailer.createTransport({
-            host: process.env.EMAIL_HOST,
-            port: process.env.EMAIL_PORT,
-            secure: process.env.EMAIL_SECURE === 'true', // true for 465, false for other ports
-            auth: {
-                user: process.env.EMAIL_USER,
-                pass: process.env.EMAIL_PASS
-            }
-        });
-
-        // Set up email data
-        const mailOptions = {
-            from: process.env.EMAIL_USER, // sender address
-            to, // list of receivers
-            subject, // Subject line
-            text // plain text body
-        };
-
-        // Send mail with defined transport object
-        await transporter.sendMail(mailOptions);
-        console.log('Email sent successfully');
-    } catch (error) {
-        console.log('Error sending email:', error);
-    }
-}
-
-// Enhanced email function with HTML support
-exports.sendTemplateEmail = async (to, subject, htmlContent, textContent) => {
-    try {
-        // Create a transporter object using SMTP
-        const transporter = nodemailer.createTransport({
-            host: process.env.EMAIL_HOST,
-            port: process.env.EMAIL_PORT,
-            secure: process.env.EMAIL_SECURE === 'true', // true for 465, false for other ports
-            tls: {
-                rejectUnauthorized: false
-            },
-            auth: {
-                user: process.env.EMAIL_USER,
-                pass: process.env.EMAIL_PASS
-            }
-        });
-
-        // Set up email data with HTML support
-        const mailOptions = {
-            from: process.env.EMAIL_USER, // sender address
-            to, // list of receivers
-            subject, // Subject line
-            text: textContent, // plain text body (fallback)
-            html: htmlContent // HTML body
-        };
-
-        // Send mail with defined transport object
-        await transporter.sendMail(mailOptions);
-        console.log('Template email sent successfully');
-        return { success: true, message: 'Email sent successfully' };
-    } catch (error) {
-        console.log('Error sending template email:', error);
-        return { success: false, message: error.message };
-    }
-}
-
 const { EmailTemplateManager } = require('./email-templates');
 
 class EmailService {
     constructor() {
+        // Check required env vars
+        const { EMAIL_USER, EMAIL_PASS } = process.env;
+        if (!EMAIL_USER || !EMAIL_PASS) {
+            throw new Error("Missing required email environment variables: EMAIL_USER, EMAIL_PASS");
+        }
+
         this.emailManager = new EmailTemplateManager();
+
+        // Create Gmail transporter
+        this.transporter = nodemailer.createTransport({
+            service: 'gmail',
+            auth: {
+                user: EMAIL_USER,
+                pass: EMAIL_PASS
+            },
+            tls: {
+                rejectUnauthorized: false
+            }
+        });
     }
 
     async sendEmail(to, subject, html) {
         try {
-            // Check required env vars
-            const {
-                EMAIL_HOST,
-                EMAIL_PORT,
-                EMAIL_SECURE,
-                EMAIL_USER,
-                EMAIL_PASS
-            } = process.env;
-
-            if (!EMAIL_HOST || !EMAIL_PORT || !EMAIL_USER || !EMAIL_PASS) {
-                throw new Error("Missing required email environment variables: EMAIL_HOST, EMAIL_PORT, EMAIL_USER, EMAIL_PASS");
-            }
-
-            // Create a transporter object using Gmail SMTP
-            const transporter = nodemailer.createTransport({
-                host: EMAIL_HOST,
-                port: parseInt(EMAIL_PORT),
-                secure: EMAIL_SECURE === 'true', // true for 465, false for other ports
-                tls: {
-                    rejectUnauthorized: false
-                },
-                auth: {
-                    user: EMAIL_USER,
-                    pass: EMAIL_PASS
-                }
-            });
-
-            // Set up email data with HTML support
             const mailOptions = {
-                from: process.env.EMAIL_USER, // sender address
-                to, // list of receivers
-                subject, // Subject line
-                text: '', // plain text body (fallback)
-                html // HTML body
+                from: `"Student Management System" <${process.env.EMAIL_USER}>`,
+                to,
+                subject,
+                html,
+                text: '' // fallback plain text
             };
 
-            // Send mail with defined transport object
-            await transporter.sendMail(mailOptions);
-            console.log('Template email sent successfully');
+            await this.transporter.sendMail(mailOptions);
+            console.log(`Email sent successfully to: ${to}`);
             return { success: true, message: 'Email sent successfully' };
         } catch (error) {
-            console.log('Error sending template email:', error);
+            console.error('Error sending email:', error.message);
             return { success: false, message: error.message };
         }
     }
