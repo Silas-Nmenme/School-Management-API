@@ -21,7 +21,7 @@ router.get('/courses', isAuthenticated, getCourses);
 router.get('/grades', isAuthenticated, getGrades);
 router.get('/recent-activity', isAuthenticated, getRecentActivity);
 router.post('/courses/register', isAuthenticated, registerForCourse);
-router.post('/courses/unregister', isAuthenticated, unregisterForCourse);
+router.get('/courses/unregister', isAuthenticated, unregisterForCourse);
 router.post('/exams/register', isAuthenticated, registerForExams);
 router.get('/library', isAuthenticated, getLibraryResources);
 router.post('/support', isAuthenticated, submitSupportRequest);
