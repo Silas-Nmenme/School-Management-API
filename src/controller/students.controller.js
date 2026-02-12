@@ -355,6 +355,13 @@ const updateProfile = async (req, res) => {
         if (age) student.age = age;
         if (phone) student.phone = phone;
         await student.save();
+
+        // Send profile update confirmation email (non-blocking)
+        emailService.sendProfileUpdateEmail(student).catch(emailError => {
+            console.error("Failed to send profile update email:", emailError.message);
+            // Don't fail the profile update if email fails
+        });
+
         return res.status(200).json({ message: "Profile updated successfully", profile: student });
     } catch (error) {
         console.error("Error updating profile:", error);
@@ -471,6 +478,12 @@ const registerForCourse = async (req, res) => {
         await course.save();
         await student.save();
 
+        // Send course registration confirmation email (non-blocking)
+        emailService.sendCourseRegistrationEmail(student, course).catch(emailError => {
+            console.error("Failed to send course registration email:", emailError.message);
+            // Don't fail the registration if email fails
+        });
+
         return res.status(200).json({ message: "Successfully registered for the course" });
     } catch (error) {
         console.error("Error registering for course:", error);
@@ -529,6 +542,12 @@ const unregisterForCourse = async (req, res) => {
         // Save both
         await course.save();
         await student.save();
+
+        // Send course unregistration confirmation email (non-blocking)
+        emailService.sendCourseUnregistrationEmail(student, course).catch(emailError => {
+            console.error("Failed to send course unregistration email:", emailError.message);
+            // Don't fail the unregistration if email fails
+        });
 
         return res.status(200).json({ message: "Successfully unregistered from the course" });
     } catch (error) {

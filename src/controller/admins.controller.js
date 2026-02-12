@@ -301,6 +301,12 @@ const addCourse = async (req, res) => {
     });
     await newCourse.save();
 
+    // Send course creation notification email to instructor
+    emailService.sendCourseCreationEmail(newCourse).catch(emailError => {
+        console.error("Failed to send course creation notification email:", emailError.message);
+        // Don't fail the course creation if email fails
+    });
+
     res.status(201).json({
         message: "Course added successfully",
         course: {

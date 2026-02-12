@@ -547,6 +547,185 @@ class EmailService {
             return { success: false, error: error.message };
         }
     }
+
+    // Course creation notification email for instructor
+    async sendCourseCreationEmail(courseData) {
+        try {
+            const variables = {
+                courseName: courseData.name,
+                courseId: courseData.courseId,
+                instructorName: courseData.instructor?.firstName + ' ' + courseData.instructor?.lastName || 'Unknown',
+                creationDate: new Date().toLocaleDateString(),
+                courseUrl: `${process.env.APP_URL}/courses/${courseData._id}`,
+                adminDashboardUrl: `${process.env.APP_URL}/admin/courses`,
+                supportEmail: process.env.SUPPORT_EMAIL,
+                supportPhone: process.env.SUPPORT_PHONE
+            };
+
+            const html = this.emailManager.processTemplate('course-update-email', variables); // Reuse course-update template
+            return await this.sendEmail(courseData.instructor?.email, `New Course Assigned: ${courseData.name}`, html);
+        } catch (error) {
+            console.error('Error sending course creation email:', error);
+            return { success: false, error: error.message };
+        }
+    }
+
+    // Contact notification email for admin
+    async sendContactNotificationEmail(contactData) {
+        try {
+            const variables = {
+                name: contactData.name,
+                email: contactData.email,
+                subject: contactData.subject,
+                message: contactData.message,
+                submissionDate: new Date(contactData.createdAt).toLocaleDateString(),
+                adminDashboardUrl: `${process.env.APP_URL}/admin/contacts`,
+                supportEmail: process.env.SUPPORT_EMAIL,
+                supportPhone: process.env.SUPPORT_PHONE
+            };
+
+            const html = `
+                <h2>New Contact Message</h2>
+                <p><strong>From:</strong> ${contactData.name} (${contactData.email})</p>
+                <p><strong>Subject:</strong> ${contactData.subject}</p>
+                <p><strong>Message:</strong></p>
+                <p>${contactData.message}</p>
+                <p><strong>Submitted:</strong> ${new Date(contactData.createdAt).toLocaleString()}</p>
+                <p><a href="${process.env.APP_URL}/admin/contacts">View in Admin Dashboard</a></p>
+            `;
+            return await this.sendEmail(process.env.ADMIN_EMAIL || process.env.SUPPORT_EMAIL, `New Contact: ${contactData.subject}`, html);
+        } catch (error) {
+            console.error('Error sending contact notification email:', error);
+            return { success: false, error: error.message };
+        }
+    }
+
+    // Profile update confirmation email for student
+    async sendProfileUpdateEmail(studentData) {
+        try {
+            const variables = {
+                firstname: studentData.Fistname,
+                lastname: studentData.Lastname,
+                email: studentData.email,
+                updateDate: new Date().toLocaleDateString(),
+                profileUrl: `${process.env.APP_URL}/profile`,
+                supportEmail: process.env.SUPPORT_EMAIL,
+                supportPhone: process.env.SUPPORT_PHONE
+            };
+
+            const html = `
+                <h2>Profile Updated Successfully</h2>
+                <p>Dear ${studentData.Fistname} ${studentData.Lastname},</p>
+                <p>Your profile has been updated successfully.</p>
+                <p><strong>Updated Details:</strong></p>
+                <ul>
+                    <li>Name: ${studentData.Fistname} ${studentData.Lastname}</li>
+                    <li>Email: ${studentData.email}</li>
+                    <li>Phone: ${studentData.phone || 'Not provided'}</li>
+                    <li>Age: ${studentData.age || 'Not provided'}</li>
+                </ul>
+                <p>If you did not make this change, please contact support immediately.</p>
+                <p><a href="${process.env.APP_URL}/profile">View Your Profile</a></p>
+                <p>Best regards,<br>Student Management System</p>
+            `;
+            return await this.sendEmail(studentData.email, 'Profile Update Confirmation', html);
+        } catch (error) {
+            console.error('Error sending profile update email:', error);
+            return { success: false, error: error.message };
+        }
+    }
+
+    // Course registration confirmation email for student
+    async sendCourseRegistrationEmail(studentData, courseData) {
+        try {
+            const variables = {
+                firstname: studentData.Fistname,
+                lastname: studentData.Lastname,
+                courseName: courseData.name,
+                courseId: courseData.courseId,
+                registrationDate: new Date().toLocaleDateString(),
+                courseUrl: `${process.env.APP_URL}/courses/${courseData._id}`,
+                supportEmail: process.env.SUPPORT_EMAIL,
+                supportPhone: process.env.SUPPORT_PHONE
+            };
+
+            const html = `
+                <h2>Course Registration Confirmed</h2>
+                <p>Dear ${studentData.Fistname} ${studentData.Lastname},</p>
+                <p>You have been successfully registered for the course: <strong>${courseData.name}</strong> (ID: ${courseData.courseId}).</p>
+                <p><strong>Course Details:</strong></p>
+                <ul>
+                    <li>Course Name: ${courseData.name}</li>
+                    <li>Course ID: ${courseData.courseId}</li>
+                    <li>Instructor: ${courseData.instructor?.firstName} ${courseData.instructor?.lastName}</li>
+                    <li>Duration: ${courseData.duration}</li>
+                    <li>Days: ${courseData.days.join(', ')}</li>
+                </ul>
+                <p><a href="${process.env.APP_URL}/courses/${courseData._id}">View Course Details</a></p>
+                <p>Best regards,<br>Student Management System</p>
+            `;
+            return await this.sendEmail(studentData.email, `Course Registration: ${courseData.name}`, html);
+        } catch (error) {
+            console.error('Error sending course registration email:', error);
+            return { success: false, error: error.message };
+        }
+    }
+
+    // Course unregistration confirmation email for student
+    async sendCourseUnregistrationEmail(studentData, courseData) {
+        try {
+            const variables = {
+                firstname: studentData.Fistname,
+                lastname: studentData.Lastname,
+                courseName: courseData.name,
+                courseId: courseData.courseId,
+                unregistrationDate: new Date().toLocaleDateString(),
+                supportEmail: process.env.SUPPORT_EMAIL,
+                supportPhone: process.env.SUPPORT_PHONE
+            };
+
+            const html = `
+                <h2>Course Unregistration Confirmed</h2>
+                <p>Dear ${studentData.Fistname} ${studentData.Lastname},</p>
+                <p>You have been successfully unregistered from the course: <strong>${courseData.name}</strong> (ID: ${courseData.courseId}).</p>
+                <p>If this was not your intention, please contact support to re-enroll.</p>
+                <p>Best regards,<br>Student Management System</p>
+            `;
+            return await this.sendEmail(studentData.email, `Course Unregistration: ${courseData.name}`, html);
+        } catch (error) {
+            console.error('Error sending course unregistration email:', error);
+            return { success: false, error: error.message };
+        }
+    }
+
+    // Visit deletion notification email for visitor
+    async sendVisitDeletionEmail(visitData) {
+        try {
+            const variables = {
+                FIRST_NAME: visitData.firstName,
+                LAST_NAME: visitData.lastName,
+                EMAIL: visitData.email,
+                VISIT_DATE: new Date(visitData.visitDate).toLocaleDateString(),
+                VISIT_TIME: visitData.visitTime,
+                VISIT_TYPE: visitData.visitType,
+                deletionDate: new Date().toLocaleDateString(),
+                SUPPORT_EMAIL: process.env.SUPPORT_EMAIL,
+                SUPPORT_PHONE: process.env.SUPPORT_PHONE
+            };
+
+            const html = `
+                <h2>Campus Visit Request Cancelled</h2>
+                <p>Dear ${visitData.firstName} ${visitData.lastName},</p>
+                <p>Your campus visit request for ${new Date(visitData.visitDate).toLocaleDateString()} at ${visitData.visitTime} has been cancelled by an administrator.</p>
+                <p>If you have any questions, please contact us.</p>
+                <p>Best regards,<br>Bethel College Admissions</p>
+            `;
+            return await this.sendEmail(visitData.email, 'Campus Visit Request Cancelled - Bethel College', html);
+        } catch (error) {
+            console.error('Error sending visit deletion email:', error);
+            return { success: false, error: error.message };
+        }
+    }
 }
 
 module.exports = EmailService;

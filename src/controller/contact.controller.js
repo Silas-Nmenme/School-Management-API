@@ -23,6 +23,14 @@ const createContact = async (req, res) => {
 
     await newContact.save();
 
+    // Send contact notification email to admin (non-blocking)
+    const EmailService = require("../templates/email-service");
+    const emailService = new EmailService();
+    emailService.sendContactNotificationEmail(newContact).catch(emailError => {
+        console.error("Failed to send contact notification email:", emailError.message);
+        // Don't fail the contact submission if email fails
+    });
+
     res.status(201).json({
       success: true,
       message: 'Contact message sent successfully.',

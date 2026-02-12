@@ -227,6 +227,14 @@ const deleteVisit = async (req, res) => {
             });
         }
 
+        // Send visit deletion notification email to visitor (non-blocking)
+        const EmailService = require('../templates/email-service');
+        const emailService = new EmailService();
+        emailService.sendVisitDeletionEmail(visit).catch(emailError => {
+            console.error('Failed to send visit deletion email:', emailError);
+            // Don't fail the deletion if email fails
+        });
+
         res.json({
             success: true,
             message: 'Visit request deleted successfully'
