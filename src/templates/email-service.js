@@ -6,7 +6,7 @@ exports.sendEmail = async (to, subject, text) => {
         const transporter = nodemailer.createTransport({
             host: process.env.EMAIL_HOST,
             port: process.env.EMAIL_PORT,
-            secure: process.env.EMAIL_SECURE === 'true', // true for 465, false for other ports
+            secure: process.env.EMAIL_SECURE === 'false', // false for 587, false for other ports
             auth: {
                 user: process.env.EMAIL_USER,
                 pass: process.env.EMAIL_PASS
@@ -36,7 +36,7 @@ exports.sendTemplateEmail = async (to, subject, htmlContent, textContent) => {
         const transporter = nodemailer.createTransport({
             host: process.env.EMAIL_HOST,
             port: process.env.EMAIL_PORT,
-            secure: process.env.EMAIL_SECURE === 'true', // true for 465, false for other ports
+            secure: process.env.EMAIL_SECURE === 'false', // false for 587, false for other ports
             auth: {
                 user: process.env.EMAIL_USER,
                 pass: process.env.EMAIL_PASS
@@ -88,7 +88,7 @@ class EmailService {
             const transporter = nodemailer.createTransport({
                 host: EMAIL_HOST,
                 port: parseInt(EMAIL_PORT),
-                secure: EMAIL_SECURE === 'true',
+                secure: EMAIL_SECURE === 'false',
                 auth: {
                     user: EMAIL_USER,
                     pass: EMAIL_PASS
