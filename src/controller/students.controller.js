@@ -495,7 +495,7 @@ const registerForCourse = async (req, res) => {
 const unregisterForCourse = async (req, res) => {
     try {
         const studentId = req.student.id;
-        const { courseId } = req.query;
+        const { courseId } = req.body;
 
         if (!courseId) {
             return res.status(400).json({ message: "Course ID is required" });
