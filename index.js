@@ -20,7 +20,7 @@ app.use(express.json());
 app.use(morgan('dev'));
 
 const PORT = process.env.PORT || 3000;
-const FRONTEND_URL = process.env.FRONTEND_URL || process.env.APP_URL || "https://silasschool.netlify.app";
+const FRONTEND_URL = process.env.FRONTEND_URL || process.env.APP_URL || "https://bethelcollege.netlify.app";
 
 // CORS Setup
 app.use(cors({
