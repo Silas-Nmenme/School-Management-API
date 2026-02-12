@@ -1,15 +1,16 @@
 const mongoose = require('mongoose');
-require('dotenv').config();
+const dotenv = require('dotenv');
 
-const MONGODB_URI = process.env.MONGODB_URI;
+dotenv.config();
 
 const connectDB = async () => {
-    if (!MONGODB_URI || typeof MONGODB_URI !== 'string') {
-        throw new Error('MongoDB URI is missing or not a string');
-    }
-    // Connect immediately, no extra options or messages
-    await mongoose.connect(MONGODB_URI, { useNewUrlParser: true });
+  try {
+    await mongoose.connect(process.env.MONGO_URI);
+    console.log('MongoDB connected successfully');
+    } catch (error) {
+    console.error('MongoDB connection failed:', error.message);
+    process.exit(1);
+  }
 };
 
 module.exports = connectDB;
-

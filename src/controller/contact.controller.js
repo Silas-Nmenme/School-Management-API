@@ -1,4 +1,5 @@
 const Contact = require('../models/contact.schema.js');
+const { getEmailService } = require("../templates/email-service-instance");
 
 // Create a new contact message
 const createContact = async (req, res) => {
@@ -24,12 +25,15 @@ const createContact = async (req, res) => {
     await newContact.save();
 
     // Send contact notification email to admin (non-blocking)
-    const EmailService = require("../templates/email-service");
-    const emailService = new EmailService();
-    emailService.sendContactNotificationEmail(newContact).catch(emailError => {
-        console.error("Failed to send contact notification email:", emailError.message);
-        // Don't fail the contact submission if email fails
-    });
+    try {
+        const emailService = getEmailService();
+        emailService.sendContactNotificationEmail(newContact).catch(emailError => {
+            console.error("Failed to send contact notification email:", emailError.message);
+            // Don't fail the contact submission if email fails
+        });
+    } catch (emailInitError) {
+        console.error("Email service not available:", emailInitError.message);
+    }
 
     res.status(201).json({
       success: true,

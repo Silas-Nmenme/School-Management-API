@@ -10,6 +10,7 @@ class EmailService {
         }
 
         this.emailManager = new EmailTemplateManager();
+        this.emailUser = EMAIL_USER;
 
         // Create Gmail transporter
         this.transporter = nodemailer.createTransport({
@@ -22,6 +23,23 @@ class EmailService {
                 rejectUnauthorized: false
             }
         });
+
+        // Verify transporter connection immediately
+        this.verifyConnection();
+    }
+
+    /**
+     * Verify the transporter connection to Gmail
+     */
+    async verifyConnection() {
+        try {
+            await this.transporter.verify();
+            console.log('✓ Email transporter verified and ready');
+            return true;
+        } catch (error) {
+            console.error('✗ Email transporter verification failed:', error.message);
+            return false;
+        }
     }
 
     async sendEmail(to, subject, html) {

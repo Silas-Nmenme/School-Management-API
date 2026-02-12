@@ -1,5 +1,5 @@
 const Visit = require('../models/visit.model');
-const EmailService = require('../templates/email-service');
+const { getEmailService } = require('../templates/email-service-instance');
 
 // Create a new visit request
 const createVisit = async (req, res) => {
@@ -53,7 +53,7 @@ const createVisit = async (req, res) => {
 
         // Send confirmation email to visitor
         try {
-            const emailService = new EmailService();
+            const emailService = getEmailService();
             await emailService.sendVisitConfirmationEmail(visit);
         } catch (emailError) {
             console.error('Failed to send confirmation email:', emailError);
@@ -62,7 +62,7 @@ const createVisit = async (req, res) => {
 
         // Send notification email to admin
         try {
-            const emailService = new EmailService();
+            const emailService = getEmailService();
             await emailService.sendVisitNotificationEmail(visit);
         } catch (emailError) {
             console.error('Failed to send admin notification email:', emailError);
@@ -192,7 +192,7 @@ const updateVisitStatus = async (req, res) => {
 
         // Send status update email to visitor
         try {
-            const emailService = new EmailService();
+            const emailService = getEmailService();
             await emailService.sendVisitStatusUpdateEmail(visit);
         } catch (emailError) {
             console.error('Failed to send status update email:', emailError);
@@ -228,12 +228,15 @@ const deleteVisit = async (req, res) => {
         }
 
         // Send visit deletion notification email to visitor (non-blocking)
-        const EmailService = require('../templates/email-service');
-        const emailService = new EmailService();
-        emailService.sendVisitDeletionEmail(visit).catch(emailError => {
-            console.error('Failed to send visit deletion email:', emailError);
-            // Don't fail the deletion if email fails
-        });
+        try {
+            const emailService = getEmailService();
+            emailService.sendVisitDeletionEmail(visit).catch(emailError => {
+                console.error('Failed to send visit deletion email:', emailError);
+                // Don't fail the deletion if email fails
+            });
+        } catch (emailInitError) {
+            console.error('Email service not available:', emailInitError.message);
+        }
 
         res.json({
             success: true,

@@ -5,10 +5,8 @@ const jwt = require("jsonwebtoken");
 const saltRounds = 10;
 const uuid = require("uuid").v4;
 const token = uuid(); // Generate a unique token for the student
-const EmailService = require("../templates/email-service");
+const { getEmailService } = require("../templates/email-service-instance");
 const { parseUserAgent } = require("../utils/userAgentParser");
-
-const emailService = new EmailService();
 
 const generateStudentId = () => {
     return 'STU' + Date.now() + Math.floor(Math.random() * 1000);
@@ -83,10 +81,16 @@ const registerStudent = async (req, res) => {
             age: newStudent.age,
             phone: newStudent.phone
         };
-        emailService.sendWelcomeEmail(studentData, password).catch(emailError => {
-            console.error("Failed to send welcome email:", emailError.message);
-            // Don't fail the registration if email fails
-        });
+        
+        try {
+            const emailService = getEmailService();
+            emailService.sendWelcomeEmail(studentData, password).catch(emailError => {
+                console.error("Failed to send welcome email:", emailError.message);
+                // Don't fail the registration if email fails
+            });
+        } catch (emailInitError) {
+            console.error("Email service not available:", emailInitError.message);
+        }
 
         return newStudent;
 };
@@ -149,10 +153,15 @@ const loginStudent = async (req, res) => {
         };
 
         // Send login alert email using template (non-blocking)
-        emailService.sendLoginAlert(loginData).catch(emailError => {
-            console.error("Failed to send login alert email:", emailError.message);
-            // Don't fail the login if email fails
-        });
+        try {
+            const emailService = getEmailService();
+            emailService.sendLoginAlert(loginData).catch(emailError => {
+                console.error("Failed to send login alert email:", emailError.message);
+                // Don't fail the login if email fails
+            });
+        } catch (emailInitError) {
+            console.error("Email service not available:", emailInitError.message);
+        }
 
         const studentPayload = {
             studentId: student.studentId,
@@ -181,12 +190,18 @@ const makeAdmin = async (req, res) => {
         await student.save();
 
         // Send admin promotion email (non-blocking)
-        emailService.sendAdminPromotionEmail(student, req.student?.email || 'System Administrator').catch(emailError => {
-            console.error("Failed to send admin promotion email:", emailError.message);
-            // Don't fail the promotion if email fails
-        });
+        try {
+            const emailService = getEmailService();
+            emailService.sendAdminPromotionEmail(student, req.student?.email || 'System Administrator').catch(emailError => {
+                console.error("Failed to send admin promotion email:", emailError.message);
+                // Don't fail the promotion if email fails
+            });
+        } catch (emailInitError) {
+            console.error("Email service not available:", emailInitError.message);
+        }
 
         return res.status(200).json({ message: "Student promoted to admin successfully", student });
+
     } catch (error) {
         return res.status(500).json({ message: "Internal server error", error });
     }
@@ -213,10 +228,15 @@ const forgetPassword = async (req, res) => {
         await student.save();
 
         // Send OTP email (non-blocking)
-        emailService.sendOtpEmail(email, otp, student.Fistname).catch(emailError => {
-            console.error("Failed to send OTP email:", emailError.message);
-            // Don't fail the OTP generation if email fails
-        });
+        try {
+            const emailService = getEmailService();
+            emailService.sendOtpEmail(email, otp, student.Fistname).catch(emailError => {
+                console.error("Failed to send OTP email:", emailError.message);
+                // Don't fail the OTP generation if email fails
+            });
+        } catch (emailInitError) {
+            console.error("Email service not available:", emailInitError.message);
+        }
 
         return res.status(200).json({ message: "OTP sent to your email", otp });
     }
@@ -273,10 +293,15 @@ const resetPassword = async (req, res) => {
         await student.save();
 
         // Send password reset confirmation email (non-blocking)
-        emailService.sendPasswordResetConfirmation(student).catch(emailError => {
-            console.error("Failed to send password reset confirmation email:", emailError.message);
-            // Don't fail the password reset if email fails
-        });
+        try {
+            const emailService = getEmailService();
+            emailService.sendPasswordResetConfirmation(student).catch(emailError => {
+                console.error("Failed to send password reset confirmation email:", emailError.message);
+                // Don't fail the password reset if email fails
+            });
+        } catch (emailInitError) {
+            console.error("Email service not available:", emailInitError.message);
+        }
 
         return res.status(200).json({ message: "Password reset successfully" });
     }
@@ -357,10 +382,15 @@ const updateProfile = async (req, res) => {
         await student.save();
 
         // Send profile update confirmation email (non-blocking)
-        emailService.sendProfileUpdateEmail(student).catch(emailError => {
-            console.error("Failed to send profile update email:", emailError.message);
-            // Don't fail the profile update if email fails
-        });
+        try {
+            const emailService = getEmailService();
+            emailService.sendProfileUpdateEmail(student).catch(emailError => {
+                console.error("Failed to send profile update email:", emailError.message);
+                // Don't fail the profile update if email fails
+            });
+        } catch (emailInitError) {
+            console.error("Email service not available:", emailInitError.message);
+        }
 
         return res.status(200).json({ message: "Profile updated successfully", profile: student });
     } catch (error) {
@@ -479,10 +509,15 @@ const registerForCourse = async (req, res) => {
         await student.save();
 
         // Send course registration confirmation email (non-blocking)
-        emailService.sendCourseRegistrationEmail(student, course).catch(emailError => {
-            console.error("Failed to send course registration email:", emailError.message);
-            // Don't fail the registration if email fails
-        });
+        try {
+            const emailService = getEmailService();
+            emailService.sendCourseRegistrationEmail(student, course).catch(emailError => {
+                console.error("Failed to send course registration email:", emailError.message);
+                // Don't fail the registration if email fails
+            });
+        } catch (emailInitError) {
+            console.error("Email service not available:", emailInitError.message);
+        }
 
         return res.status(200).json({ message: "Successfully registered for the course" });
     } catch (error) {
@@ -544,10 +579,15 @@ const unregisterForCourse = async (req, res) => {
         await student.save();
 
         // Send course unregistration confirmation email (non-blocking)
-        emailService.sendCourseUnregistrationEmail(student, course).catch(emailError => {
-            console.error("Failed to send course unregistration email:", emailError.message);
-            // Don't fail the unregistration if email fails
-        });
+        try {
+            const emailService = getEmailService();
+            emailService.sendCourseUnregistrationEmail(student, course).catch(emailError => {
+                console.error("Failed to send course unregistration email:", emailError.message);
+                // Don't fail the unregistration if email fails
+            });
+        } catch (emailInitError) {
+            console.error("Email service not available:", emailInitError.message);
+        }
 
         return res.status(200).json({ message: "Successfully unregistered from the course" });
     } catch (error) {
@@ -699,9 +739,15 @@ const submitSupportRequest = async (req, res) => {
             message,
             category
         };
-        emailService.sendSupportRequest(supportData).catch(emailError => {
-            console.error("Failed to send support email:", emailError);
-        });
+        
+        try {
+            const emailService = getEmailService();
+            emailService.sendSupportRequest(supportData).catch(emailError => {
+                console.error("Failed to send support email:", emailError);
+            });
+        } catch (emailInitError) {
+            console.error("Email service not available:", emailInitError.message);
+        }
 
         return res.status(201).json({ message: "Support request submitted successfully" });
     } catch (error) {

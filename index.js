@@ -49,13 +49,13 @@ app.use('/api/visits', visitRoutes);
 app.use('/api/support', supportRoutes);
 
 
-// Start Server After DB Connect
+// Start server
 connectDB().then(() => {
   app.listen(PORT, () => {
-    console.log(`Server running on http://localhost:${PORT}`);
+    console.log(`Server is running on port ${PORT}`);
     console.log(`Allowed frontend origin: ${FRONTEND_URL}`);
   });
-}).catch(err => {
-  console.error("MongoDB connection failed:", err.message);
+}).catch((error) => {
+  console.error("MongoDB Connection Failed:", error.message);
   process.exit(1);
 });
