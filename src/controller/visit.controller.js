@@ -1,5 +1,5 @@
 const Visit = require('../models/visit.model');
-const { getEmailService } = require("../templates/email-service.js");
+const { getEmailService } = require("../emails/service.js");
 
 // Create a new visit request
 const createVisit = async (req, res) => {
@@ -54,18 +54,55 @@ const createVisit = async (req, res) => {
         // Send confirmation email to visitor
         try {
             const emailService = getEmailService();
-            await emailService.sendVisitConfirmationEmail(visit);
-        } catch (emailError) {
-            console.error('Failed to send confirmation email:', emailError);
-            // Don't fail the request if email fails
+            const visitorData = {
+                Fistname: firstName,
+                lastName: lastName,
+                email: email
+            };
+            emailService.sendVisitConfirmationEmail(visitorData, {
+                visitDate: visitDate,
+                visitTime: visitTime,
+                purpose: visitType,
+                confirmationNumber: visit._id.toString().substring(0, 8).toUpperCase()
+            }).then(result => {
+                if (result.success) {
+                    console.log(`✓ Visit confirmation email sent to: ${email}`);
+                } else {
+                    console.error(`✗ Failed to send visit confirmation email:`, result.error);
+                }
+            }).catch(emailError => {
+                console.error('✗ Error sending confirmation email:', emailError.message || emailError);
+            });
+        } catch (emailInitError) {
+            console.error('✗ Email service not available:', emailInitError.message);
         }
 
         // Send notification email to admin
         try {
             const emailService = getEmailService();
-            await emailService.sendVisitNotificationEmail(visit);
-        } catch (emailError) {
-            console.error('Failed to send admin notification email:', emailError);
+            emailService.sendEmail(
+                process.env.ADMIN_EMAIL || 'admin@example.com',
+                `New Visit Request from ${firstName} ${lastName}`,
+                `<h2>New Visit Request</h2>
+                <p><strong>Name:</strong> ${firstName} ${lastName}</p>
+                <p><strong>Email:</strong> ${email}</p>
+                <p><strong>Phone:</strong> ${phone}</p>
+                <p><strong>Visit Date:</strong> ${visitDate}</p>
+                <p><strong>Visit Time:</strong> ${visitTime}</p>
+                <p><strong>Visit Type:</strong> ${visitType}</p>
+                <p><strong>Group Size:</strong> ${groupSize || 1}</p>
+                <p><strong>Message:</strong> ${message || 'No message provided'}</p>`
+            ).then(result => {
+                if (result.success) {
+                    console.log(`✓ Visit notification sent to admin`);
+                } else {
+                    console.error(`✗ Failed to send visit admin notification:`, result.error);
+                }
+            }).catch(emailError => {
+                console.error('✗ Error sending admin notification email:', emailError.message || emailError);
+            });
+        } catch (emailInitError) {
+            console.error('✗ Email service not available:', emailInitError.message);
         }
 
         res.status(201).json({

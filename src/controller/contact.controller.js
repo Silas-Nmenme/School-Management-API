@@ -1,5 +1,5 @@
 const Contact = require('../models/contact.schema.js');
-const { getEmailService } = require("../templates/email-service.js");
+const { getEmailService } = require("../emails/service.js");
 
 // Create a new contact message
 const createContact = async (req, res) => {
@@ -27,12 +27,26 @@ const createContact = async (req, res) => {
     // Send contact notification email to admin (non-blocking)
     try {
         const emailService = getEmailService();
-        emailService.sendContactNotificationEmail(newContact).catch(emailError => {
-            console.error("Failed to send contact notification email:", emailError.message);
-            // Don't fail the contact submission if email fails
+        emailService.sendEmail(
+            process.env.SUPPORT_EMAIL || 'support@example.com',
+            `New Contact Message from ${name}`,
+            `<h2>New Contact Message</h2>
+            <p><strong>Name:</strong> ${name}</p>
+            <p><strong>Email:</strong> ${email}</p>
+            <p><strong>Subject:</strong> ${subject}</p>
+            <p><strong>Message:</strong></p>
+            <p>${message}</p>`
+        ).then(result => {
+            if (result.success) {
+                console.log(`✓ Contact notification sent to admin`);
+            } else {
+                console.error(`✗ Failed to send contact notification:`, result.error);
+            }
+        }).catch(emailError => {
+            console.error("✗ Error sending contact notification email:", emailError.message || emailError);
         });
     } catch (emailInitError) {
-        console.error("Email service not available:", emailInitError.message);
+        console.error("✗ Email service not available:", emailInitError.message);
     }
 
     res.status(201).json({

@@ -1,5 +1,5 @@
 const Application = require("../models/application.schema.js");
-const { getEmailService } = require("../templates/email-service.js");
+const { getEmailService } = require("../emails/service.js");
 
 const submitApplication = async (req, res) => {
     try {
@@ -72,12 +72,26 @@ const submitApplication = async (req, res) => {
         // Send notification email to admin (non-blocking)
         try {
             const emailService = getEmailService();
-            emailService.sendApplicationNotification(savedApplication).catch(emailError => {
-                console.error("Failed to send application notification email:", emailError.message);
-                // Don't fail the application submission if email fails
+            emailService.sendApplicationNotificationEmail(
+                process.env.ADMIN_EMAIL || 'admin@example.com',
+                {
+                    id: savedApplication._id,
+                    status: savedApplication.status,
+                    submissionDate: savedApplication.submissionDate,
+                    applicantName: `${firstName} ${lastName}`,
+                    applicantEmail: email
+                }
+            ).then(result => {
+                if (result.success) {
+                    console.log(`✓ Application notification sent to admin`);
+                } else {
+                    console.error(`✗ Failed to send application notification:`, result.error);
+                }
+            }).catch(emailError => {
+                console.error("✗ Error sending application notification email:", emailError.message || emailError);
             });
         } catch (emailInitError) {
-            console.error("Email service not available:", emailInitError.message);
+            console.error("✗ Email service not available:", emailInitError.message);
         }
 
         // Return success response

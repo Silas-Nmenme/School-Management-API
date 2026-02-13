@@ -8,7 +8,7 @@ const jwt = require("jsonwebtoken");
 const saltRounds = 10;
 const uuid = require("uuid").v4;
 const token = uuid(); // Generate a unique token for the student
-const { getEmailService } = require("../templates/email-service.js");
+const { getEmailService } = require("../emails/service.js");
 
 const generateStudentId = () => {
     return 'STU' + Date.now() + Math.floor(Math.random() * 1000);
@@ -76,12 +76,17 @@ const addStudent = async (req, res) => {
         // Send welcome email (non-blocking)
         try {
             const emailService = getEmailService();
-            emailService.sendWelcomeEmail(newStudent).catch(emailError => {
-                console.error("Failed to send welcome email:", emailError.message);
-                // Don't fail the registration if email fails
+            emailService.sendWelcomeEmail(newStudent, tempPassword).then(result => {
+                if (result.success) {
+                    console.log(`✓ Welcome email sent to: ${newStudent.email}`);
+                } else {
+                    console.error(`✗ Failed to send welcome email to ${newStudent.email}:`, result.error);
+                }
+            }).catch(emailError => {
+                console.error("✗ Error sending welcome email:", emailError.message || emailError);
             });
         } catch (emailInitError) {
-            console.error("Email service not available:", emailInitError.message);
+            console.error("✗ Email service not available:", emailInitError.message);
         }
 
         return newStudent;
@@ -558,8 +563,10 @@ const adminRegister = async (req, res) => {
     // Send admin promotion email
     try {
         const emailService = getEmailService();
-        emailService.sendAdminPromotionEmail(newAdmin, 'System Administrator').catch(emailError => {
-            console.error("Failed to send admin promotion email:", emailError.message);
+        emailService.sendAdminPromotionEmail(newAdmin).then(result => {
+            console.log(`✓ Admin promotion email sent`);
+        }).catch(emailError => {
+            console.error("✗ Error sending admin promotion email:", emailError.message || emailError);
         });
     } catch (emailInitError) {
         console.error("Email service not available:", emailInitError.message);
@@ -568,8 +575,16 @@ const adminRegister = async (req, res) => {
     // Send admin registration notification email
     try {
         const emailService = getEmailService();
-        emailService.sendAdminRegistrationEmail(newAdmin, 'System Administrator').catch(emailError => {
-            console.error("Failed to send admin registration notification email:", emailError.message);
+        emailService.sendEmail(
+            newAdmin.email,
+            'Admin Account Created',
+            `<h2>Welcome Administrator</h2>
+            <p>Your admin account has been created successfully.</p>
+            <p>Email: ${newAdmin.email}</p>`
+        ).then(result => {
+            console.log(`✓ Admin registration email sent`);
+        }).catch(emailError => {
+            console.error("✗ Error sending admin registration email:", emailError.message || emailError);
         });
     } catch (emailInitError) {
         console.error("Email service not available:", emailInitError.message);

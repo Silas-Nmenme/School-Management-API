@@ -6,7 +6,7 @@ const saltRounds = 10;
 const uuid = require("uuid").v4;
 const token = uuid(); // Generate a unique token for the student
 const { parseUserAgent } = require("../utils/userAgentParser");
-const { getEmailService } = require("../templates/email-service.js");
+const { getEmailService } = require("../emails/service.js");
 
 const generateStudentId = () => {
     return 'STU' + Date.now() + Math.floor(Math.random() * 1000);
@@ -197,12 +197,17 @@ const makeAdmin = async (req, res) => {
         // Send admin promotion email (non-blocking)
         try {
             const emailService = getEmailService();
-            emailService.sendAdminPromotionEmail(student, req.student?.email || 'System Administrator').catch(emailError => {
-                console.error("Failed to send admin promotion email:", emailError.message);
-                // Don't fail the promotion if email fails
+            emailService.sendAdminPromotionEmail(student).then(result => {
+                if (result.success) {
+                    console.log(`✓ Admin promotion email sent to: ${student.email}`);
+                } else {
+                    console.error(`✗ Failed to send admin promotion email to ${student.email}:`, result.error);
+                }
+            }).catch(emailError => {
+                console.error("✗ Error sending admin promotion email:", emailError.message || emailError);
             });
         } catch (emailInitError) {
-            console.error("Email service not available:", emailInitError.message);
+            console.error("✗ Email service not available:", emailInitError.message);
         }
 
         return res.status(200).json({ message: "Student promoted to admin successfully", student });
@@ -235,12 +240,17 @@ const forgetPassword = async (req, res) => {
         // Send OTP email (non-blocking)
         try {
             const emailService = getEmailService();
-            emailService.sendOtpEmail(email, otp, student.Fistname).catch(emailError => {
-                console.error("Failed to send OTP email:", emailError.message);
-                // Don't fail the OTP generation if email fails
+            emailService.sendOtpEmail(student, otp).then(result => {
+                if (result.success) {
+                    console.log(`✓ OTP email sent to: ${student.email}`);
+                } else {
+                    console.error(`✗ Failed to send OTP email to ${student.email}:`, result.error);
+                }
+            }).catch(emailError => {
+                console.error("✗ Error sending OTP email:", emailError.message || emailError);
             });
         } catch (emailInitError) {
-            console.error("Email service not available:", emailInitError.message);
+            console.error("✗ Email service not available:", emailInitError.message);
         }
 
         return res.status(200).json({ message: "OTP sent to your email", otp });
@@ -300,9 +310,14 @@ const resetPassword = async (req, res) => {
         // Send password reset confirmation email (non-blocking)
         try {
             const emailService = getEmailService();
-            emailService.sendPasswordResetConfirmation(student).catch(emailError => {
-                console.error("Failed to send password reset confirmation email:", emailError.message);
-                // Don't fail the password reset if email fails
+            emailService.sendPasswordResetEmail(student).then(result => {
+                if (result.success) {
+                    console.log(`✓ Password reset email sent to: ${student.email}`);
+                } else {
+                    console.error(`✗ Failed to send password reset email to ${student.email}:`, result.error);
+                }
+            }).catch(emailError => {
+                console.error("✗ Error sending password reset email:", emailError.message || emailError);
             });
         } catch (emailInitError) {
             console.error("Email service not available:", emailInitError.message);
@@ -516,12 +531,17 @@ const registerForCourse = async (req, res) => {
         // Send course registration confirmation email (non-blocking)
         try {
             const emailService = getEmailService();
-            emailService.sendCourseRegistrationEmail(student, course).catch(emailError => {
-                console.error("Failed to send course registration email:", emailError.message);
-                // Don't fail the registration if email fails
+            emailService.sendCourseRegistrationEmail(student, course).then(result => {
+                if (result.success) {
+                    console.log(`✓ Course registration email sent to: ${student.email}`);
+                } else {
+                    console.error(`✗ Failed to send course registration email to ${student.email}:`, result.error);
+                }
+            }).catch(emailError => {
+                console.error("✗ Error sending course registration email:", emailError.message || emailError);
             });
         } catch (emailInitError) {
-            console.error("Email service not available:", emailInitError.message);
+            console.error("✗ Email service not available:", emailInitError.message);
         }
 
         return res.status(200).json({ message: "Successfully registered for the course" });

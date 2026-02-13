@@ -13,11 +13,17 @@ const visitRoutes = require('./src/routes/visit.routes.js');
 const supportRoutes = require('./src/routes/support.routes.js');
 const { getAllStudents, getAllCourses } = require('./src/controller/admins.controller.js');
 const { isAuthenticated } = require('./src/middlewares/isAuth.js');
-const { getEmailService } = require('./src/templates/email-service.js');
+const { getEmailService } = require('./src/emails/service.js');
 
 const app = express();
 
-
+// Initialize email service at startup
+try {
+    getEmailService();
+    console.log('✓ Email service initialized at startup');
+} catch (error) {
+    console.error('✗ Email service initialization failed:', error.message);
+}
 
 // Middleware
 app.use(express.json());
@@ -44,27 +50,6 @@ app.get('/', (req, res) => {
   });
 });
 
-// Test Email Endpoint - Remove in production
-app.post('/test-email', async (req, res) => {
-  try {
-    const { email } = req.body;
-    if (!email) {
-      return res.status(400).json({ message: 'Email is required' });
-    }
-
-    const emailService = getEmailService();
-    const result = await emailService.sendEmail(
-      email,
-      'Test Email - Student Management System',
-      '<h1>Test Email</h1><p>If you received this email, the email service is working correctly!</p>'
-    );
-
-    return res.status(200).json({ message: 'Test email sent', result });
-  } catch (error) {
-    console.error('Error in test email endpoint:', error);
-    return res.status(500).json({ message: 'Failed to send test email', error: error.message });
-  }
-});
 
 // API Routes
 app.use('/api/students', studentRoutes);
