@@ -1,16 +1,22 @@
 const nodemailer = require('nodemailer');
 const { EmailTemplateManager } = require('./email-templates');
 
+let emailServiceInstance = null;
+
 class EmailService {
     constructor() {
         // Check required env vars
         const { EMAIL_USER, EMAIL_PASS } = process.env;
+        
         if (!EMAIL_USER || !EMAIL_PASS) {
-            throw new Error("Missing required email environment variables: EMAIL_USER, EMAIL_PASS");
+            console.error("✗ Missing required email environment variables: EMAIL_USER, EMAIL_PASS");
+            this.isConfigured = false;
+            return;
         }
 
         this.emailManager = new EmailTemplateManager();
         this.emailUser = EMAIL_USER;
+        this.isConfigured = true;
 
         // Create Gmail transporter
         this.transporter = nodemailer.createTransport({
@@ -24,7 +30,7 @@ class EmailService {
             }
         });
 
-        // Verify transporter connection immediately
+        // Verify transporter connection immediately (async but don't block)
         this.verifyConnection();
     }
 
@@ -32,6 +38,11 @@ class EmailService {
      * Verify the transporter connection to Gmail
      */
     async verifyConnection() {
+        if (!this.isConfigured) {
+            console.error('✗ Email transporter not configured');
+            return false;
+        }
+        
         try {
             await this.transporter.verify();
             console.log('✓ Email transporter verified and ready');
@@ -40,6 +51,13 @@ class EmailService {
             console.error('✗ Email transporter verification failed:', error.message);
             return false;
         }
+    }
+
+    /**
+     * Check if email service is properly configured
+     */
+    isReady() {
+        return this.isConfigured;
     }
 
     async sendEmail(to, subject, html) {
@@ -688,4 +706,18 @@ class EmailService {
     }
 }
 
-module.exports = EmailService;
+/**
+ * Get or create EmailService singleton instance
+ * @returns {EmailService} EmailService instance
+ */
+function getEmailService() {
+    if (!emailServiceInstance) {
+        emailServiceInstance = new EmailService();
+    }
+    return emailServiceInstance;
+}
+
+module.exports = {
+    EmailService,
+    getEmailService
+};

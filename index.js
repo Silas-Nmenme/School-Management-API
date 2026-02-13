@@ -13,6 +13,7 @@ const visitRoutes = require('./src/routes/visit.routes.js');
 const supportRoutes = require('./src/routes/support.routes.js');
 const { getAllStudents, getAllCourses } = require('./src/controller/admins.controller.js');
 const { isAuthenticated } = require('./src/middlewares/isAuth.js');
+const { getEmailService } = require('./src/templates/email-service.js');
 
 const app = express();
 
