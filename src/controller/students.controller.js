@@ -84,17 +84,12 @@ const registerStudent = async (req, res) => {
         
         try {
             const emailService = getEmailService();
-            emailService.sendWelcomeEmail(studentData, password).then(result => {
-                if (result.success) {
-                    console.log(`✓ Welcome email sent to: ${studentData.email}`);
-                } else {
-                    console.error(`✗ Failed to send welcome email to ${studentData.email}:`, result.message);
-                }
-            }).catch(emailError => {
-                console.error("✗ Error sending welcome email:", emailError.message || emailError);
+            emailService.sendWelcomeEmail(studentData, password).catch(emailError => {
+                console.error("Failed to send welcome email:", emailError.message);
+                // Don't fail the registration if email fails
             });
         } catch (emailInitError) {
-            console.error("✗ Email service not available:", emailInitError.message);
+            console.error("Email service not available:", emailInitError.message);
         }
 
         return newStudent;

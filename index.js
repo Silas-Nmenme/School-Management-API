@@ -13,18 +13,10 @@ const visitRoutes = require('./src/routes/visit.routes.js');
 const supportRoutes = require('./src/routes/support.routes.js');
 const { getAllStudents, getAllCourses } = require('./src/controller/admins.controller.js');
 const { isAuthenticated } = require('./src/middlewares/isAuth.js');
-const { getEmailService } = require('./src/templates/email-service-instance.js');
 
 const app = express();
 
-// Initialize email service at startup
-try {
-    getEmailService();
-    console.log('✓ Email service initialized at startup');
-} catch (error) {
-    console.error('✗ Email service initialization failed at startup:', error.message);
-    console.error('Emails will not be sent. Check your EMAIL_USER and EMAIL_PASS environment variables.');
-}
+
 
 // Middleware
 app.use(express.json());
