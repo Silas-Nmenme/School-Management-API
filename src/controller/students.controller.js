@@ -648,38 +648,49 @@ const registerForExams = async (req, res) => {
         for (const courseId of courseIds) {
             // Find the course (handle both MongoDB _id and courseId formats)
             let course;
+            console.log(`\n   📌 Processing courseId: '${courseId}' (type: ${typeof courseId})`);
+            
             if (/^[0-9a-fA-F]{24}$/.test(courseId)) {
-                console.log(`   🔎 Looking up by MongoDB _id: ${courseId}`);
+                console.log(`   🔎 Looks like MongoDB _id, searching by _id...`);
                 course = await Course.findById(courseId);
             } else {
-                console.log(`   🔎 Looking up by courseId: ${courseId}`);
+                console.log(`   🔎 Looks like courseId string, searching by courseId field...`);
+                // Try exact match first
                 course = await Course.findOne({ courseId: courseId });
+                
+                // If not found, try case-insensitive and space-trimmed
+                if (!course) {
+                    console.log(`      No exact match found, trying case-insensitive...`);
+                    const trimmedId = courseId.trim();
+                    course = await Course.findOne({ courseId: new RegExp(`^${trimmedId}$`, 'i') });
+                }
             }
+            
             if (!course) {
-                const error = `Course with ID ${courseId} not found`;
+                const error = `Course with ID '${courseId}' not found`;
                 errors.push(error);
                 console.log(`   ❌ ${error}`);
                 continue;
             }
 
             console.log(`   ✓ Course found: ${course.name}`);
-            console.log(`      Course _id: ${course._id} (type: ${typeof course._id})`);
-            console.log(`      Course courseId: ${course.courseId}`);
+            console.log(`      Course _id: ${course._id}`);
+            console.log(`      Course courseId value: '${course.courseId}' (trimmed: '${course.courseId?.trim()}')`);
             console.log(`      Student enrolled courses (${student.courses.length}):`);
             student.courses.forEach((c, idx) => {
-                console.log(`        [${idx}] _id: ${c._id} (type: ${typeof c._id}), courseId: ${c.courseId}`);
+                console.log(`        [${idx}] courseId: '${c.courseId}', _id: ${c._id}`);
             });
 
             // Check if student is enrolled in this course (by either _id or courseId)
             const isEnrolled = student.courses.some((c, index) => {
                 const courseId_match = c._id?.toString() === course._id?.toString();
-                const courseCode_match = c.courseId === course.courseId;
+                const courseCode_match = c.courseId?.trim() === course.courseId?.trim();
                 const match = courseId_match || courseCode_match;
                 
-                console.log(`        Comparing [${index}]: _id match=${courseId_match} (${c._id?.toString()} vs ${course._id?.toString()}), courseId match=${courseCode_match}`);
+                console.log(`        [${index}] _id match=${courseId_match}, courseId match=${courseCode_match} ('${c.courseId?.trim()}' vs '${course.courseId?.trim()}')`);
                 
                 if (match) {
-                    console.log(`      ✓ ENROLLMENT VERIFIED!`);
+                    console.log(`      ✅ ENROLLMENT VERIFIED!`);
                 }
                 return match;
             });
