@@ -1,5 +1,5 @@
 const express = require('express');
-const {  registerStudent, loginStudent, makeAdmin, forgetPassword, verifyOtp, resetPassword, logoutStudent, getStudentCount, getProfile, updateProfile, getCourses, getGrades, getRecentActivity, registerForCourse, unregisterForCourse, registerForExams, getLibraryResources, submitSupportRequest } = require('../controller/students.controller.js');
+const {  registerStudent, loginStudent, makeAdmin, forgetPassword, verifyOtp, resetPassword, logoutStudent, getStudentCount, getProfile, updateProfile, getCourses, getGrades, getRecentActivity, registerForCourse, unregisterForCourse, registerForExams, clearExamRegistrations, getLibraryResources, submitSupportRequest } = require('../controller/students.controller.js');
 const { isAuthenticated } = require('../middlewares/isAuth.js');
 const router = express.Router();
 
@@ -23,6 +23,7 @@ router.get('/recent-activity', isAuthenticated, getRecentActivity);
 router.post('/courses/register', isAuthenticated, registerForCourse);
 router.delete('/courses/unregister', isAuthenticated, unregisterForCourse);
 router.post('/exams/register', isAuthenticated, registerForExams);
+router.delete('/exams/clear', isAuthenticated, clearExamRegistrations);
 router.get('/library', isAuthenticated, getLibraryResources);
 router.post('/support', isAuthenticated, submitSupportRequest);
 

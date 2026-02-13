@@ -637,6 +637,11 @@ const registerForExams = async (req, res) => {
             return res.status(404).json({ message: "Student not found" });
         }
 
+        console.log(`\n📋 Exam Registration Attempt:`);
+        console.log(`   Student: ${student.Firstname} ${student.Lastname} (${student.studentId})`);
+        console.log(`   Courses to register for: ${courseIds.join(', ')}`);
+        console.log(`   Student enrolled in: ${student.courses.map(c => c.courseId).join(', ') || 'NONE'}`);
+
         const registeredExams = [];
         const errors = [];
 
@@ -649,21 +654,29 @@ const registerForExams = async (req, res) => {
                 course = await Course.findOne({ courseId: courseId });
             }
             if (!course) {
-                errors.push(`Course with ID ${courseId} not found`);
+                const error = `Course with ID ${courseId} not found`;
+                errors.push(error);
+                console.log(`   ❌ ${error}`);
                 continue;
             }
+
+            console.log(`   🔍 Checking ${course.name} (${course.courseId})...`);
 
             // Check if student is enrolled in this course
             const isEnrolled = student.courses.some(c => c._id.toString() === course._id.toString() || c.courseId === course.courseId);
             if (!isEnrolled) {
-                errors.push(`Student is not enrolled in course: ${course.name}`);
+                const error = `Student is not enrolled in course: ${course.name}`;
+                errors.push(error);
+                console.log(`      ❌ ${error}`);
                 continue;
             }
 
             // Check if already registered for exam
             const alreadyRegistered = student.exams.some(e => e.courseId === course.courseId);
             if (alreadyRegistered) {
-                errors.push(`Already registered for exam in course: ${course.name}`);
+                const error = `Already registered for exam in course: ${course.name}`;
+                errors.push(error);
+                console.log(`      ❌ ${error}`);
                 continue;
             }
 
@@ -676,10 +689,15 @@ const registerForExams = async (req, res) => {
             });
 
             registeredExams.push(course.name);
+            console.log(`      ✅ Successfully registered for exam`);
         }
 
         if (registeredExams.length === 0) {
-            return res.status(400).json({ message: "No valid courses to register for exams", errors });
+            return res.status(400).json({ 
+                message: "No valid courses to register for exams", 
+                errors: errors,
+                hint: "Make sure you're enrolled in these courses and haven't already registered for exams"
+            });
         }
 
         // Add to recent activity
@@ -695,10 +713,75 @@ const registerForExams = async (req, res) => {
         return res.status(200).json({
             message: `Successfully registered for exams in ${registeredExams.length} course(s)`,
             registeredCourses: registeredExams,
-            errors: errors.length > 0 ? errors : undefined
+            errors: errors.length > 0 ? errors : undefined,
+            summary: {
+                successful: registeredExams.length,
+                failed: errors.length
+            }
         });
     } catch (error) {
         console.error("Error registering for exams:", error);
+        return res.status(500).json({ message: "Internal server error" });
+    }
+};
+
+const clearExamRegistrations = async (req, res) => {
+    try {
+        const studentId = req.student.id;
+        const { courseIds } = req.body;
+
+        if (!courseIds || !Array.isArray(courseIds) || courseIds.length === 0) {
+            return res.status(400).json({ message: "Course IDs are required and must be an array" });
+        }
+
+        // Find the student
+        const student = await Student.findById(studentId);
+        if (!student) {
+            return res.status(404).json({ message: "Student not found" });
+        }
+
+        const clearedExams = [];
+        const errors = [];
+
+        for (const courseId of courseIds) {
+            // Find the exam registration
+            const examIndex = student.exams.findIndex(e => e.courseId === courseId);
+            
+            if (examIndex === -1) {
+                errors.push(`Student is not registered for exam in course ID: ${courseId}`);
+                continue;
+            }
+
+            // Get exam details before removing
+            const exam = student.exams[examIndex];
+            
+            // Remove from exams
+            student.exams.splice(examIndex, 1);
+
+            // Add to recent activity
+            student.recentActivity.push({
+                action: `Cleared exam registration: ${exam.name}`,
+                timestamp: new Date(),
+                details: `Course ID: ${courseId}`
+            });
+
+            clearedExams.push(exam.name);
+        }
+
+        if (clearedExams.length === 0) {
+            return res.status(400).json({ message: "No valid exams to clear", errors });
+        }
+
+        // Save student
+        await student.save();
+
+        return res.status(200).json({
+            message: `Successfully cleared exam registrations for ${clearedExams.length} course(s)`,
+            clearedExams: clearedExams,
+            errors: errors.length > 0 ? errors : undefined
+        });
+    } catch (error) {
+        console.error("Error clearing exam registrations:", error);
         return res.status(500).json({ message: "Internal server error" });
     }
 };
@@ -804,6 +887,7 @@ module.exports = {
     registerForCourse,
     unregisterForCourse,
     registerForExams,
+    clearExamRegistrations,
     getLibraryResources,
     submitSupportRequest
 };
