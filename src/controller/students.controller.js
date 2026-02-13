@@ -84,12 +84,17 @@ const registerStudent = async (req, res) => {
         
         try {
             const emailService = getEmailService();
-            emailService.sendWelcomeEmail(studentData, password).catch(emailError => {
-                console.error("Failed to send welcome email:", emailError.message);
-                // Don't fail the registration if email fails
+            emailService.sendWelcomeEmail(studentData, password).then(result => {
+                if (result.success) {
+                    console.log(`✓ Welcome email sent to: ${studentData.email}`);
+                } else {
+                    console.error(`✗ Failed to send welcome email to ${studentData.email}:`, result.message);
+                }
+            }).catch(emailError => {
+                console.error("✗ Error sending welcome email:", emailError.message || emailError);
             });
         } catch (emailInitError) {
-            console.error("Email service not available:", emailInitError.message);
+            console.error("✗ Email service not available:", emailInitError.message);
         }
 
         return newStudent;
@@ -155,12 +160,17 @@ const loginStudent = async (req, res) => {
         // Send login alert email using template (non-blocking)
         try {
             const emailService = getEmailService();
-            emailService.sendLoginAlert(loginData).catch(emailError => {
-                console.error("Failed to send login alert email:", emailError.message);
-                // Don't fail the login if email fails
+            emailService.sendLoginAlert(loginData).then(result => {
+                if (result.success) {
+                    console.log(`✓ Login alert email sent to: ${loginData.email}`);
+                } else {
+                    console.error(`✗ Failed to send login alert email to ${loginData.email}:`, result.message);
+                }
+            }).catch(emailError => {
+                console.error("✗ Error sending login alert email:", emailError.message || emailError);
             });
         } catch (emailInitError) {
-            console.error("Email service not available:", emailInitError.message);
+            console.error("✗ Email service not available:", emailInitError.message);
         }
 
         const studentPayload = {
