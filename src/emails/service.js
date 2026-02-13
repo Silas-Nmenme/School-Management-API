@@ -214,6 +214,9 @@ const sendCourseRegistrationEmail = async (studentData, courseData) => {
         courseId: courseData.courseId || '',
         registrationDate: new Date().toLocaleDateString(),
         courseUrl: `${process.env.APP_URL || 'http://localhost:3000'}/courses/${courseData.courseId}`,
+        instructorName: courseData.instructor?.Firstname || courseData.instructor?.firstName || courseData.instructor?.name || 'Instructor',
+        updateDate: new Date().toLocaleDateString(),
+        updateTime: new Date().toLocaleTimeString(),
         supportEmail: process.env.SUPPORT_EMAIL || 'support@example.com',
         supportPhone: process.env.SUPPORT_PHONE || '+1-800-000-0000'
     };
@@ -353,6 +356,9 @@ const sendCourseUnregistrationEmail = async (studentData, courseData) => {
         courseId: courseData.courseId || '',
         unregistrationDate: new Date().toLocaleDateString(),
         coursesUrl: `${process.env.APP_URL || 'http://localhost:3000'}/courses`,
+        instructorName: courseData.instructor?.Firstname || courseData.instructor?.firstName || courseData.instructor?.name || 'Instructor',
+        updateDate: new Date().toLocaleDateString(),
+        updateTime: new Date().toLocaleTimeString(),
         supportEmail: process.env.SUPPORT_EMAIL || 'support@example.com',
         supportPhone: process.env.SUPPORT_PHONE || '+1-800-000-0000'
     };

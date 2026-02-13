@@ -480,9 +480,9 @@ const registerForCourse = async (req, res) => {
         // Find the course
         let course;
         if (/^[0-9a-fA-F]{24}$/.test(courseId)) {
-            course = await Course.findById(courseId);
+            course = await Course.findById(courseId).populate('instructor');
         } else {
-            course = await Course.findOne({ courseId: courseId });
+            course = await Course.findOne({ courseId: courseId }).populate('instructor');
         }
         if (!course) {
             return res.status(404).json({ message: "Course not found" });
@@ -570,9 +570,9 @@ const unregisterForCourse = async (req, res) => {
         // Find the course
         let course;
         if (/^[0-9a-fA-F]{24}$/.test(courseId)) {
-            course = await Course.findById(courseId);
+            course = await Course.findById(courseId).populate('instructor');
         } else {
-            course = await Course.findOne({ courseId: courseId });
+            course = await Course.findOne({ courseId: courseId }).populate('instructor');
         }
         if (!course) {
             return res.status(404).json({ message: "Course not found" });
