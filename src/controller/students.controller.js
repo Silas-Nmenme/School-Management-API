@@ -637,77 +637,33 @@ const registerForExams = async (req, res) => {
             return res.status(404).json({ message: "Student not found" });
         }
 
-        console.log(`\n📋 Exam Registration Attempt:`);
-        console.log(`   Student: ${student.Firstname} ${student.Lastname} (${student.studentId})`);
-        console.log(`   Courses to register for: ${courseIds.join(', ')}`);
-        console.log(`   Student enrolled in: ${student.courses.map(c => c.courseId).join(', ') || 'NONE'}`);
-
         const registeredExams = [];
         const errors = [];
 
         for (const courseId of courseIds) {
             // Find the course (handle both MongoDB _id and courseId formats)
             let course;
-            console.log(`\n   📌 Processing courseId: '${courseId}' (type: ${typeof courseId})`);
-            
             if (/^[0-9a-fA-F]{24}$/.test(courseId)) {
-                console.log(`   🔎 Looks like MongoDB _id, searching by _id...`);
                 course = await Course.findById(courseId);
             } else {
-                console.log(`   🔎 Looks like courseId string, searching by courseId field...`);
-                // Try exact match first
                 course = await Course.findOne({ courseId: courseId });
-                
-                // If not found, try case-insensitive and space-trimmed
-                if (!course) {
-                    console.log(`      No exact match found, trying case-insensitive...`);
-                    const trimmedId = courseId.trim();
-                    course = await Course.findOne({ courseId: new RegExp(`^${trimmedId}$`, 'i') });
-                }
             }
-            
             if (!course) {
-                const error = `Course with ID '${courseId}' not found`;
-                errors.push(error);
-                console.log(`   ❌ ${error}`);
+                errors.push(`Course with ID ${courseId} not found`);
                 continue;
             }
 
-            console.log(`   ✓ Course found: ${course.name}`);
-            console.log(`      Course _id: ${course._id}`);
-            console.log(`      Course courseId value: '${course.courseId}' (trimmed: '${course.courseId?.trim()}')`);
-            console.log(`      Student enrolled courses (${student.courses.length}):`);
-            student.courses.forEach((c, idx) => {
-                console.log(`        [${idx}] courseId: '${c.courseId}', _id: ${c._id}`);
-            });
-
-            // Check if student is enrolled in this course (by either _id or courseId)
-            const isEnrolled = student.courses.some((c, index) => {
-                const courseId_match = c._id?.toString() === course._id?.toString();
-                const courseCode_match = c.courseId?.trim() === course.courseId?.trim();
-                const match = courseId_match || courseCode_match;
-                
-                console.log(`        [${index}] _id match=${courseId_match}, courseId match=${courseCode_match} ('${c.courseId?.trim()}' vs '${course.courseId?.trim()}')`);
-                
-                if (match) {
-                    console.log(`      ✅ ENROLLMENT VERIFIED!`);
-                }
-                return match;
-            });
-            
+            // Check if student is enrolled in this course
+            const isEnrolled = student.courses.some(c => c._id.toString() === course._id.toString() || c.courseId === course.courseId);
             if (!isEnrolled) {
-                const error = `Student is not enrolled in course: ${course.name}`;
-                errors.push(error);
-                console.log(`      ❌ ${error}`);
+                errors.push(`Student is not enrolled in course: ${course.name}`);
                 continue;
             }
 
             // Check if already registered for exam
             const alreadyRegistered = student.exams.some(e => e.courseId === course.courseId);
             if (alreadyRegistered) {
-                const error = `Already registered for exam in course: ${course.name}`;
-                errors.push(error);
-                console.log(`      ❌ ${error}`);
+                errors.push(`Already registered for exam in course: ${course.name}`);
                 continue;
             }
 
@@ -720,15 +676,10 @@ const registerForExams = async (req, res) => {
             });
 
             registeredExams.push(course.name);
-            console.log(`      ✅ Successfully registered for exam`);
         }
 
         if (registeredExams.length === 0) {
-            return res.status(400).json({ 
-                message: "No valid courses to register for exams", 
-                errors: errors,
-                hint: "Make sure you're enrolled in these courses and haven't already registered for exams"
-            });
+            return res.status(400).json({ message: "No valid courses to register for exams", errors });
         }
 
         // Add to recent activity
@@ -744,11 +695,7 @@ const registerForExams = async (req, res) => {
         return res.status(200).json({
             message: `Successfully registered for exams in ${registeredExams.length} course(s)`,
             registeredCourses: registeredExams,
-            errors: errors.length > 0 ? errors : undefined,
-            summary: {
-                successful: registeredExams.length,
-                failed: errors.length
-            }
+            errors: errors.length > 0 ? errors : undefined
         });
     } catch (error) {
         console.error("Error registering for exams:", error);
