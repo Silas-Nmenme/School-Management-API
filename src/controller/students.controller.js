@@ -13,9 +13,9 @@ const generateStudentId = () => {
 };
 
 const registerStudent = async (req, res) => {
-       const { Fistname, Lastname, email, age, phone, password, confirmpassword } = req.body;
+       const { Firstname, Lastname, email, age, phone, password, confirmpassword } = req.body;
     // Validate required fields
-    if (!Fistname || !Lastname || !email || !age || !phone || !password || !confirmpassword) {
+    if (!Firstname || !Lastname || !email || !age || !phone || !password || !confirmpassword) {
         return res.status(400).json({ message: "All fields are required" });
     }
        const parsedAge = Number(age);
@@ -44,7 +44,7 @@ const registerStudent = async (req, res) => {
         // Create a new student
          const newStudent = new Student({
         studentId,
-        Fistname,
+        Firstname,
         Lastname,
         email,
         age: parsedAge,
@@ -61,7 +61,7 @@ const registerStudent = async (req, res) => {
         //Prepare registration details to return (excluding password)
         const registrationDetails = {
             studentId: newStudent.studentId,
-            Fistname: newStudent.Fistname,
+            Firstname: newStudent.Firstname,
             Lastname: newStudent.Lastname,
             email: newStudent.email,
             age: newStudent.age,
@@ -74,7 +74,7 @@ const registerStudent = async (req, res) => {
 
         // Send welcome email using template (non-blocking)
         const studentData = {
-            Fistname: newStudent.Fistname,
+            Firstname: newStudent.Firstname,
             Lastname: newStudent.Lastname,
             studentId: newStudent.studentId,
             email: newStudent.email,
@@ -170,7 +170,7 @@ const loginStudent = async (req, res) => {
 
         const studentPayload = {
             studentId: student.studentId,
-            Fistname: student.Fistname,
+            Firstname: student.Firstname,
             Lastname: student.Lastname,
             email: student.email,
             age: student.age,
@@ -376,7 +376,7 @@ const getStudentCount = async (req, res) => {
 const getProfile = async (req, res) => {
     try {
         const studentId = req.student.id; // Assuming JWT middleware sets req.student
-        const student = await Student.findById(studentId).select('Fistname Lastname email age phone studentId');
+        const student = await Student.findById(studentId).select('Firstname Lastname email age phone studentId');
         if (!student) {
             return res.status(404).json({ message: "Student not found" });
         }
@@ -390,12 +390,12 @@ const getProfile = async (req, res) => {
 const updateProfile = async (req, res) => {
     try {
         const studentId = req.student.id;
-        const { Fistname, Lastname, age, phone } = req.body;
+        const { Firstname, Lastname, age, phone } = req.body;
         const student = await Student.findById(studentId);
         if (!student) {
             return res.status(404).json({ message: "Student not found" });
         }
-        if (Fistname) student.Fistname = Fistname;
+        if (Firstname) student.Firstname = Firstname;
         if (Lastname) student.Lastname = Lastname;
         if (age) student.age = age;
         if (phone) student.phone = phone;
