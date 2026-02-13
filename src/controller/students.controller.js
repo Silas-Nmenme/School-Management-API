@@ -641,15 +641,20 @@ const registerForExams = async (req, res) => {
         const errors = [];
 
         for (const courseId of courseIds) {
-            // Find the course
-            const course = await Course.findOne({ courseId: courseId });
+            // Find the course (handle both MongoDB _id and courseId formats)
+            let course;
+            if (/^[0-9a-fA-F]{24}$/.test(courseId)) {
+                course = await Course.findById(courseId);
+            } else {
+                course = await Course.findOne({ courseId: courseId });
+            }
             if (!course) {
                 errors.push(`Course with ID ${courseId} not found`);
                 continue;
             }
 
             // Check if student is enrolled in this course
-            const isEnrolled = student.courses.some(c => c.courseId === courseId);
+            const isEnrolled = student.courses.some(c => c._id.toString() === course._id.toString() || c.courseId === course.courseId);
             if (!isEnrolled) {
                 errors.push(`Student is not enrolled in course: ${course.name}`);
                 continue;
