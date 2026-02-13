@@ -649,8 +649,10 @@ const registerForExams = async (req, res) => {
             // Find the course (handle both MongoDB _id and courseId formats)
             let course;
             if (/^[0-9a-fA-F]{24}$/.test(courseId)) {
+                console.log(`   🔎 Looking up by MongoDB _id: ${courseId}`);
                 course = await Course.findById(courseId);
             } else {
+                console.log(`   🔎 Looking up by courseId: ${courseId}`);
                 course = await Course.findOne({ courseId: courseId });
             }
             if (!course) {
@@ -660,23 +662,30 @@ const registerForExams = async (req, res) => {
                 continue;
             }
 
-            console.log(`   🔍 Checking ${course.name} (${course.courseId})...`);
+            console.log(`   ✓ Course found: ${course.name}`);
+            console.log(`      Course _id: ${course._id} (type: ${typeof course._id})`);
+            console.log(`      Course courseId: ${course.courseId}`);
+            console.log(`      Student enrolled courses (${student.courses.length}):`);
+            student.courses.forEach((c, idx) => {
+                console.log(`        [${idx}] _id: ${c._id} (type: ${typeof c._id}), courseId: ${c.courseId}`);
+            });
 
             // Check if student is enrolled in this course (by either _id or courseId)
-            const isEnrolled = student.courses.some(c => {
-                const enrolledId = c._id?.toString() || c._id;
+            const isEnrolled = student.courses.some((c, index) => {
                 const courseId_match = c._id?.toString() === course._id?.toString();
                 const courseCode_match = c.courseId === course.courseId;
                 const match = courseId_match || courseCode_match;
                 
+                console.log(`        Comparing [${index}]: _id match=${courseId_match} (${c._id?.toString()} vs ${course._id?.toString()}), courseId match=${courseCode_match}`);
+                
                 if (match) {
-                    console.log(`      ✓ Enrollment verified (${courseCode_match ? 'courseId' : '_id'} match)`);
+                    console.log(`      ✓ ENROLLMENT VERIFIED!`);
                 }
                 return match;
             });
             
             if (!isEnrolled) {
-                const error = `Student is not enrolled in course: ${course.name}. Enrolled courses: ${student.courses.map(c => `${c.courseId||'?'}(${c._id})`).join(', ')}`;
+                const error = `Student is not enrolled in course: ${course.name}`;
                 errors.push(error);
                 console.log(`      ❌ ${error}`);
                 continue;
