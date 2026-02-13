@@ -1,5 +1,5 @@
 const Contact = require('../models/contact.schema.js');
-const { getEmailService } = require("../templates/email-service-instance");
+const { getEmailService } = require("../templates/email-service.js");
 
 // Create a new contact message
 const createContact = async (req, res) => {

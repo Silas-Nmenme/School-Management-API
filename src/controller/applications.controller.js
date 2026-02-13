@@ -1,5 +1,5 @@
 const Application = require("../models/application.schema.js");
-const { getEmailService } = require("../templates/email-service-instance");
+const { getEmailService } = require("../templates/email-service.js");
 
 const submitApplication = async (req, res) => {
     try {

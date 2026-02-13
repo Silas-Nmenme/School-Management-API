@@ -5,8 +5,8 @@ const jwt = require("jsonwebtoken");
 const saltRounds = 10;
 const uuid = require("uuid").v4;
 const token = uuid(); // Generate a unique token for the student
-const { getEmailService } = require("../templates/email-service-instance");
 const { parseUserAgent } = require("../utils/userAgentParser");
+const { getEmailService } = require("../templates/email-service.js");
 
 const generateStudentId = () => {
     return 'STU' + Date.now() + Math.floor(Math.random() * 1000);
