@@ -662,10 +662,21 @@ const registerForExams = async (req, res) => {
 
             console.log(`   🔍 Checking ${course.name} (${course.courseId})...`);
 
-            // Check if student is enrolled in this course
-            const isEnrolled = student.courses.some(c => c._id.toString() === course._id.toString() || c.courseId === course.courseId);
+            // Check if student is enrolled in this course (by either _id or courseId)
+            const isEnrolled = student.courses.some(c => {
+                const enrolledId = c._id?.toString() || c._id;
+                const courseId_match = c._id?.toString() === course._id?.toString();
+                const courseCode_match = c.courseId === course.courseId;
+                const match = courseId_match || courseCode_match;
+                
+                if (match) {
+                    console.log(`      ✓ Enrollment verified (${courseCode_match ? 'courseId' : '_id'} match)`);
+                }
+                return match;
+            });
+            
             if (!isEnrolled) {
-                const error = `Student is not enrolled in course: ${course.name}`;
+                const error = `Student is not enrolled in course: ${course.name}. Enrolled courses: ${student.courses.map(c => `${c.courseId||'?'}(${c._id})`).join(', ')}`;
                 errors.push(error);
                 console.log(`      ❌ ${error}`);
                 continue;
