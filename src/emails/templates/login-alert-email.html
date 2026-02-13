@@ -160,8 +160,7 @@
             <p><strong>Risk Level:</strong> {{RISK_LEVEL}}</p>
             <p><strong>Authentication Method:</strong> {{AUTH_METHOD}}</p>
         </div>
-
-        {{#if IS_SUSPICIOUS}}
+        
         <div class="suspicious-activity">
             <h4><i class="fas fa-exclamation-triangle"></i> Suspicious Activity Detected</h4>
             <p>This login appears to be from an unusual location or device. If this wasn't you, please take immediate action:</p>
@@ -172,7 +171,6 @@
                 <li>Contact support if needed</li>
             </ul>
         </div>
-        {{/if}}
 
         <div class="text-center" style="margin: 30px 0;">
             <a href="{{SECURITY_URL}}" class="button">Review Account Security</a>
