@@ -97,52 +97,34 @@
     </style>
 </head>
 <body>
-    <div class="container status-{{STATUS}}">
+    <div class="container">
         <div class="header">
-            <h1>Campus Visit {{STATUS}}</h1>
+            <h1>Campus Visit Status Update</h1>
             <p>Update on Your Bethel College Visit Request</p>
         </div>
 
         <div class="content">
             <p>Dear {{FIRST_NAME}} {{LAST_NAME}},</p>
 
-            {{#STATUS:confirmed}}
             <div class="status-message">
-                <strong>Great news!</strong> Your campus visit request has been confirmed. We're excited to welcome you to Bethel College!
+                <strong>Status:</strong> {{STATUS}} - Your campus visit request status has been updated.
             </div>
-            {{/STATUS:confirmed}}
-
-            {{#STATUS:cancelled}}
-            <div class="status-message">
-                <strong>Visit Cancelled:</strong> Your campus visit request has been cancelled as requested.
-            </div>
-            {{/STATUS:cancelled}}
-
-            {{#STATUS:pending}}
-            <div class="status-message">
-                <strong>Update:</strong> Your campus visit request is still being processed. We'll contact you soon with confirmation details.
-            </div>
-            {{/STATUS:pending}}
 
             <div class="visit-details">
                 <h3>Your Visit Details:</h3>
                 <div class="detail-row">
-                    <span class="detail-label">Visit Date:</span> {{VISIT_DATE}}
+                    <span class="detail-label">Visit Date:</span> {{visitDate}}
                 </div>
                 <div class="detail-row">
-                    <span class="detail-label">Time:</span> {{VISIT_TIME}}
+                    <span class="detail-label">Time:</span> {{visitTime}}
                 </div>
                 <div class="detail-row">
-                    <span class="detail-label">Visit Type:</span> {{VISIT_TYPE}}
+                    <span class="detail-label">Visit Purpose:</span> {{purpose}}
                 </div>
                 <div class="detail-row">
-                    <span class="detail-label">Group Size:</span> {{GROUP_SIZE}}
+                    <span class="detail-label">Confirmation Number:</span> {{confirmationNumber}}
                 </div>
             </div>
-
-            {{#STATUS:confirmed}}
-            <div class="next-steps">
-                <h3>What to Expect:</h3>
                 <ul>
                     <li><strong>Arrival:</strong> Please arrive 15 minutes before your scheduled visit time</li>
                     <li><strong>Duration:</strong> Plan for 1.5-2 hours for your campus tour and information session</li>
@@ -163,8 +145,8 @@
             <div class="contact-info">
                 <p><strong>Questions or Need to Reschedule?</strong></p>
                 <p>Contact our Admissions Office:<br>
-                Email: {{SUPPORT_EMAIL}}<br>
-                Phone: {{SUPPORT_PHONE}}</p>
+                <p>Email: {{supportEmail}}<br>
+                Phone: {{supportPhone}}</p>
             </div>
 
             {{#STATUS:confirmed}}
@@ -185,7 +167,7 @@
         </div>
 
         <div class="footer">
-            <p>This email was sent to {{EMAIL}}</p>
+            <p>This email was sent to {{email}}</p>
             <p>© 2024 Bethel College. All rights reserved.</p>
         </div>
     </div>

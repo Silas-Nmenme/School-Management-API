@@ -69,15 +69,17 @@ const sendEmail = async (to, subject, html) => {
  */
 const sendWelcomeEmail = async (studentData, password) => {
     const variables = {
-        FIRSTNAME: studentData.Fistname || studentData.firstName || '',
-        LASTNAME: studentData.Lastname || studentData.lastName || '',
-        STUDENT_ID: studentData.studentId || '',
-        EMAIL: studentData.email || '',
-        AGE: studentData.age || '',
-        PHONE: studentData.phone || '',
-        REGISTRATION_DATE: new Date().toLocaleDateString(),
-        LOGIN_URL: `${process.env.APP_URL}/login`,
-        TEMP_PASSWORD: password || 'Check your email for password'
+        firstname: studentData.Fistname || studentData.firstName || '',
+        lastname: studentData.Lastname || studentData.lastName || '',
+        studentId: studentData.studentId || '',
+        email: studentData.email || '',
+        age: studentData.age || '',
+        phone: studentData.phone || '',
+        registrationDate: studentData.registrationDate || new Date().toLocaleDateString(),
+        loginUrl: `${process.env.APP_URL || 'http://localhost:3000'}/login`,
+        tempPassword: password || 'Check your email for password',
+        supportEmail: process.env.SUPPORT_EMAIL || 'support@example.com',
+        supportPhone: process.env.SUPPORT_PHONE || '+1-800-000-0000'
     };
 
     return await sendTemplateEmail(
@@ -103,7 +105,7 @@ const sendLoginAlert = async (loginData) => {
         SECURITY_STATUS: loginData.isSuspicious ? 'Suspicious' : 'Normal',
         RISK_LEVEL: loginData.riskLevel || (loginData.isSuspicious ? 'High' : 'Low'),
         AUTH_METHOD: loginData.authMethod || 'Password',
-        SECURITY_URL: `${process.env.APP_URL}/security`
+        SECURITY_URL: `${process.env.APP_URL || 'http://localhost:3000'}/security`
     };
 
     const subject = loginData.isSuspicious ? '⚠️ Suspicious Login Detected' : 'New Login to Your Account';
@@ -121,11 +123,13 @@ const sendLoginAlert = async (loginData) => {
  */
 const sendOtpEmail = async (studentData, otp) => {
     const variables = {
-        FIRSTNAME: studentData.Fistname || studentData.firstName || '',
-        EMAIL: studentData.email || '',
-        OTP: otp || '',
-        REQUEST_TIME: new Date().toLocaleString(),
-        OTP_EXPIRY: '10 minutes'
+        firstname: studentData.Fistname || studentData.firstName || '',
+        email: studentData.email || '',
+        otp: otp || '',
+        requestTime: new Date().toLocaleString(),
+        otpExpiry: '10 minutes',
+        supportEmail: process.env.SUPPORT_EMAIL || 'support@example.com',
+        supportPhone: process.env.SUPPORT_PHONE || '+1-800-000-0000'
     };
 
     return await sendTemplateEmail(
@@ -141,10 +145,12 @@ const sendOtpEmail = async (studentData, otp) => {
  */
 const sendPasswordResetEmail = async (studentData) => {
     const variables = {
-        FIRSTNAME: studentData.Fistname || studentData.firstName || '',
-        EMAIL: studentData.email || '',
-        RESET_TIME: new Date().toLocaleString(),
-        LOGIN_URL: `${process.env.APP_URL}/login`
+        firstname: studentData.Fistname || studentData.firstName || '',
+        email: studentData.email || '',
+        resetTime: new Date().toLocaleString(),
+        loginUrl: `${process.env.APP_URL || 'http://localhost:3000'}/login`,
+        supportEmail: process.env.SUPPORT_EMAIL || 'support@example.com',
+        supportPhone: process.env.SUPPORT_PHONE || '+1-800-000-0000'
     };
 
     return await sendTemplateEmail(
@@ -160,11 +166,13 @@ const sendPasswordResetEmail = async (studentData) => {
  */
 const sendAdminPromotionEmail = async (studentData) => {
     const variables = {
-        FIRSTNAME: studentData.Fistname || studentData.firstName || '',
-        LASTNAME: studentData.Lastname || studentData.lastName || '',
-        EMAIL: studentData.email || '',
-        ADMIN_PORTAL_URL: `${process.env.APP_URL}/admin`,
-        PROMOTION_DATE: new Date().toLocaleDateString()
+        firstname: studentData.Fistname || studentData.firstName || '',
+        lastname: studentData.Lastname || studentData.lastName || '',
+        email: studentData.email || '',
+        adminPortalUrl: `${process.env.APP_URL || 'http://localhost:3000'}/admin`,
+        promotionDate: new Date().toLocaleDateString(),
+        supportEmail: process.env.SUPPORT_EMAIL || 'support@example.com',
+        supportPhone: process.env.SUPPORT_PHONE || '+1-800-000-0000'
     };
 
     return await sendTemplateEmail(
@@ -199,13 +207,15 @@ const sendAdminNotificationEmail = async (adminEmail, subject, message, details 
  */
 const sendCourseRegistrationEmail = async (studentData, courseData) => {
     const variables = {
-        FIRSTNAME: studentData.Fistname || studentData.firstName || '',
-        LASTNAME: studentData.Lastname || studentData.lastName || '',
-        EMAIL: studentData.email || '',
-        COURSE_NAME: courseData.name || '',
-        COURSE_ID: courseData.courseId || '',
-        REGISTRATION_DATE: new Date().toLocaleDateString(),
-        COURSE_URL: `${process.env.APP_URL}/courses/${courseData.courseId}`
+        firstname: studentData.Fistname || studentData.firstName || '',
+        lastname: studentData.Lastname || studentData.lastName || '',
+        email: studentData.email || '',
+        courseName: courseData.name || '',
+        courseId: courseData.courseId || '',
+        registrationDate: new Date().toLocaleDateString(),
+        courseUrl: `${process.env.APP_URL || 'http://localhost:3000'}/courses/${courseData.courseId}`,
+        supportEmail: process.env.SUPPORT_EMAIL || 'support@example.com',
+        supportPhone: process.env.SUPPORT_PHONE || '+1-800-000-0000'
     };
 
     return await sendTemplateEmail(
@@ -221,11 +231,13 @@ const sendCourseRegistrationEmail = async (studentData, courseData) => {
  */
 const sendApplicationNotificationEmail = async (email, applicationData) => {
     const variables = {
-        EMAIL: email || '',
-        APPLICATION_ID: applicationData.id || '',
-        APPLICATION_STATUS: applicationData.status || 'Pending',
-        SUBMISSION_DATE: applicationData.submissionDate || new Date().toLocaleDateString(),
-        APPLICATION_URL: `${process.env.APP_URL}/applications/${applicationData.id}`
+        email: email || '',
+        applicationId: applicationData.id || '',
+        applicationStatus: applicationData.status || 'Pending',
+        submissionDate: applicationData.submissionDate || new Date().toLocaleDateString(),
+        applicationUrl: `${process.env.APP_URL || 'http://localhost:3000'}/applications/${applicationData.id}`,
+        supportEmail: process.env.SUPPORT_EMAIL || 'support@example.com',
+        supportPhone: process.env.SUPPORT_PHONE || '+1-800-000-0000'
     };
 
     return await sendTemplateEmail(
@@ -241,12 +253,14 @@ const sendApplicationNotificationEmail = async (email, applicationData) => {
  */
 const sendVisitConfirmationEmail = async (visitorData, visitData) => {
     const variables = {
-        FIRSTNAME: visitorData.Fistname || visitorData.firstName || '',
-        EMAIL: visitorData.email || '',
-        VISIT_DATE: visitData.visitDate || '',
-        VISIT_TIME: visitData.visitTime || '',
-        PURPOSE: visitData.purpose || '',
-        CONFIRMATION_NUMBER: visitData.confirmationNumber || ''
+        firstname: visitorData.Fistname || visitorData.firstName || '',
+        email: visitorData.email || '',
+        visitDate: visitData.visitDate || '',
+        visitTime: visitData.visitTime || '',
+        purpose: visitData.purpose || '',
+        confirmationNumber: visitData.confirmationNumber || '',
+        supportEmail: process.env.SUPPORT_EMAIL || 'support@example.com',
+        supportPhone: process.env.SUPPORT_PHONE || '+1-800-000-0000'
     };
 
     return await sendTemplateEmail(
@@ -262,13 +276,16 @@ const sendVisitConfirmationEmail = async (visitorData, visitData) => {
  */
 const sendVisitStatusUpdateEmail = async (visitData) => {
     const variables = {
-        FIRSTNAME: visitData.visitor?.firstName || visitData.visitorName || '',
-        EMAIL: visitData.visitor?.email || '',
-        VISIT_DATE: visitData.visitDate || '',
-        VISIT_TIME: visitData.visitTime || '',
-        PURPOSE: visitData.purpose || '',
+        FIRST_NAME: visitData.visitor?.firstName || visitData.visitorName || '',
+        LAST_NAME: visitData.visitor?.lastName || '',
+        email: visitData.visitor?.email || '',
+        visitDate: visitData.visitDate || '',
+        visitTime: visitData.visitTime || '',
+        purpose: visitData.purpose || '',
         STATUS: visitData.status || '',
-        CONFIRMATION_NUMBER: visitData.confirmationNumber || ''
+        confirmationNumber: visitData.confirmationNumber || '',
+        supportEmail: process.env.SUPPORT_EMAIL || 'support@example.com',
+        supportPhone: process.env.SUPPORT_PHONE || '+1-800-000-0000'
     };
 
     return await sendTemplateEmail(
@@ -284,12 +301,14 @@ const sendVisitStatusUpdateEmail = async (visitData) => {
  */
 const sendVisitDeletionEmail = async (visitData) => {
     const variables = {
-        FIRSTNAME: visitData.visitor?.firstName || visitData.visitorName || '',
-        EMAIL: visitData.visitor?.email || '',
-        VISIT_DATE: visitData.visitDate || '',
-        VISIT_TIME: visitData.visitTime || '',
-        PURPOSE: visitData.purpose || '',
-        CONFIRMATION_NUMBER: visitData.confirmationNumber || ''
+        firstname: visitData.visitor?.firstName || visitData.visitorName || '',
+        email: visitData.visitor?.email || '',
+        visitDate: visitData.visitDate || '',
+        visitTime: visitData.visitTime || '',
+        purpose: visitData.purpose || '',
+        confirmationNumber: visitData.confirmationNumber || '',
+        supportEmail: process.env.SUPPORT_EMAIL || 'support@example.com',
+        supportPhone: process.env.SUPPORT_PHONE || '+1-800-000-0000'
     };
 
     return await sendTemplateEmail(
@@ -305,11 +324,13 @@ const sendVisitDeletionEmail = async (visitData) => {
  */
 const sendProfileUpdateEmail = async (studentData) => {
     const variables = {
-        FIRSTNAME: studentData.Fistname || studentData.firstName || '',
-        LASTNAME: studentData.Lastname || studentData.lastName || '',
-        EMAIL: studentData.email || '',
-        UPDATE_TIME: new Date().toLocaleString(),
-        PROFILE_URL: `${process.env.APP_URL}/profile`
+        firstname: studentData.Fistname || studentData.firstName || '',
+        lastname: studentData.Lastname || studentData.lastName || '',
+        email: studentData.email || '',
+        updateTime: new Date().toLocaleString(),
+        profileUrl: `${process.env.APP_URL || 'http://localhost:3000'}/profile`,
+        supportEmail: process.env.SUPPORT_EMAIL || 'support@example.com',
+        supportPhone: process.env.SUPPORT_PHONE || '+1-800-000-0000'
     };
 
     return await sendTemplateEmail(
@@ -325,13 +346,15 @@ const sendProfileUpdateEmail = async (studentData) => {
  */
 const sendCourseUnregistrationEmail = async (studentData, courseData) => {
     const variables = {
-        FIRSTNAME: studentData.Fistname || studentData.firstName || '',
-        LASTNAME: studentData.Lastname || studentData.lastName || '',
-        EMAIL: studentData.email || '',
-        COURSE_NAME: courseData.name || '',
-        COURSE_ID: courseData.courseId || '',
-        UNREGISTRATION_DATE: new Date().toLocaleDateString(),
-        COURSES_URL: `${process.env.APP_URL}/courses`
+        firstname: studentData.Fistname || studentData.firstName || '',
+        lastname: studentData.Lastname || studentData.lastName || '',
+        email: studentData.email || '',
+        courseName: courseData.name || '',
+        courseId: courseData.courseId || '',
+        unregistrationDate: new Date().toLocaleDateString(),
+        coursesUrl: `${process.env.APP_URL || 'http://localhost:3000'}/courses`,
+        supportEmail: process.env.SUPPORT_EMAIL || 'support@example.com',
+        supportPhone: process.env.SUPPORT_PHONE || '+1-800-000-0000'
     };
 
     return await sendTemplateEmail(
@@ -347,17 +370,17 @@ const sendCourseUnregistrationEmail = async (studentData, courseData) => {
  */
 const sendSupportRequest = async (supportData) => {
     const variables = {
-        NAME: supportData.name || '',
-        EMAIL: supportData.email || '',
-        SUBJECT: supportData.subject || '',
-        MESSAGE: supportData.message || '',
-        SUBMISSION_TIME: new Date().toLocaleString()
+        name: supportData.name || '',
+        email: supportData.email || '',
+        subject: supportData.subject || '',
+        message: supportData.message || '',
+        submissionTime: new Date().toLocaleString()
     };
 
     return await sendTemplateEmail(
         process.env.SUPPORT_EMAIL || 'support@example.com',
         `Support Request: ${supportData.subject || 'New Inquiry'}`,
-        'staff-welcome-email',
+        'contact-confirmation-email',
         variables
     );
 };
@@ -367,12 +390,14 @@ const sendSupportRequest = async (supportData) => {
  */
 const sendAccountDeletionEmail = async (userData, options = {}) => {
     const variables = {
-        FIRSTNAME: userData.Fistname || userData.firstName || '',
-        LASTNAME: userData.Lastname || userData.lastName || '',
-        EMAIL: userData.email || '',
-        DELETION_DATE: new Date().toLocaleDateString(),
-        DELETION_METHOD: options.method || 'Self Deletion',
-        ADMIN_EMAIL: options.adminEmail || ''
+        firstname: userData.Fistname || userData.firstName || '',
+        lastname: userData.Lastname || userData.lastName || '',
+        email: userData.email || '',
+        deletionDate: new Date().toLocaleDateString(),
+        deletionMethod: options.method || 'Self Deletion',
+        adminEmail: options.adminEmail || '',
+        supportEmail: process.env.SUPPORT_EMAIL || 'support@example.com',
+        supportPhone: process.env.SUPPORT_PHONE || '+1-800-000-0000'
     };
 
     return await sendTemplateEmail(
@@ -388,12 +413,14 @@ const sendAccountDeletionEmail = async (userData, options = {}) => {
  */
 const sendStaffWelcomeEmail = async (staffData) => {
     const variables = {
-        FIRSTNAME: staffData.Fistname || staffData.firstName || '',
-        LASTNAME: staffData.Lastname || staffData.lastName || '',
-        EMAIL: staffData.email || '',
-        ROLE: staffData.role || 'Staff',
-        LOGIN_URL: `${process.env.APP_URL}/login`,
-        TEMP_PASSWORD: staffData.tempPassword || 'Check your email for password'
+        firstname: staffData.Fistname || staffData.firstName || '',
+        lastname: staffData.Lastname || staffData.lastName || '',
+        email: staffData.email || '',
+        role: staffData.role || 'Staff',
+        loginUrl: `${process.env.APP_URL || 'http://localhost:3000'}/login`,
+        tempPassword: staffData.tempPassword || 'Check your email for password',
+        supportEmail: process.env.SUPPORT_EMAIL || 'support@example.com',
+        supportPhone: process.env.SUPPORT_PHONE || '+1-800-000-0000'
     };
 
     return await sendTemplateEmail(
@@ -409,11 +436,13 @@ const sendStaffWelcomeEmail = async (staffData) => {
  */
 const sendCourseCreationEmail = async (courseData) => {
     const variables = {
-        COURSE_NAME: courseData.name || '',
-        COURSE_ID: courseData.courseId || '',
-        INSTRUCTOR: courseData.instructor || '',
-        CREATION_DATE: new Date().toLocaleDateString(),
-        COURSE_URL: `${process.env.APP_URL}/courses/${courseData.courseId}`
+        courseName: courseData.name || '',
+        courseId: courseData.courseId || '',
+        instructor: courseData.instructor || '',
+        creationDate: new Date().toLocaleDateString(),
+        courseUrl: `${process.env.APP_URL || 'http://localhost:3000'}/courses/${courseData.courseId}`,
+        supportEmail: process.env.SUPPORT_EMAIL || 'support@example.com',
+        supportPhone: process.env.SUPPORT_PHONE || '+1-800-000-0000'
     };
 
     return await sendTemplateEmail(
@@ -428,15 +457,20 @@ const sendCourseCreationEmail = async (courseData) => {
  * Send course update email
  */
 const sendCourseUpdateEmail = async (courseData) => {
+    const instructorEmail = courseData.instructor?.email || courseData.instructorEmail || process.env.ADMIN_EMAIL || 'admin@example.com';
     const variables = {
-        COURSE_NAME: courseData.name || '',
-        COURSE_ID: courseData.courseId || '',
-        UPDATE_DATE: new Date().toLocaleDateString(),
-        COURSE_URL: `${process.env.APP_URL}/courses/${courseData.courseId}`
+        instructorName: courseData.instructor?.name || courseData.instructorName || '',
+        courseName: courseData.name || '',
+        courseId: courseData.courseId || '',
+        updateDate: new Date().toLocaleDateString(),
+        updateTime: new Date().toLocaleTimeString(),
+        courseUrl: `${process.env.APP_URL || 'http://localhost:3000'}/courses/${courseData.courseId}`,
+        supportEmail: process.env.SUPPORT_EMAIL || 'support@example.com',
+        supportPhone: process.env.SUPPORT_PHONE || '+1-800-000-0000'
     };
 
     return await sendTemplateEmail(
-        process.env.ADMIN_EMAIL || 'admin@example.com',
+        instructorEmail,
         `Course Updated: ${courseData.name}`,
         'course-update-email',
         variables
@@ -447,15 +481,20 @@ const sendCourseUpdateEmail = async (courseData) => {
  * Send course deletion email
  */
 const sendCourseDeletionEmail = async (courseData) => {
+    const instructorEmail = courseData.instructor?.email || courseData.instructorEmail || process.env.ADMIN_EMAIL || 'admin@example.com';
     const variables = {
-        COURSE_NAME: courseData.name || '',
-        COURSE_ID: courseData.courseId || '',
-        DELETION_DATE: new Date().toLocaleDateString(),
-        COURSES_URL: `${process.env.APP_URL}/courses`
+        instructorName: courseData.instructor?.name || courseData.instructorName || '',
+        courseName: courseData.name || '',
+        courseId: courseData.courseId || '',
+        deletionDate: new Date().toLocaleDateString(),
+        deletionTime: new Date().toLocaleTimeString(),
+        coursesUrl: `${process.env.APP_URL || 'http://localhost:3000'}/courses`,
+        supportEmail: process.env.SUPPORT_EMAIL || 'support@example.com',
+        supportPhone: process.env.SUPPORT_PHONE || '+1-800-000-0000'
     };
 
     return await sendTemplateEmail(
-        process.env.ADMIN_EMAIL || 'admin@example.com',
+        instructorEmail,
         `Course Deleted: ${courseData.name}`,
         'course-deletion-email',
         variables
@@ -467,9 +506,11 @@ const sendCourseDeletionEmail = async (courseData) => {
  */
 const sendSettingsUpdateEmail = async (settings, adminEmail) => {
     const variables = {
-        ADMIN_EMAIL: adminEmail || '',
-        UPDATE_TIME: new Date().toLocaleString(),
-        SETTINGS_URL: `${process.env.APP_URL}/admin/settings`
+        adminEmail: adminEmail || '',
+        updateTime: new Date().toLocaleString(),
+        settingsUrl: `${process.env.APP_URL || 'http://localhost:3000'}/admin/settings`,
+        supportEmail: process.env.SUPPORT_EMAIL || 'support@example.com',
+        supportPhone: process.env.SUPPORT_PHONE || '+1-800-000-0000'
     };
 
     return await sendTemplateEmail(

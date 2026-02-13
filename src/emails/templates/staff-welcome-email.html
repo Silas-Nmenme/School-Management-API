@@ -105,7 +105,7 @@
             <p style="margin: 10px 0 0 0; color: #666;">Your staff account has been successfully created</p>
         </div>
 
-        <h2>Hello {{FIRSTNAME}} {{LASTNAME}}!</h2>
+        <h2>Hello {{firstname}} {{lastname}}!</h2>
 
         <p>Congratulations! You have been successfully registered as a staff member in our Student Management System. Welcome to the team!</p>
 
@@ -117,13 +117,13 @@
         <div class="staff-info">
             <h3>👤 Your Staff Profile:</h3>
             <ul style="list-style: none; padding: 0;">
-                <li><strong>Staff ID:</strong> {{STAFF_ID}}</li>
-                <li><strong>Name:</strong> {{FIRSTNAME}} {{LASTNAME}}</li>
-                <li><strong>Email:</strong> {{EMAIL}}</li>
-                <li><strong>Phone:</strong> {{PHONE}}</li>
-                <li><strong>Role:</strong> {{ROLE}}</li>
-                <li><strong>Department:</strong> {{DEPARTMENT}}</li>
-                <li><strong>Registration Date:</strong> {{REGISTRATION_DATE}}</li>
+                <li><strong>Staff ID:</strong> {{staffId}}</li>
+                <li><strong>Name:</strong> {{firstname}} {{lastname}}</li>
+                <li><strong>Email:</strong> {{email}}</li>
+                <li><strong>Phone:</strong> {{phone}}</li>
+                <li><strong>Role:</strong> {{role}}</li>
+                <li><strong>Department:</strong> {{department}}</li>
+                <li><strong>Registration Date:</strong> {{registrationDate}}</li>
             </ul>
         </div>
 
@@ -142,13 +142,13 @@
             <h4>🔐 Account Credentials</h4>
             <p><strong>Important:</strong> Please keep your login credentials secure and do not share them with anyone.</p>
             <ul style="list-style: none; padding: 0;">
-                <li><strong>Email:</strong> {{EMAIL}}</li>
-                <li><strong>Temporary Password:</strong> {{TEMP_PASSWORD}}</li>
+                <li><strong>Email:</strong> {{email}}</li>
+                <li><strong>Temporary Password:</strong> {{tempPassword}}</li>
             </ul>
         </div>
 
         <div style="text-align: center; margin: 30px 0;">
-            <a href="{{LOGIN_URL}}" class="button">Login to Staff Portal</a>
+            <a href="{{loginUrl}}" class="button">Login to Staff Portal</a>
         </div>
 
         <div class="warning">
@@ -167,7 +167,7 @@
         <div class="footer">
             <p><strong>Student Management System - Staff Portal</strong></p>
             <p>This is an automated message. Please do not reply to this email.</p>
-            <p>For support: {{SUPPORT_EMAIL}} | {{SUPPORT_PHONE}}</p>
+            <p>For support: {{supportEmail}} | {{supportPhone}}</p>
         </div>
     </div>
 </body>

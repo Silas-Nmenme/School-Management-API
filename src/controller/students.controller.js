@@ -74,12 +74,13 @@ const registerStudent = async (req, res) => {
 
         // Send welcome email using template (non-blocking)
         const studentData = {
-            Firstname: newStudent.Firstname,
+            Fistname: newStudent.Firstname,
             Lastname: newStudent.Lastname,
             studentId: newStudent.studentId,
             email: newStudent.email,
             age: newStudent.age,
-            phone: newStudent.phone
+            phone: newStudent.phone,
+            registrationDate: new Date(newStudent.createdAt).toLocaleDateString()
         };
         
         try {

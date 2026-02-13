@@ -338,7 +338,13 @@ const addCourse = async (req, res) => {
     // Send course creation notification email to instructor
     try {
         const emailService = getEmailService();
-        emailService.sendCourseCreationEmail(newCourse).catch(emailError => {
+        // Populate instructor data
+        await newCourse.populate('instructor');
+        emailService.sendCourseCreationEmail({
+            ...newCourse.toObject(),
+            instructorName: newCourse.instructor?.Firstname || newCourse.instructor?.firstName || 'Instructor',
+            instructorEmail: newCourse.instructor?.email || process.env.ADMIN_EMAIL || 'admin@example.com'
+        }).catch(emailError => {
             console.error("Failed to send course creation notification email:", emailError.message);
             // Don't fail the course creation if email fails
         });
@@ -375,7 +381,15 @@ const editCourse = async (req, res) => {
         // Send course update notification email to instructor
         try {
             const emailService = getEmailService();
-            emailService.sendCourseUpdateEmail(course).catch(emailError => {
+            // Populate instructor data if not already populated
+            if (!course.instructor?.email) {
+                await course.populate('instructor');
+            }
+            emailService.sendCourseUpdateEmail({
+                ...course.toObject(),
+                instructorName: course.instructor?.Firstname || course.instructor?.firstName || 'Instructor',
+                instructorEmail: course.instructor?.email || process.env.ADMIN_EMAIL || 'admin@example.com'
+            }).catch(emailError => {
                 console.error("Failed to send course update notification email:", emailError.message);
             });
         } catch (emailInitError) {
@@ -400,7 +414,13 @@ const deleteCourse = async (req, res) => {
         // Send course deletion notification email to instructor
         try {
             const emailService = getEmailService();
-            emailService.sendCourseDeletionEmail(deletedCourse).catch(emailError => {
+            // Populate instructor data
+            const populatedCourse = await deletedCourse.populate('instructor');
+            emailService.sendCourseDeletionEmail({
+                ...populatedCourse.toObject(),
+                instructorName: populatedCourse.instructor?.Firstname || populatedCourse.instructor?.firstName || 'Instructor',
+                instructorEmail: populatedCourse.instructor?.email || process.env.ADMIN_EMAIL || 'admin@example.com'
+            }).catch(emailError => {
                 console.error("Failed to send course deletion notification email:", emailError.message);
             });
         } catch (emailInitError) {

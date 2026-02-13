@@ -83,37 +83,24 @@
         </div>
 
         <div class="content">
-            <p>Dear {{FIRST_NAME}} {{LAST_NAME}},</p>
+            <p>Dear {{firstname}},</p>
 
             <p>We have received your campus visit request and appreciate your interest in Bethel College. Our admissions team will review your request and contact you within 2-3 business days to confirm your visit details.</p>
 
             <div class="visit-details">
                 <h3>Your Visit Request Details:</h3>
                 <div class="detail-row">
-                    <span class="detail-label">Visit Date:</span> {{VISIT_DATE}}
+                    <span class="detail-label">Visit Date:</span> {{visitDate}}
                 </div>
                 <div class="detail-row">
-                    <span class="detail-label">Preferred Time:</span> {{VISIT_TIME}}
+                    <span class="detail-label">Preferred Time:</span> {{visitTime}}
                 </div>
                 <div class="detail-row">
-                    <span class="detail-label">Visit Type:</span> {{VISIT_TYPE}}
+                    <span class="detail-label">Visit Purpose:</span> {{purpose}}
                 </div>
                 <div class="detail-row">
-                    <span class="detail-label">Group Size:</span> {{GROUP_SIZE}}
+                    <span class="detail-label">Confirmation Number:</span> {{confirmationNumber}}
                 </div>
-                <div class="detail-row">
-                    <span class="detail-label">Areas of Interest:</span> {{INTERESTS}}
-                </div>
-                <div class="detail-row">
-                    <span class="detail-label">Status:</span>
-                    <span class="status-badge status-{{STATUS}}">{{STATUS}}</span>
-                </div>
-                {{#MESSAGE}}
-                <div class="detail-row">
-                    <span class="detail-label">Additional Message:</span><br>
-                    {{MESSAGE}}
-                </div>
-                {{/MESSAGE}}
             </div>
 
             <p><strong>What happens next?</strong></p>
@@ -126,8 +113,8 @@
             <div class="contact-info">
                 <p><strong>Questions about your visit?</strong></p>
                 <p>Contact our Admissions Office:<br>
-                Email: {{SUPPORT_EMAIL}}<br>
-                Phone: {{SUPPORT_PHONE}}</p>
+                Email: {{supportEmail}}<br>
+                Phone: {{supportPhone}}</p>
             </div>
 
             <p>Best regards,<br>
@@ -136,7 +123,7 @@
         </div>
 
         <div class="footer">
-            <p>This email was sent to {{EMAIL}} on {{SUBMISSION_DATE}}</p>
+            <p>This email was sent to {{email}}</p>
             <p>© 2024 Bethel College. All rights reserved.</p>
         </div>
     </div>
