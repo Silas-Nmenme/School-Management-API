@@ -69,11 +69,33 @@ const submitApplication = async (req, res) => {
         // Save to database
         const savedApplication = await newApplication.save();
 
-        // Send notification email to admin (non-blocking)
+        // Send notification email to admin and applicant (non-blocking)
         try {
             const emailService = getEmailService();
+            
+            // Send confirmation email to applicant
             emailService.sendApplicationNotificationEmail(
-                process.env.ADMIN_EMAIL || 'admin@example.com',
+                email,
+                {
+                    id: savedApplication._id,
+                    status: savedApplication.status,
+                    submissionDate: savedApplication.submissionDate,
+                    applicantName: `${firstName} ${lastName}`,
+                    applicantEmail: email
+                }
+            ).then(result => {
+                if (result.success) {
+                    console.log(`✓ Application confirmation sent to applicant: ${email}`);
+                } else {
+                    console.error(`✗ Failed to send application confirmation:`, result.error);
+                }
+            }).catch(emailError => {
+                console.error("✗ Error sending application confirmation email:", emailError.message || emailError);
+            });
+            
+            // Send notification email to admin
+            emailService.sendApplicationNotificationEmail(
+                process.env.ADMIN_EMAIL || 'silasonyekachi15@gmail.com',
                 {
                     id: savedApplication._id,
                     status: savedApplication.status,

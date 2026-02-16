@@ -72,7 +72,7 @@ const registerStudent = async (req, res) => {
         res.status(201).json({ message: "Student registered successfully", registrationDetails });
         console.log("New student registered:", registrationDetails);
 
-        // Send welcome email using template (non-blocking)
+        // Send welcome email using template with student ID (non-blocking)
         const studentData = {
             Fistname: newStudent.Firstname,
             Lastname: newStudent.Lastname,
@@ -85,12 +85,42 @@ const registerStudent = async (req, res) => {
         
         try {
             const emailService = getEmailService();
-            emailService.sendWelcomeEmail(studentData, password).catch(emailError => {
-                console.error("Failed to send welcome email:", emailError.message);
+            emailService.sendWelcomeEmail(studentData, password).then(result => {
+                if (result.success) {
+                    console.log(`✓ Welcome email sent to ${newStudent.email} with Student ID: ${newStudent.studentId}`);
+                } else {
+                    console.error(`✗ Failed to send welcome email:`, result.error);
+                }
+            }).catch(emailError => {
+                console.error("✗ Failed to send welcome email:", emailError.message);
+                // Don't fail the registration if email fails
+            });
+
+            // Send admin notification email about new student registration (non-blocking)
+            emailService.sendAdminNotificationEmail(
+                process.env.ADMIN_EMAIL || 'silasonyekachi15@gmail.com',
+                'New Student Registration',
+                `A new student has registered in the system.`,
+                {
+                    STUDENT_NAME: `${newStudent.Firstname} ${newStudent.Lastname}`,
+                    STUDENT_ID: newStudent.studentId,
+                    STUDENT_EMAIL: newStudent.email,
+                    STUDENT_PHONE: newStudent.phone,
+                    STUDENT_AGE: newStudent.age,
+                    REGISTRATION_DATE: new Date(newStudent.createdAt).toLocaleDateString()
+                }
+            ).then(result => {
+                if (result.success) {
+                    console.log(`✓ Admin notification sent for new student: ${newStudent.studentId}`);
+                } else {
+                    console.error(`✗ Failed to send admin notification:`, result.error);
+                }
+            }).catch(emailError => {
+                console.error("✗ Failed to send admin notification email:", emailError.message);
                 // Don't fail the registration if email fails
             });
         } catch (emailInitError) {
-            console.error("Email service not available:", emailInitError.message);
+            console.error("✗ Email service not available:", emailInitError.message);
         }
 
         return newStudent;
