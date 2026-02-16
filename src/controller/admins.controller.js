@@ -100,8 +100,11 @@ const editStudent = async (req, res) => {
     const { Firstname, Lastname, email, age, phone } = req.body || {};
     const adminId = req.student.id;
     try {
-        const admin = await Student.findById(adminId);
-        if (admin.isAdmin !== true) {
+        const admin = await Admin.findById(adminId);
+        if (!admin) {
+            return res.status(403).json({ message: "Admin not found" });
+        }
+        if (admin.role !== 'admin') {
             return res.status(403).json({ message: "Only admins can edit student" });
         }
         const student = await Student.findById(id);
