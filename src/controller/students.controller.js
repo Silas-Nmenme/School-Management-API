@@ -627,8 +627,9 @@ const registerForExams = async (req, res) => {
         const studentId = req.student.id;
         const { courseIds } = req.body;
 
+        // Validate input
         if (!courseIds || !Array.isArray(courseIds) || courseIds.length === 0) {
-            return res.status(400).json({ message: "Course IDs are required and must be an array" });
+            return res.status(400).json({ message: "Course IDs are required and must be a non-empty array" });
         }
 
         // Find the student
@@ -639,30 +640,38 @@ const registerForExams = async (req, res) => {
 
         const registeredExams = [];
         const errors = [];
+        
+        // Get course IDs that the student is already registered for
+        const enrolledCourseIds = student.courses.map(c => c.courseId);
+        const registeredExamCourseIds = student.exams.map(e => e.courseId);
 
         for (const courseId of courseIds) {
-            // Find the course (handle both MongoDB _id and courseId formats)
+            // Find the course (handle both MongoDB _id and courseId string formats)
             let course;
-            if (/^[0-9a-fA-F]{24}$/.test(courseId)) {
-                course = await Course.findById(courseId);
-            } else {
-                course = await Course.findOne({ courseId: courseId });
+            try {
+                if (/^[0-9a-fA-F]{24}$/.test(courseId)) {
+                    course = await Course.findById(courseId);
+                } else {
+                    course = await Course.findOne({ courseId: courseId });
+                }
+            } catch (courseError) {
+                errors.push(`Invalid course ID format: ${courseId}`);
+                continue;
             }
+
             if (!course) {
                 errors.push(`Course with ID ${courseId} not found`);
                 continue;
             }
 
-            // Check if student is enrolled in this course
-            const isEnrolled = student.courses.some(c => c._id.toString() === course._id.toString() || c.courseId === course.courseId);
-            if (!isEnrolled) {
+            // Check if student is enrolled in this course (using courseId which is reliably stored)
+            if (!enrolledCourseIds.includes(course.courseId)) {
                 errors.push(`Student is not enrolled in course: ${course.name}`);
                 continue;
             }
 
             // Check if already registered for exam
-            const alreadyRegistered = student.exams.some(e => e.courseId === course.courseId);
-            if (alreadyRegistered) {
+            if (registeredExamCourseIds.includes(course.courseId)) {
                 errors.push(`Already registered for exam in course: ${course.name}`);
                 continue;
             }
@@ -671,15 +680,18 @@ const registerForExams = async (req, res) => {
             student.exams.push({
                 courseId: course.courseId,
                 name: course.name,
-                description: course.description,
-                materials: [] // Can be updated later if needed
+                description: course.description || "",
+                materials: []
             });
 
             registeredExams.push(course.name);
         }
 
         if (registeredExams.length === 0) {
-            return res.status(400).json({ message: "No valid courses to register for exams", errors });
+            return res.status(400).json({ 
+                message: "No valid courses to register for exams", 
+                errors 
+            });
         }
 
         // Add to recent activity
