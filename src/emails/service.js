@@ -69,14 +69,14 @@ const sendEmail = async (to, subject, html) => {
  */
 const sendWelcomeEmail = async (studentData, password) => {
     const variables = {
-        firstname: studentData.Fistname || studentData.firstName || '',
-        lastname: studentData.Lastname || studentData.lastName || '',
+        firstname: studentData.firstname || studentData.firstName || studentData.Firstname || '',
+        lastname: studentData.lastname || studentData.lastName || studentData.Lastname || '',
         studentId: studentData.studentId || '',
         email: studentData.email || '',
         age: studentData.age || '',
         phone: studentData.phone || '',
         registrationDate: studentData.registrationDate || new Date().toLocaleDateString(),
-        loginUrl: `${process.env.APP_URL || 'http://localhost:3000'}/login`,
+        loginUrl: `${process.env.APP_URL || 'https://bethelcollege.netlify.app'}/login`,
         tempPassword: password || 'Check your email for password',
         supportEmail: process.env.SUPPORT_EMAIL || 'support@example.com',
         supportPhone: process.env.SUPPORT_PHONE || '+1-800-000-0000'
@@ -105,7 +105,7 @@ const sendLoginAlert = async (loginData) => {
         SECURITY_STATUS: loginData.isSuspicious ? 'Suspicious' : 'Normal',
         RISK_LEVEL: loginData.riskLevel || (loginData.isSuspicious ? 'High' : 'Low'),
         AUTH_METHOD: loginData.authMethod || 'Password',
-        SECURITY_URL: `${process.env.APP_URL || 'http://localhost:3000'}/security`
+        SECURITY_URL: `${process.env.APP_URL || 'https://bethelcollege.netlify.app'}/security`
     };
 
     const subject = loginData.isSuspicious ? '⚠️ Suspicious Login Detected' : 'New Login to Your Account';
@@ -123,7 +123,7 @@ const sendLoginAlert = async (loginData) => {
  */
 const sendOtpEmail = async (studentData, otp) => {
     const variables = {
-        firstname: studentData.Fistname || studentData.firstName || '',
+        firstname: studentData.Firstname || studentData.firstName || '',
         email: studentData.email || '',
         otp: otp || '',
         requestTime: new Date().toLocaleString(),
@@ -145,10 +145,11 @@ const sendOtpEmail = async (studentData, otp) => {
  */
 const sendPasswordResetEmail = async (studentData) => {
     const variables = {
-        firstname: studentData.Fistname || studentData.firstName || '',
+        firstname: studentData.Firstname || studentData.firstName || '',
+        lastname: studentData.Lastname || studentData.lastName || '',
         email: studentData.email || '',
         resetTime: new Date().toLocaleString(),
-        loginUrl: `${process.env.APP_URL || 'http://localhost:3000'}/login`,
+        loginUrl: `${process.env.APP_URL || 'https://bethelcollege.netlify.app'}/login`,
         supportEmail: process.env.SUPPORT_EMAIL || 'support@example.com',
         supportPhone: process.env.SUPPORT_PHONE || '+1-800-000-0000'
     };
@@ -166,10 +167,10 @@ const sendPasswordResetEmail = async (studentData) => {
  */
 const sendAdminPromotionEmail = async (studentData) => {
     const variables = {
-        firstname: studentData.Fistname || studentData.firstName || '',
+        firstname: studentData.Firstname || studentData.firstName || '',
         lastname: studentData.Lastname || studentData.lastName || '',
         email: studentData.email || '',
-        adminPortalUrl: `${process.env.APP_URL || 'http://localhost:3000'}/admin`,
+        adminPortalUrl: `${process.env.APP_URL || 'https://bethelcollege.netlify.app'}/admin`,
         promotionDate: new Date().toLocaleDateString(),
         supportEmail: process.env.SUPPORT_EMAIL || 'support@example.com',
         supportPhone: process.env.SUPPORT_PHONE || '+1-800-000-0000'
@@ -207,13 +208,13 @@ const sendAdminNotificationEmail = async (adminEmail, subject, message, details 
  */
 const sendCourseRegistrationEmail = async (studentData, courseData) => {
     const variables = {
-        firstname: studentData.Fistname || studentData.firstName || '',
+        firstname: studentData.Firstname || studentData.firstName || '',
         lastname: studentData.Lastname || studentData.lastName || '',
         email: studentData.email || '',
         courseName: courseData.name || '',
         courseId: courseData.courseId || '',
         registrationDate: new Date().toLocaleDateString(),
-        courseUrl: `${process.env.APP_URL || 'http://localhost:3000'}/courses/${courseData.courseId}`,
+        courseUrl: `${process.env.APP_URL || 'https://bethelcollege.netlify.app'}/courses/${courseData.courseId}`,
         instructorName: courseData.instructor?.Firstname || courseData.instructor?.firstName || courseData.instructor?.name || 'Instructor',
         updateDate: new Date().toLocaleDateString(),
         updateTime: new Date().toLocaleTimeString(),
@@ -329,7 +330,7 @@ const sendAdminApplicationNotificationEmail = async (adminEmail, applicationData
         APPLICATION_STATUS: applicationData.status || 'Pending',
         SUBMISSION_DATE: new Date(applicationData.submissionDate).toLocaleDateString() || new Date().toLocaleDateString(),
         SUBMISSION_TIME: new Date(applicationData.submissionDate).toLocaleTimeString() || new Date().toLocaleTimeString(),
-        ADMIN_PORTAL_LINK: `${process.env.APP_URL || 'http://localhost:3000'}/admin/applications/${applicationData._id || applicationData.id}`,
+        ADMIN_PORTAL_LINK: `${process.env.APP_URL || 'https://bethelcollege.netlify.app'}/admin/applications/${applicationData._id || applicationData.id}`,
         supportEmail: process.env.SUPPORT_EMAIL || 'support@example.com',
         SUPPORT_EMAIL: process.env.SUPPORT_EMAIL || 'support@example.com',
         supportPhone: process.env.SUPPORT_PHONE || '+1-800-000-0000',
@@ -349,7 +350,7 @@ const sendAdminApplicationNotificationEmail = async (adminEmail, applicationData
  */
 const sendVisitConfirmationEmail = async (visitorData, visitData) => {
     const variables = {
-        firstname: visitorData.Fistname || visitorData.firstName || '',
+        firstname: visitorData.Firstname || visitorData.firstName || '',
         email: visitorData.email || '',
         visitDate: visitData.visitDate || '',
         visitTime: visitData.visitTime || '',
@@ -420,11 +421,11 @@ const sendVisitDeletionEmail = async (visitData) => {
  */
 const sendProfileUpdateEmail = async (studentData) => {
     const variables = {
-        firstname: studentData.Fistname || studentData.firstName || '',
+        firstname: studentData.Firstname || studentData.firstName || '',
         lastname: studentData.Lastname || studentData.lastName || '',
         email: studentData.email || '',
         updateTime: new Date().toLocaleString(),
-        profileUrl: `${process.env.APP_URL || 'http://localhost:3000'}/profile`,
+        profileUrl: `${process.env.APP_URL || 'https://bethelcollege.netlify.app'}/profile`,
         supportEmail: process.env.SUPPORT_EMAIL || 'support@example.com',
         supportPhone: process.env.SUPPORT_PHONE || '+1-800-000-0000'
     };
@@ -442,13 +443,13 @@ const sendProfileUpdateEmail = async (studentData) => {
  */
 const sendCourseUnregistrationEmail = async (studentData, courseData) => {
     const variables = {
-        firstname: studentData.Fistname || studentData.firstName || '',
+        firstname: studentData.Firstname || studentData.firstName || '',
         lastname: studentData.Lastname || studentData.lastName || '',
         email: studentData.email || '',
         courseName: courseData.name || '',
         courseId: courseData.courseId || '',
         unregistrationDate: new Date().toLocaleDateString(),
-        coursesUrl: `${process.env.APP_URL || 'http://localhost:3000'}/courses`,
+        coursesUrl: `${process.env.APP_URL || 'https://bethelcollege.netlify.app'}/courses`,
         instructorName: courseData.instructor?.Firstname || courseData.instructor?.firstName || courseData.instructor?.name || 'Instructor',
         updateDate: new Date().toLocaleDateString(),
         updateTime: new Date().toLocaleTimeString(),
@@ -489,7 +490,7 @@ const sendSupportRequest = async (supportData) => {
  */
 const sendAccountDeletionEmail = async (userData, options = {}) => {
     const variables = {
-        firstname: userData.Fistname || userData.firstName || '',
+        firstname: userData.Firstname || userData.firstName || '',
         lastname: userData.Lastname || userData.lastName || '',
         email: userData.email || '',
         deletionDate: new Date().toLocaleDateString(),
@@ -512,11 +513,11 @@ const sendAccountDeletionEmail = async (userData, options = {}) => {
  */
 const sendStaffWelcomeEmail = async (staffData) => {
     const variables = {
-        firstname: staffData.Fistname || staffData.firstName || '',
+        firstname: staffData.Firstname || staffData.firstName || '',
         lastname: staffData.Lastname || staffData.lastName || '',
         email: staffData.email || '',
         role: staffData.role || 'Staff',
-        loginUrl: `${process.env.APP_URL || 'http://localhost:3000'}/login`,
+        loginUrl: `${process.env.APP_URL || 'https://bethelcollege.netlify.app'}/login`,
         tempPassword: staffData.tempPassword || 'Check your email for password',
         supportEmail: process.env.SUPPORT_EMAIL || 'support@example.com',
         supportPhone: process.env.SUPPORT_PHONE || '+1-800-000-0000'
@@ -539,7 +540,7 @@ const sendCourseCreationEmail = async (courseData) => {
         courseId: courseData.courseId || '',
         instructor: courseData.instructor || '',
         creationDate: new Date().toLocaleDateString(),
-        courseUrl: `${process.env.APP_URL || 'http://localhost:3000'}/courses/${courseData.courseId}`,
+        courseUrl: `${process.env.APP_URL || 'https://bethelcollege.netlify.app'}/courses/${courseData.courseId}`,
         supportEmail: process.env.SUPPORT_EMAIL || 'support@example.com',
         supportPhone: process.env.SUPPORT_PHONE || '+1-800-000-0000'
     };
@@ -563,7 +564,7 @@ const sendCourseUpdateEmail = async (courseData) => {
         courseId: courseData.courseId || '',
         updateDate: new Date().toLocaleDateString(),
         updateTime: new Date().toLocaleTimeString(),
-        courseUrl: `${process.env.APP_URL || 'http://localhost:3000'}/courses/${courseData.courseId}`,
+        courseUrl: `${process.env.APP_URL || 'https://bethelcollege.netlify.app'}/courses/${courseData.courseId}`,
         supportEmail: process.env.SUPPORT_EMAIL || 'support@example.com',
         supportPhone: process.env.SUPPORT_PHONE || '+1-800-000-0000'
     };
@@ -587,7 +588,7 @@ const sendCourseDeletionEmail = async (courseData) => {
         courseId: courseData.courseId || '',
         deletionDate: new Date().toLocaleDateString(),
         deletionTime: new Date().toLocaleTimeString(),
-        coursesUrl: `${process.env.APP_URL || 'http://localhost:3000'}/courses`,
+        coursesUrl: `${process.env.APP_URL || 'https://bethelcollege.netlify.app'}/courses`,
         supportEmail: process.env.SUPPORT_EMAIL || 'support@example.com',
         supportPhone: process.env.SUPPORT_PHONE || '+1-800-000-0000'
     };
@@ -607,7 +608,7 @@ const sendSettingsUpdateEmail = async (settings, adminEmail) => {
     const variables = {
         adminEmail: adminEmail || '',
         updateTime: new Date().toLocaleString(),
-        settingsUrl: `${process.env.APP_URL || 'http://localhost:3000'}/admin/settings`,
+        settingsUrl: `${process.env.APP_URL || 'https://bethelcollege.netlify.app'}/admin/settings`,
         supportEmail: process.env.SUPPORT_EMAIL || 'support@example.com',
         supportPhone: process.env.SUPPORT_PHONE || '+1-800-000-0000'
     };

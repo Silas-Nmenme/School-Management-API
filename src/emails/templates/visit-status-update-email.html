@@ -125,6 +125,9 @@
                     <span class="detail-label">Confirmation Number:</span> {{confirmationNumber}}
                 </div>
             </div>
+
+            {{#ifEquals status 'confirmed'}}
+            <div class="next-steps">
                 <ul>
                     <li><strong>Arrival:</strong> Please arrive 15 minutes before your scheduled visit time</li>
                     <li><strong>Duration:</strong> Plan for 1.5-2 hours for your campus tour and information session</li>
@@ -133,33 +136,33 @@
                 </ul>
                 <p><strong>Meeting Point:</strong> Admissions Office, Main Building</p>
             </div>
-            {{/STATUS:confirmed}}
+            {{/ifEquals}}
 
-            {{#ADMIN_NOTES}}
+            {{#if ADMIN_NOTES}}
             <div class="next-steps">
                 <h3>Additional Notes from Admissions:</h3>
                 <p>{{ADMIN_NOTES}}</p>
             </div>
-            {{/ADMIN_NOTES}}
+            {{/if}}
 
             <div class="contact-info">
                 <p><strong>Questions or Need to Reschedule?</strong></p>
                 <p>Contact our Admissions Office:<br>
-                <p>Email: {{supportEmail}}<br>
+                Email: {{supportEmail}}<br>
                 Phone: {{supportPhone}}</p>
             </div>
 
-            {{#STATUS:confirmed}}
+            {{#ifEquals status 'confirmed'}}
             <p>We look forward to seeing you on campus and showing you what makes Bethel College special!</p>
-            {{/STATUS:confirmed}}
+            {{/ifEquals}}
 
-            {{#STATUS:cancelled}}
+            {{#ifEquals status 'cancelled'}}
             <p>We're sorry we won't be able to host your visit at this time. Please don't hesitate to contact us if you'd like to schedule a visit for a different date.</p>
-            {{/STATUS:cancelled}}
+            {{/ifEquals}}
 
-            {{#STATUS:pending}}
+            {{#ifEquals status 'pending'}}
             <p>We'll be in touch soon with more details about your visit. Thank you for your patience.</p>
-            {{/STATUS:pending}}
+            {{/ifEquals}}
 
             <p>Best regards,<br>
             The Admissions Team<br>
