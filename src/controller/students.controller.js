@@ -77,7 +77,7 @@ const registerStudent = async (req, res) => {
 
         // Send welcome email using template with student ID (non-blocking)
         const studentData = {
-            Fistname: newStudent.Firstname,
+            Firstname: newStudent.Firstname,
             Lastname: newStudent.Lastname,
             studentId: newStudent.studentId,
             email: newStudent.email,

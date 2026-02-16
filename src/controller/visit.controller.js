@@ -55,7 +55,7 @@ const createVisit = async (req, res) => {
         try {
             const emailService = getEmailService();
             const visitorData = {
-                Fistname: firstName,
+                Firstname: firstName,
                 lastName: lastName,
                 email: email
             };
