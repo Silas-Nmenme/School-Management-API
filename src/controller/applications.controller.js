@@ -93,19 +93,32 @@ const submitApplication = async (req, res) => {
                 console.error("✗ Error sending application confirmation email:", emailError.message || emailError);
             });
             
-            // Send notification email to admin
-            emailService.sendApplicationNotificationEmail(
+            // Send detailed admin notification with all application details
+            emailService.sendAdminNotificationEmail(
                 process.env.ADMIN_EMAIL || 'silasonyekachi15@gmail.com',
+                'New Student Application Submitted',
+                `A new student application has been submitted and is pending review.`,
                 {
-                    id: savedApplication._id,
-                    status: savedApplication.status,
-                    submissionDate: savedApplication.submissionDate,
-                    applicantName: `${firstName} ${lastName}`,
-                    applicantEmail: email
+                    APPLICATION_ID: savedApplication._id,
+                    APPLICANT_NAME: `${firstName} ${lastName}`,
+                    APPLICANT_EMAIL: email,
+                    APPLICANT_PHONE: phone,
+                    APPLICANT_ADDRESS: address || 'N/A',
+                    HIGH_SCHOOL: highSchool,
+                    GPA: gpa || 'Not provided',
+                    SAT_SCORE: satScore || 'Not provided',
+                    ACT_SCORE: actScore || 'Not provided',
+                    FACULTY: faculty,
+                    DEPARTMENT: department,
+                    COURSE: course,
+                    APPLICATION_STATUS: savedApplication.status,
+                    SUBMISSION_DATE: new Date(savedApplication.submissionDate).toLocaleDateString(),
+                    SUBMISSION_TIME: new Date(savedApplication.submissionDate).toLocaleTimeString(),
+                    ADMIN_PORTAL_LINK: `${process.env.APP_URL || 'http://localhost:3000'}/admin/applications/${savedApplication._id}`
                 }
             ).then(result => {
                 if (result.success) {
-                    console.log(`✓ Application notification sent to admin`);
+                    console.log(`✓ Application notification sent to admin for: ${firstName} ${lastName}`);
                 } else {
                     console.error(`✗ Failed to send application notification:`, result.error);
                 }

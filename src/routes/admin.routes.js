@@ -6,6 +6,7 @@ const {
     addCourse, editCourse, deleteCourse, getAllCourses,
     generateStudentReport, generateCourseAnalytics,
     getDashboardOverview,
+    getAllApplications, getRecentApplications, getApplicationById, updateApplicationStatus, getApplicationsByStatus,
     adminRegister, adminLogin
 } = require('../controller/admins.controller.js');
 const {isAuthenticated} = require('../middlewares/isAuth.js');
@@ -35,6 +36,13 @@ router.get('/reports/courses', isAuthenticated, generateCourseAnalytics);
 
 // Dashboard Routes
 router.get('/dashboard/overview', isAuthenticated, getDashboardOverview);
+
+// Applications Management Routes
+router.get('/applications', isAuthenticated, getAllApplications);
+router.get('/applications/recent', isAuthenticated, getRecentApplications);
+router.get('/applications/:applicationId', isAuthenticated, getApplicationById);
+router.put('/applications/:applicationId/status', isAuthenticated, updateApplicationStatus);
+router.get('/applications/filter/:status', isAuthenticated, getApplicationsByStatus);
 
 // Admin Authentication Routes
 router.post('/register', adminRegister);

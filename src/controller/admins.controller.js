@@ -3,6 +3,7 @@ const Staff = require("../models/staff.schema.js");
 const Admin = require("../models/admin.schema.js");
 const Course = require("../models/course.schema.js");
 const Settings = require("../models/settings.schema.js");
+const Application = require("../models/application.schema.js");
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
 const saltRounds = 10;
@@ -545,15 +546,152 @@ const getDashboardOverview = async (req, res) => {
         const totalStudents = await Student.countDocuments();
         const activeCourses = await Course.countDocuments({ isActive: true });
         const staffMembers = await Staff.countDocuments();
+        const pendingApplications = await Application.countDocuments({ status: 'Pending' });
+        const totalApplications = await Application.countDocuments();
+        const recentApplications = await Application.find().sort({ submissionDate: -1 }).limit(5);
         const systemUptime = 98; // This would typically be calculated from server metrics
         res.status(200).json({
             totalStudents,
             activeCourses,
             staffMembers,
+            totalApplications,
+            pendingApplications,
+            recentApplications,
             systemUptime
         });
     } catch (error) {
         console.error("Error fetching dashboard overview:", error);
+        res.status(500).json({ message: "Internal server error" });
+    }
+};
+
+// Application Management Functions
+const getAllApplications = async (req, res) => {
+    try {
+        const applications = await Application.find().sort({ submissionDate: -1 });
+        res.status(200).json({
+            message: "All applications fetched successfully",
+            totalApplications: applications.length,
+            applications
+        });
+    } catch (error) {
+        console.error("Error fetching applications:", error);
+        res.status(500).json({ message: "Internal server error" });
+    }
+};
+
+const getRecentApplications = async (req, res) => {
+    try {
+        const limit = req.query.limit ? parseInt(req.query.limit) : 10;
+        const applications = await Application.find()
+            .sort({ submissionDate: -1 })
+            .limit(limit);
+        res.status(200).json({
+            message: "Recent applications fetched successfully",
+            totalApplications: applications.length,
+            applications
+        });
+    } catch (error) {
+        console.error("Error fetching recent applications:", error);
+        res.status(500).json({ message: "Internal server error" });
+    }
+};
+
+const getApplicationById = async (req, res) => {
+    try {
+        const { applicationId } = req.params;
+        const application = await Application.findById(applicationId);
+        if (!application) {
+            return res.status(404).json({ message: "Application not found" });
+        }
+        res.status(200).json({
+            message: "Application fetched successfully",
+            application
+        });
+    } catch (error) {
+        console.error("Error fetching application:", error);
+        res.status(500).json({ message: "Internal server error" });
+    }
+};
+
+const updateApplicationStatus = async (req, res) => {
+    try {
+        const { applicationId } = req.params;
+        const { status, remarks } = req.body;
+
+        // Validate status
+        const validStatuses = ['Pending', 'Under Review', 'Approved', 'Rejected', 'Accepted'];
+        if (!validStatuses.includes(status)) {
+            return res.status(400).json({
+                message: `Invalid status. Must be one of: ${validStatuses.join(', ')}`
+            });
+        }
+
+        const application = await Application.findByIdAndUpdate(
+            applicationId,
+            { status, remarks, reviewedAt: new Date() },
+            { new: true }
+        );
+
+        if (!application) {
+            return res.status(404).json({ message: "Application not found" });
+        }
+
+        // Send status update email to applicant
+        try {
+            const emailService = getEmailService();
+            emailService.sendApplicationNotificationEmail(
+                application.email,
+                {
+                    id: application._id,
+                    status: application.status,
+                    submissionDate: application.submissionDate,
+                    applicantName: `${application.firstName} ${application.lastName}`,
+                    applicantEmail: application.email,
+                    remarks: remarks || ''
+                }
+            ).then(result => {
+                if (result.success) {
+                    console.log(`✓ Status update email sent to applicant: ${application.email}`);
+                } else {
+                    console.error(`✗ Failed to send status update email:`, result.error);
+                }
+            }).catch(emailError => {
+                console.error("✗ Error sending status update email:", emailError.message || emailError);
+            });
+        } catch (emailInitError) {
+            console.error("✗ Email service not available:", emailInitError.message);
+        }
+
+        res.status(200).json({
+            message: "Application status updated successfully",
+            application
+        });
+    } catch (error) {
+        console.error("Error updating application status:", error);
+        res.status(500).json({ message: "Internal server error" });
+    }
+};
+
+const getApplicationsByStatus = async (req, res) => {
+    try {
+        const { status } = req.params;
+        const validStatuses = ['Pending', 'Under Review', 'Approved', 'Rejected', 'Accepted'];
+        
+        if (!validStatuses.includes(status)) {
+            return res.status(400).json({
+                message: `Invalid status. Must be one of: ${validStatuses.join(', ')}`
+            });
+        }
+
+        const applications = await Application.find({ status }).sort({ submissionDate: -1 });
+        res.status(200).json({
+            message: `Applications with status '${status}' fetched successfully`,
+            totalApplications: applications.length,
+            applications
+        });
+    } catch (error) {
+        console.error("Error fetching applications by status:", error);
         res.status(500).json({ message: "Internal server error" });
     }
 };
@@ -668,6 +806,11 @@ module.exports = {
     getSettings,
     updateSettings,
     getDashboardOverview,
+    getAllApplications,
+    getRecentApplications,
+    getApplicationById,
+    updateApplicationStatus,
+    getApplicationsByStatus,
     adminRegister,
     adminLogin
 };

@@ -13,10 +13,15 @@ const generateStudentId = () => {
 };
 
 const registerStudent = async (req, res) => {
-       const { Firstname, Lastname, email, age, phone, password, confirmpassword } = req.body;
+       const { studentId, Firstname, Lastname, email, age, phone, password, confirmpassword } = req.body;
     // Validate required fields
-    if (!Firstname || !Lastname || !email || !age || !phone || !password || !confirmpassword) {
-        return res.status(400).json({ message: "All fields are required" });
+    if (!studentId || !Firstname || !Lastname || !email || !age || !phone || !password || !confirmpassword) {
+        return res.status(400).json({ message: "All fields are required including studentId" });
+    }
+    
+    // Verify that studentId is valid and exists (check format and in system)
+    if (!studentId.toString().trim()) {
+        return res.status(400).json({ message: "studentId cannot be empty" });
     }
        const parsedAge = Number(age);
     if (isNaN(parsedAge) || parsedAge <= 0) {
@@ -39,9 +44,7 @@ const registerStudent = async (req, res) => {
         // Hash the password
         const hashedPassword = await bcrypt.hash(password, saltRounds);
 
-        const studentId = generateStudentId(); // Generate a unique student ID
-
-        // Create a new student
+        // Create a new student using the provided studentId
          const newStudent = new Student({
         studentId,
         Firstname,
