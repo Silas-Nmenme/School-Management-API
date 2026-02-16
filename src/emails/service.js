@@ -234,19 +234,63 @@ const sendCourseRegistrationEmail = async (studentData, courseData) => {
  */
 const sendApplicationNotificationEmail = async (email, applicationData) => {
     const variables = {
-        email: email || '',
-        applicationId: applicationData.id || '',
-        applicationStatus: applicationData.status || 'Pending',
-        submissionDate: applicationData.submissionDate || new Date().toLocaleDateString(),
-        applicationUrl: `${process.env.APP_URL || 'http://localhost:3000'}/applications/${applicationData.id}`,
+        APPLICANT_NAME: applicationData.applicantName || '',
+        EMAIL: email || '',
+        APPLICATION_ID: applicationData.id || '',
+        APPLICATION_STATUS: applicationData.status || 'Pending',
+        SUBMISSION_DATE: applicationData.submissionDate || new Date().toLocaleDateString(),
+        SUBMISSION_TIME: new Date(applicationData.submissionDate).toLocaleTimeString() || new Date().toLocaleTimeString(),
+        FACULTY: applicationData.faculty || '',
+        DEPARTMENT: applicationData.department || '',
+        COURSE: applicationData.course || '',
+        REMARKS: applicationData.remarks || '',
+        REVIEW_DATE: applicationData.reviewedAt ? new Date(applicationData.reviewedAt).toLocaleDateString() : new Date().toLocaleDateString(),
         supportEmail: process.env.SUPPORT_EMAIL || 'support@example.com',
-        supportPhone: process.env.SUPPORT_PHONE || '+1-800-000-0000'
+        SUPPORT_EMAIL: process.env.SUPPORT_EMAIL || 'support@example.com',
+        supportPhone: process.env.SUPPORT_PHONE || '+1-800-000-0000',
+        SUPPORT_PHONE: process.env.SUPPORT_PHONE || '+1-800-000-0000'
     };
 
     return await sendTemplateEmail(
         email,
         'Application Status Update',
         'application-notification-email',
+        variables
+    );
+};
+
+/**
+ * Send application notification email to admin
+ */
+const sendAdminApplicationNotificationEmail = async (adminEmail, applicationData) => {
+    const variables = {
+        APPLICATION_ID: applicationData._id || applicationData.id || '',
+        APPLICANT_NAME: `${applicationData.firstName} ${applicationData.lastName}` || '',
+        APPLICANT_EMAIL: applicationData.email || '',
+        APPLICANT_PHONE: applicationData.phone || '',
+        APPLICANT_ADDRESS: applicationData.address || 'N/A',
+        HIGH_SCHOOL: applicationData.highSchool || '',
+        GPA: applicationData.gpa || 'Not provided',
+        SAT_SCORE: applicationData.satScore || 'Not provided',
+        ACT_SCORE: applicationData.actScore || 'Not provided',
+        FACULTY: applicationData.faculty || '',
+        DEPARTMENT: applicationData.department || '',
+        COURSE: applicationData.course || '',
+        ESSAY: applicationData.essay || 'No essay provided',
+        APPLICATION_STATUS: applicationData.status || 'Pending',
+        SUBMISSION_DATE: new Date(applicationData.submissionDate).toLocaleDateString() || new Date().toLocaleDateString(),
+        SUBMISSION_TIME: new Date(applicationData.submissionDate).toLocaleTimeString() || new Date().toLocaleTimeString(),
+        ADMIN_PORTAL_LINK: `${process.env.APP_URL || 'http://localhost:3000'}/admin/applications/${applicationData._id || applicationData.id}`,
+        supportEmail: process.env.SUPPORT_EMAIL || 'support@example.com',
+        SUPPORT_EMAIL: process.env.SUPPORT_EMAIL || 'support@example.com',
+        supportPhone: process.env.SUPPORT_PHONE || '+1-800-000-0000',
+        SUPPORT_PHONE: process.env.SUPPORT_PHONE || '+1-800-000-0000'
+    };
+
+    return await sendTemplateEmail(
+        adminEmail,
+        'New Student Application Submitted - Action Required',
+        'admin-application-notification',
         variables
     );
 };
@@ -541,6 +585,7 @@ const getEmailService = () => {
         sendAdminNotificationEmail,
         sendCourseRegistrationEmail,
         sendApplicationNotificationEmail,
+        sendAdminApplicationNotificationEmail,
         sendVisitConfirmationEmail,
         sendVisitStatusUpdateEmail,
         sendVisitDeletionEmail,
@@ -567,6 +612,7 @@ module.exports = {
     sendAdminNotificationEmail,
     sendCourseRegistrationEmail,
     sendApplicationNotificationEmail,
+    sendAdminApplicationNotificationEmail,
     sendVisitConfirmationEmail,
     sendVisitStatusUpdateEmail,
     sendVisitDeletionEmail,

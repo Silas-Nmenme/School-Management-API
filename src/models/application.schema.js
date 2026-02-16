@@ -65,6 +65,18 @@ const applicationSchema = new mongoose.Schema({
     maxlength: 2000,
     trim: true
   },
+  status: {
+    type: String,
+    enum: ['Pending', 'Under Review', 'Approved', 'Rejected', 'Accepted'],
+    default: 'Pending'
+  },
+  remarks: {
+    type: String,
+    trim: true
+  },
+  reviewedAt: {
+    type: Date
+  },
   submissionDate: {
     type: Date,
     default: Date.now

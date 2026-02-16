@@ -1,6 +1,9 @@
 const Application = require("../models/application.schema.js");
 const { getEmailService } = require("../emails/service.js");
 
+// Valid application statuses aligned with admin controller
+const VALID_STATUSES = ['Pending', 'Under Review', 'Approved', 'Rejected', 'Accepted'];
+
 const submitApplication = async (req, res) => {
     try {
         const {
@@ -49,7 +52,7 @@ const submitApplication = async (req, res) => {
             return res.status(400).json({ message: "ACT score must be between 1 and 36" });
         }
 
-        // Create new application
+        // Create new application with initial status 'Pending'
         const newApplication = new Application({
             firstName,
             lastName,
@@ -63,13 +66,15 @@ const submitApplication = async (req, res) => {
             faculty,
             department,
             course,
-            essay
+            essay,
+            status: 'Pending', // Explicitly set initial status
+            submissionDate: new Date()
         });
 
         // Save to database
         const savedApplication = await newApplication.save();
 
-        // Send notification email to admin and applicant (non-blocking)
+        // Send notification emails to admin and applicant (non-blocking)
         try {
             const emailService = getEmailService();
             
@@ -77,11 +82,14 @@ const submitApplication = async (req, res) => {
             emailService.sendApplicationNotificationEmail(
                 email,
                 {
+                    applicantName: `${firstName} ${lastName}`,
                     id: savedApplication._id,
                     status: savedApplication.status,
                     submissionDate: savedApplication.submissionDate,
-                    applicantName: `${firstName} ${lastName}`,
-                    applicantEmail: email
+                    faculty: faculty,
+                    department: department,
+                    course: course,
+                    remarks: ''
                 }
             ).then(result => {
                 if (result.success) {
@@ -94,28 +102,9 @@ const submitApplication = async (req, res) => {
             });
             
             // Send detailed admin notification with all application details
-            emailService.sendAdminNotificationEmail(
+            emailService.sendAdminApplicationNotificationEmail(
                 process.env.ADMIN_EMAIL || 'silasonyekachi15@gmail.com',
-                'New Student Application Submitted',
-                `A new student application has been submitted and is pending review.`,
-                {
-                    APPLICATION_ID: savedApplication._id,
-                    APPLICANT_NAME: `${firstName} ${lastName}`,
-                    APPLICANT_EMAIL: email,
-                    APPLICANT_PHONE: phone,
-                    APPLICANT_ADDRESS: address || 'N/A',
-                    HIGH_SCHOOL: highSchool,
-                    GPA: gpa || 'Not provided',
-                    SAT_SCORE: satScore || 'Not provided',
-                    ACT_SCORE: actScore || 'Not provided',
-                    FACULTY: faculty,
-                    DEPARTMENT: department,
-                    COURSE: course,
-                    APPLICATION_STATUS: savedApplication.status,
-                    SUBMISSION_DATE: new Date(savedApplication.submissionDate).toLocaleDateString(),
-                    SUBMISSION_TIME: new Date(savedApplication.submissionDate).toLocaleTimeString(),
-                    ADMIN_PORTAL_LINK: `${process.env.APP_URL || 'http://localhost:3000'}/admin/applications/${savedApplication._id}`
-                }
+                savedApplication
             ).then(result => {
                 if (result.success) {
                     console.log(`✓ Application notification sent to admin for: ${firstName} ${lastName}`);
@@ -133,6 +122,7 @@ const submitApplication = async (req, res) => {
         res.status(201).json({
             message: "Application submitted successfully",
             applicationId: savedApplication._id,
+            status: savedApplication.status,
             submissionDate: savedApplication.submissionDate
         });
 
@@ -141,7 +131,8 @@ const submitApplication = async (req, res) => {
             email: savedApplication.email,
             faculty: savedApplication.faculty,
             department: savedApplication.department,
-            course: savedApplication.course
+            course: savedApplication.course,
+            status: savedApplication.status
         });
 
     } catch (error) {
@@ -150,6 +141,64 @@ const submitApplication = async (req, res) => {
     }
 };
 
+// Get application status
+const getApplicationStatus = async (req, res) => {
+    try {
+        const { applicationId } = req.params;
+        const application = await Application.findById(applicationId);
+        
+        if (!application) {
+            return res.status(404).json({ message: "Application not found" });
+        }
+
+        res.status(200).json({
+            message: "Application status retrieved successfully",
+            applicationId: application._id,
+            status: application.status,
+            remarks: application.remarks || null,
+            submissionDate: application.submissionDate,
+            reviewedAt: application.reviewedAt || null
+        });
+    } catch (error) {
+        console.error("Error fetching application status:", error);
+        res.status(500).json({ message: "Internal server error" });
+    }
+};
+
+// Get application details (for applicant view)
+const getApplicationDetails = async (req, res) => {
+    try {
+        const { applicationId } = req.params;
+        const application = await Application.findById(applicationId);
+        
+        if (!application) {
+            return res.status(404).json({ message: "Application not found" });
+        }
+
+        res.status(200).json({
+            message: "Application details retrieved successfully",
+            application: {
+                _id: application._id,
+                firstName: application.firstName,
+                lastName: application.lastName,
+                email: application.email,
+                faculty: application.faculty,
+                department: application.department,
+                course: application.course,
+                status: application.status,
+                remarks: application.remarks || null,
+                submissionDate: application.submissionDate,
+                reviewedAt: application.reviewedAt || null
+            }
+        });
+    } catch (error) {
+        console.error("Error fetching application details:", error);
+        res.status(500).json({ message: "Internal server error" });
+    }
+};
+
 module.exports = {
-    submitApplication
+    submitApplication,
+    getApplicationStatus,
+    getApplicationDetails
 };

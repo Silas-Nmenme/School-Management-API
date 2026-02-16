@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>New University Application Received</title>
+    <title>Application Status Update</title>
     <style>
         body {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
@@ -22,41 +22,90 @@
         }
         .header {
             text-align: center;
-            border-bottom: 3px solid #28a745;
+            border-bottom: 3px solid #007bff;
             padding-bottom: 20px;
             margin-bottom: 30px;
         }
         .header h1 {
-            color: #28a745;
+            color: #007bff;
             margin: 0;
             font-size: 28px;
+        }
+        .status-badge {
+            display: inline-block;
+            padding: 10px 20px;
+            border-radius: 20px;
+            font-weight: bold;
+            margin: 15px 0;
+            text-align: center;
+        }
+        .status-pending {
+            background-color: #fff3cd;
+            color: #856404;
+            border: 2px solid #ffc107;
+        }
+        .status-under-review {
+            background-color: #d1ecf1;
+            color: #0c5460;
+            border: 2px solid #17a2b8;
+        }
+        .status-approved {
+            background-color: #d4edda;
+            color: #155724;
+            border: 2px solid #28a745;
+        }
+        .status-accepted {
+            background-color: #d4edda;
+            color: #155724;
+            border: 2px solid #28a745;
+        }
+        .status-rejected {
+            background-color: #f8d7da;
+            color: #721c24;
+            border: 2px solid #dc3545;
         }
         .application-info {
             background-color: #f8f9fa;
             padding: 20px;
             border-radius: 8px;
             margin: 20px 0;
-            border-left: 4px solid #28a745;
+            border-left: 4px solid #007bff;
         }
         .application-info h3 {
             margin-top: 0;
-            color: #28a745;
+            color: #007bff;
         }
-        .academic-info {
-            background-color: #e9ecef;
+        .remarks-section {
+            background-color: #f8f9fa;
             padding: 15px;
             border-radius: 5px;
-            margin: 15px 0;
+            border-left: 4px solid #6c757d;
+            margin: 20px 0;
+        }
+        .remarks-section h4 {
+            margin-top: 0;
+            color: #6c757d;
         }
         .button {
             display: inline-block;
-            background-color: #28a745;
+            background-color: #007bff;
             color: white;
             padding: 12px 30px;
             text-decoration: none;
             border-radius: 5px;
             margin: 20px 0;
             font-weight: bold;
+        }
+        .next-steps {
+            background-color: #e7f3ff;
+            padding: 15px;
+            border-radius: 5px;
+            border-left: 4px solid #007bff;
+            margin: 20px 0;
+        }
+        .next-steps h4 {
+            margin-top: 0;
+            color: #007bff;
         }
         .footer {
             text-align: center;
@@ -66,72 +115,103 @@
             color: #666;
             font-size: 14px;
         }
-        .priority {
-            background-color: #d4edda;
-            border: 1px solid #c3e6cb;
-            color: #155724;
-            padding: 10px;
+        .timeline {
+            margin: 20px 0;
+            padding: 15px;
+            background-color: #f8f9fa;
             border-radius: 5px;
-            margin: 15px 0;
-            text-align: center;
-            font-weight: bold;
+        }
+        .timeline-item {
+            margin: 10px 0;
+            padding-left: 20px;
+            border-left: 3px solid #007bff;
+            padding: 10px 15px;
+        }
+        ul {
+            margin: 10px 0;
+            padding-left: 20px;
+        }
+        li {
+            margin: 5px 0;
         }
     </style>
 </head>
 <body>
     <div class="container">
         <div class="header">
-            <h1>📝 New University Application</h1>
-            <p style="margin: 10px 0 0 0; color: #666;">A prospective student has submitted an application</p>
+            <h1>📋 Application Status Update</h1>
+            <p style="margin: 10px 0 0 0; color: #666;">Your admission application status has been updated</p>
         </div>
 
-        <div class="priority">
-            🎯 New Application Requires Review
-        </div>
+        <p>Dear {{APPLICANT_NAME}},</p>
 
-        <h2>Application Details</h2>
+        <p>Thank you for submitting your application to our institution. We have reviewed your submission and are pleased to inform you of your current application status.</p>
+
+        <div style="text-align: center;">
+            <div class="status-badge status-{{APPLICATION_STATUS}}">
+                {{APPLICATION_STATUS}}
+            </div>
+        </div>
 
         <div class="application-info">
-            <h3>👤 Personal Information:</h3>
+            <h3>📝 Application Summary:</h3>
             <ul style="list-style: none; padding: 0;">
-                <li><strong>Full Name:</strong> {{FIRST_NAME}} {{LAST_NAME}}</li>
-                <li><strong>Email:</strong> {{EMAIL}}</li>
-                <li><strong>Phone:</strong> {{PHONE}}</li>
-                <li><strong>Address:</strong> {{ADDRESS}}</li>
-                <li><strong>Submission Date:</strong> {{SUBMISSION_DATE}}</li>
-            </ul>
-        </div>
-
-        <div class="academic-info">
-            <h4>🎓 Academic Background:</h4>
-            <ul style="list-style: none; padding: 0;">
-                <li><strong>High School:</strong> {{HIGH_SCHOOL}}</li>
-                <li><strong>GPA:</strong> {{GPA}}</li>
-                <li><strong>SAT Score:</strong> {{SAT_SCORE}}</li>
-                <li><strong>ACT Score:</strong> {{ACT_SCORE}}</li>
-                <li><strong>Faculty:</strong> {{FACULTY}}</li>
-                <li><strong>Department:</strong> {{DEPARTMENT}}</li>
+                <li><strong>Application ID:</strong> {{APPLICATION_ID}}</li>
+                <li><strong>Submitted:</strong> {{SUBMISSION_DATE}} at {{SUBMISSION_TIME}}</li>
+                <li><strong>Program Applied For:</strong> {{FACULTY}} - {{DEPARTMENT}}</li>
                 <li><strong>Course:</strong> {{COURSE}}</li>
+                <li><strong>Current Status:</strong> {{APPLICATION_STATUS}}</li>
+                <li><strong>Last Reviewed:</strong> {{REVIEW_DATE}}</li>
             </ul>
         </div>
 
-        <div class="application-info">
-            <h3>📄 Personal Statement:</h3>
-            <p style="background-color: #f8f9fa; padding: 15px; border-radius: 5px; border-left: 4px solid #6c757d;">
-                {{ESSAY}}
-            </p>
+        {{#if REMARKS}}
+        <div class="remarks-section">
+            <h4>📌 Remarks from Review Committee:</h4>
+            <p>{{REMARKS}}</p>
+        </div>
+        {{/if}}
+
+        <div class="next-steps">
+            <h4>🎯 What's Next?</h4>
+            {{#if APPLICATION_STATUS "Pending"}}
+                <p>Your application is currently in our review queue. Our admissions committee will carefully evaluate your qualifications and will contact you within 5-7 business days with a decision.</p>
+            {{else if APPLICATION_STATUS "Under Review"}}
+                <p>Your application is currently being reviewed by our admissions committee. We will notify you of the outcome shortly. In the meantime, please ensure we have your correct contact information.</p>
+            {{else if APPLICATION_STATUS "Approved"}}
+                <p>Congratulations! Your application has been approved. We will be in touch with you shortly regarding the next steps in the admission process, including enrollment details and required documentation.</p>
+            {{else if APPLICATION_STATUS "Accepted"}}
+                <p>🎉 Welcome to our institution! Your application has been accepted. Please complete your enrollment process by following the instructions we'll send you shortly. If you have any questions, don't hesitate to contact our admissions office.</p>
+            {{else if APPLICATION_STATUS "Rejected"}}
+                <p>Thank you for considering our institution. Unfortunately, at this time, we are unable to offer you admission. We encourage you to apply again in the future. For more information or to discuss your application, please contact our admissions office.</p>
+            {{/if}}
+        </div>
+
+        <div class="timeline">
+            <h4 style="margin-top: 0;">📅 Application Timeline:</h4>
+            <div class="timeline-item">
+                <strong>Submitted:</strong> {{SUBMISSION_DATE}}
+            </div>
+            {{#if REVIEW_DATE}}
+            <div class="timeline-item">
+                <strong>Reviewed:</strong> {{REVIEW_DATE}}
+            </div>
+            {{/if}}
+            <div class="timeline-item">
+                <strong>Current Status:</strong> {{APPLICATION_STATUS}}
+            </div>
         </div>
 
         <div style="text-align: center; margin: 30px 0;">
-            <a href="{{ADMIN_DASHBOARD_URL}}" class="button">Review Application</a>
+            <p><strong>Questions? We're here to help!</strong></p>
+            <p>📧 {{SUPPORT_EMAIL}}</p>
+            <p>📞 {{SUPPORT_PHONE}}</p>
         </div>
 
-        <p>Please review this application and take appropriate action. Contact the applicant if additional information is needed.</p>
-
         <div class="footer">
-            <p><strong>Bethel College Admissions</strong></p>
-            <p>This is an automated notification. Please do not reply to this email.</p>
-            <p>For support: {{SUPPORT_EMAIL}} | {{SUPPORT_PHONE}}</p>
+            <p><strong>Admissions Office</strong></p>
+            <p>Thank you for your interest in our institution!</p>
+            <p>This is an automated notification. Please do not reply to this email. Use the contact information above to reach our admissions team.</p>
         </div>
     </div>
 </body>
