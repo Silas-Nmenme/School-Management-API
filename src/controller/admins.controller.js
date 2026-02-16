@@ -644,10 +644,15 @@ const updateApplicationStatus = async (req, res) => {
                 application.email,
                 {
                     id: application._id,
+                    studentId: application.studentId,
                     status: application.status,
                     submissionDate: application.submissionDate,
+                    reviewedAt: application.reviewedAt,
                     applicantName: `${application.firstName} ${application.lastName}`,
                     applicantEmail: application.email,
+                    faculty: application.faculty,
+                    department: application.department,
+                    course: application.course,
                     remarks: remarks || ''
                 }
             ).then(result => {

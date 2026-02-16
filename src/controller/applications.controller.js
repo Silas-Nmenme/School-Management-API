@@ -7,6 +7,7 @@ const VALID_STATUSES = ['Pending', 'Under Review', 'Approved', 'Rejected', 'Acce
 const submitApplication = async (req, res) => {
     try {
         const {
+            studentId,
             firstName,
             lastName,
             email,
@@ -54,6 +55,7 @@ const submitApplication = async (req, res) => {
 
         // Create new application with initial status 'Pending'
         const newApplication = new Application({
+            studentId: studentId || null,
             firstName,
             lastName,
             email,
@@ -84,6 +86,7 @@ const submitApplication = async (req, res) => {
                 {
                     applicantName: `${firstName} ${lastName}`,
                     id: savedApplication._id,
+                    studentId: savedApplication.studentId,
                     status: savedApplication.status,
                     submissionDate: savedApplication.submissionDate,
                     faculty: faculty,

@@ -33,11 +33,12 @@
         }
         .status-badge {
             display: inline-block;
-            padding: 10px 20px;
-            border-radius: 20px;
+            padding: 12px 25px;
+            border-radius: 25px;
             font-weight: bold;
             margin: 15px 0;
             text-align: center;
+            font-size: 16px;
         }
         .status-pending {
             background-color: #fff3cd;
@@ -76,15 +77,21 @@
             color: #007bff;
         }
         .remarks-section {
-            background-color: #f8f9fa;
+            background-color: #fffbea;
             padding: 15px;
             border-radius: 5px;
-            border-left: 4px solid #6c757d;
+            border-left: 4px solid #ffc107;
             margin: 20px 0;
         }
         .remarks-section h4 {
             margin-top: 0;
-            color: #6c757d;
+            color: #856404;
+        }
+        .remarks-content {
+            background-color: #ffffff;
+            padding: 10px;
+            border-radius: 3px;
+            border: 1px solid #ffc107;
         }
         .button {
             display: inline-block;
@@ -134,6 +141,13 @@
         li {
             margin: 5px 0;
         }
+        .contact-box {
+            text-align: center;
+            margin: 30px 0;
+        }
+        .contact-box p {
+            margin: 8px 0;
+        }
     </style>
 </head>
 <body>
@@ -148,7 +162,7 @@
         <p>Thank you for submitting your application to our institution. We have reviewed your submission and are pleased to inform you of your current application status.</p>
 
         <div style="text-align: center;">
-            <div class="status-badge status-{{APPLICATION_STATUS}}">
+            <div class="status-badge status-{{STATUS_CLASS}}">
                 {{APPLICATION_STATUS}}
             </div>
         </div>
@@ -156,8 +170,10 @@
         <div class="application-info">
             <h3>📝 Application Summary:</h3>
             <ul style="list-style: none; padding: 0;">
+                <li><strong>Full Name:</strong> {{APPLICANT_NAME}}</li>
+                <li><strong>Student ID:</strong> {{STUDENT_ID}}</li>
                 <li><strong>Application ID:</strong> {{APPLICATION_ID}}</li>
-                <li><strong>Submitted:</strong> {{SUBMISSION_DATE}} at {{SUBMISSION_TIME}}</li>
+                <li><strong>Submitted:</strong> {{SUBMISSION_DATE}}</li>
                 <li><strong>Program Applied For:</strong> {{FACULTY}} - {{DEPARTMENT}}</li>
                 <li><strong>Course:</strong> {{COURSE}}</li>
                 <li><strong>Current Status:</strong> {{APPLICATION_STATUS}}</li>
@@ -165,26 +181,11 @@
             </ul>
         </div>
 
-        {{#if REMARKS}}
-        <div class="remarks-section">
-            <h4>📌 Remarks from Review Committee:</h4>
-            <p>{{REMARKS}}</p>
-        </div>
-        {{/if}}
+        {{REMARKS_SECTION}}
 
         <div class="next-steps">
             <h4>🎯 What's Next?</h4>
-            {{#if APPLICATION_STATUS "Pending"}}
-                <p>Your application is currently in our review queue. Our admissions committee will carefully evaluate your qualifications and will contact you within 5-7 business days with a decision.</p>
-            {{else if APPLICATION_STATUS "Under Review"}}
-                <p>Your application is currently being reviewed by our admissions committee. We will notify you of the outcome shortly. In the meantime, please ensure we have your correct contact information.</p>
-            {{else if APPLICATION_STATUS "Approved"}}
-                <p>Congratulations! Your application has been approved. We will be in touch with you shortly regarding the next steps in the admission process, including enrollment details and required documentation.</p>
-            {{else if APPLICATION_STATUS "Accepted"}}
-                <p>🎉 Welcome to our institution! Your application has been accepted. Please complete your enrollment process by following the instructions we'll send you shortly. If you have any questions, don't hesitate to contact our admissions office.</p>
-            {{else if APPLICATION_STATUS "Rejected"}}
-                <p>Thank you for considering our institution. Unfortunately, at this time, we are unable to offer you admission. We encourage you to apply again in the future. For more information or to discuss your application, please contact our admissions office.</p>
-            {{/if}}
+            {{NEXT_STEPS_CONTENT}}
         </div>
 
         <div class="timeline">
@@ -192,17 +193,15 @@
             <div class="timeline-item">
                 <strong>Submitted:</strong> {{SUBMISSION_DATE}}
             </div>
-            {{#if REVIEW_DATE}}
             <div class="timeline-item">
-                <strong>Reviewed:</strong> {{REVIEW_DATE}}
+                <strong>Last Reviewed:</strong> {{REVIEW_DATE}}
             </div>
-            {{/if}}
             <div class="timeline-item">
                 <strong>Current Status:</strong> {{APPLICATION_STATUS}}
             </div>
         </div>
 
-        <div style="text-align: center; margin: 30px 0;">
+        <div class="contact-box">
             <p><strong>Questions? We're here to help!</strong></p>
             <p>📧 {{SUPPORT_EMAIL}}</p>
             <p>📞 {{SUPPORT_PHONE}}</p>

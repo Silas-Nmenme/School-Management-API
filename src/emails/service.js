@@ -233,18 +233,67 @@ const sendCourseRegistrationEmail = async (studentData, courseData) => {
  * Send application notification email
  */
 const sendApplicationNotificationEmail = async (email, applicationData) => {
+    // Format dates
+    const submissionDate = applicationData.submissionDate 
+        ? new Date(applicationData.submissionDate).toLocaleDateString('en-US', { year: 'numeric', month: 'numeric', day: 'numeric' })
+        : new Date().toLocaleDateString('en-US', { year: 'numeric', month: 'numeric', day: 'numeric' });
+    
+    const reviewDate = applicationData.reviewedAt 
+        ? new Date(applicationData.reviewedAt).toLocaleDateString('en-US', { year: 'numeric', month: 'numeric', day: 'numeric' })
+        : 'Pending';
+
+    // Determine status class for CSS styling
+    const statusClass = (applicationData.status || 'Pending').toLowerCase().replace(/\s+/g, '-');
+
+    // Build next steps based on application status
+    let nextStepsContent = '';
+    switch (applicationData.status) {
+        case 'Pending':
+            nextStepsContent = '<p>Your application is currently in our review queue. Our admissions committee will carefully evaluate your qualifications and will contact you within 5-7 business days with a decision.</p>';
+            break;
+        case 'Under Review':
+            nextStepsContent = '<p>Your application is currently being reviewed by our admissions committee. We will notify you of the outcome shortly. In the meantime, please ensure we have your correct contact information.</p>';
+            break;
+        case 'Approved':
+            nextStepsContent = '<p>Congratulations! Your application has been approved. We will be in touch with you shortly regarding the next steps in the admission process, including enrollment details and required documentation.</p>';
+            break;
+        case 'Accepted':
+            nextStepsContent = '<p>🎉 Welcome to our institution! Your application has been accepted. Please complete your enrollment process by following the instructions we\'ll send you shortly. If you have any questions, don\'t hesitate to contact our admissions office.</p>';
+            break;
+        case 'Rejected':
+            nextStepsContent = '<p>Thank you for considering our institution. Unfortunately, at this time, we are unable to offer you admission. We encourage you to apply again in the future. For more information or to discuss your application, please contact our admissions office.</p>';
+            break;
+        default:
+            nextStepsContent = '<p>Your application is being processed. We will contact you soon with an update on your application status.</p>';
+    }
+
+    // Build remarks section if remarks exist
+    let remarksSection = '';
+    if (applicationData.remarks && applicationData.remarks.trim()) {
+        remarksSection = `<div class="remarks-section">
+            <h4>📌 Remarks from Review Committee:</h4>
+            <div class="remarks-content">
+                ${applicationData.remarks}
+            </div>
+        </div>`;
+    }
+
     const variables = {
-        APPLICANT_NAME: applicationData.applicantName || '',
+        APPLICANT_NAME: applicationData.applicantName || 'Applicant',
         EMAIL: email || '',
-        APPLICATION_ID: applicationData.id || '',
+        APPLICATION_ID: applicationData.id || 'N/A',
         APPLICATION_STATUS: applicationData.status || 'Pending',
-        SUBMISSION_DATE: applicationData.submissionDate || new Date().toLocaleDateString(),
-        SUBMISSION_TIME: new Date(applicationData.submissionDate).toLocaleTimeString() || new Date().toLocaleTimeString(),
-        FACULTY: applicationData.faculty || '',
-        DEPARTMENT: applicationData.department || '',
-        COURSE: applicationData.course || '',
+        STATUS_CLASS: statusClass,
+        SUBMISSION_DATE: submissionDate,
+        SUBMISSION_TIME: applicationData.submissionDate ? new Date(applicationData.submissionDate).toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit', hour12: true }) : 'N/A',
+        FACULTY: applicationData.faculty || 'Not specified',
+        DEPARTMENT: applicationData.department || 'Not specified',
+        COURSE: applicationData.course || 'Not specified',
         REMARKS: applicationData.remarks || '',
-        REVIEW_DATE: applicationData.reviewedAt ? new Date(applicationData.reviewedAt).toLocaleDateString() : new Date().toLocaleDateString(),
+        REMARKS_SECTION: remarksSection,
+        NEXT_STEPS_CONTENT: nextStepsContent,
+        REVIEW_DATE: reviewDate,
+        STUDENT_ID: applicationData.studentId || 'N/A',
         supportEmail: process.env.SUPPORT_EMAIL || 'support@example.com',
         SUPPORT_EMAIL: process.env.SUPPORT_EMAIL || 'support@example.com',
         supportPhone: process.env.SUPPORT_PHONE || '+1-800-000-0000',
