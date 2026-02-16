@@ -16,9 +16,9 @@ const generateStudentId = () => {
 };
 
 const addStudent = async (req, res) => {
-    const { Fistname, Lastname, email, age, phone, password, confirmpassword } = req.body;
+    const { FirstName, LastName, email, age, phone, password, confirmpassword } = req.body;
     // Validate required fields
-    if (!Fistname || !Lastname || !email || !age || !phone || !password || !confirmpassword) {
+    if (!FirstName || !LastName || !email || !age || !phone || !password || !confirmpassword) {
         return res.status(400).json({ message: "All fields are required" });
     }
        const parsedAge = Number(age);
@@ -47,8 +47,8 @@ const addStudent = async (req, res) => {
         // Create a new student
          const newStudent = new Student({
         studentId,
-        Fistname,
-        Lastname,
+        FirstName,
+        LastName,
         email,
         age: parsedAge,
         phone,
@@ -64,8 +64,8 @@ const addStudent = async (req, res) => {
         //Prepare registration details to return (excluding password)
         const registrationDetails = {
             studentId: newStudent.studentId,
-            Fistname: newStudent.Fistname,
-            Lastname: newStudent.Lastname,
+            FirstName: newStudent.FirstName,
+            LastName: newStudent.LastName,
             email: newStudent.email,
             age: newStudent.age,
             phone: newStudent.phone
@@ -97,7 +97,7 @@ const addStudent = async (req, res) => {
 //Edit a student
 const editStudent = async (req, res) => {
     const { id } = req.params;
-    const { Fistname, Lastname, email, age, phone } = req.body || {};
+    const { Firstname, Lastname, email, age, phone } = req.body || {};
     const adminId = req.student.id;
     try {
         const admin = await Student.findById(adminId);
@@ -109,7 +109,7 @@ const editStudent = async (req, res) => {
             return res.status(404).json({ message: "Student not found" });
         }
         // Update student details
-        student.Fistname = Fistname || student.Fistname;
+        student.Firstname = Firstname || student.Firstname;
         student.Lastname = Lastname || student.Lastname;
         student.email = email || student.email;
         student.age = age || student.age;
@@ -210,8 +210,8 @@ const addStaff = async (req, res) => {
     try {
         const emailService = getEmailService();
         emailService.sendStaffWelcomeEmail({
-            Fistname: newStaff.firstName,
-            Lastname: newStaff.lastName,
+            FirstName: newStaff.firstName,
+            LastName: newStaff.lastName,
             email: newStaff.email,
             phone: newStaff.phone,
             role: newStaff.role,
@@ -240,12 +240,12 @@ const editStaff = async (req, res) => {
         try {
             const emailService = getEmailService();
             emailService.sendStaffWelcomeEmail({
-                Fistname: staff.firstName,
-            Lastname: staff.lastName,
-            email: staff.email,
-            phone: staff.phone,
-            role: staff.role,
-            department: staff.department,
+                FirstName: staff.firstName,
+                LastName: staff.lastName,
+                email: staff.email,
+                phone: staff.phone,
+                role: staff.role,
+                department: staff.department,
             studentId: staff._id
         }, 'Updated credentials').catch(emailError => {
             console.error("Failed to send staff update notification email:", emailError.message);
@@ -273,8 +273,8 @@ const deleteStaff = async (req, res) => {
         try {
             const emailService = getEmailService();
             emailService.sendAccountDeletionEmail({
-                Fistname: deletedStaff.firstName,
-                Lastname: deletedStaff.lastName,
+                FirstName: deletedStaff.firstName,
+                LastName: deletedStaff.lastName,
                 email: deletedStaff.email,
                 age: null, // Staff doesn't have age
                 phone: deletedStaff.phone,
