@@ -141,8 +141,8 @@ const deleteStudent = async (req, res) => {
     const { id } = req.params;
     const adminId = req.student.id;
     try {
-        const admin = await Student.findById(adminId);
-        if (admin.isAdmin !== true) {
+        const admin = await Admin.findById(adminId);
+        if (!admin || (admin.role !== 'admin' && admin.role !== 'superadmin')) {
             return res.status(403).json({ message: "Only admin can delete student" });
         }
         const deletedStudent = await Student.findByIdAndDelete(id);
