@@ -156,17 +156,17 @@
             <p><strong>Affected Components:</strong> {{AFFECTED_COMPONENTS}}</p>
         </div>
 
-        {{#if ACTION_REQUIRED}}
         <div class="action-required">
             <h4 style="margin-top: 0;"><i class="fas fa-bolt"></i> Action Required</h4>
             <p>{{ACTION_DESCRIPTION}}</p>
             <ul>
-                {{#each ACTION_ITEMS}}
-                <li>{{this}}</li>
-                {{/each}}
+                {{ACTION_ITEMS_1}}
+                {{ACTION_ITEMS_2}}
+                {{ACTION_ITEMS_3}}
+                {{ACTION_ITEMS_4}}
+                {{ACTION_ITEMS_5}}
             </ul>
         </div>
-        {{/if}}
 
         <div class="text-center" style="margin: 30px 0;">
             <a href="{{ADMIN_DASHBOARD_URL}}" class="button">View Admin Dashboard</a>

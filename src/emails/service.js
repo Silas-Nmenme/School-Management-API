@@ -372,6 +372,42 @@ const sendVisitConfirmationEmail = async (visitorData, visitData) => {
  * Send visit status update email
  */
 const sendVisitStatusUpdateEmail = async (visitData) => {
+    const status = visitData.status || '';
+    const statusLower = status.toLowerCase();
+    
+    // Build next steps based on status
+    let nextSteps = '';
+    if (statusLower === 'confirmed') {
+        nextSteps = `<div class="next-steps">
+            <ul>
+                <li><strong>Arrival:</strong> Please arrive 15 minutes before your scheduled visit time</li>
+                <li><strong>Duration:</strong> Plan for 1.5-2 hours for your campus tour and information session</li>
+                <li><strong>Parking:</strong> Visitor parking is available in the main lot near the admissions building</li>
+                <li><strong>ID:</strong> Bring a valid photo ID for check-in</li>
+            </ul>
+            <p><strong>Meeting Point:</strong> Admissions Office, Main Building</p>
+        </div>`;
+    }
+    
+    // Build status message based on status
+    let statusMessage = '';
+    if (statusLower === 'confirmed') {
+        statusMessage = '<p>We look forward to seeing you on campus and showing you what makes Bethel College special!</p>';
+    } else if (statusLower === 'cancelled') {
+        statusMessage = "<p>We're sorry we won't be able to host your visit at this time. Please don't hesitate to contact us if you'd like to schedule a visit for a different date.</p>";
+    } else if (statusLower === 'pending') {
+        statusMessage = "<p>We'll be in touch soon with more details about your visit. Thank you for your patience.</p>";
+    }
+    
+    // Build admin notes if present
+    let adminNotes = '';
+    if (visitData.adminNotes) {
+        adminNotes = `<div class="next-steps">
+            <h3>Additional Notes from Admissions:</h3>
+            <p>${visitData.adminNotes}</p>
+        </div>`;
+    }
+
     const variables = {
         FIRST_NAME: visitData.visitor?.firstName || visitData.visitorName || '',
         LAST_NAME: visitData.visitor?.lastName || '',
@@ -381,6 +417,9 @@ const sendVisitStatusUpdateEmail = async (visitData) => {
         purpose: visitData.purpose || '',
         STATUS: visitData.status || '',
         confirmationNumber: visitData.confirmationNumber || '',
+        NEXT_STEPS: nextSteps,
+        STATUS_MESSAGE: statusMessage,
+        ADMIN_NOTES: adminNotes,
         supportEmail: process.env.SUPPORT_EMAIL || 'support@example.com',
         supportPhone: process.env.SUPPORT_PHONE || '+1-800-000-0000'
     };
