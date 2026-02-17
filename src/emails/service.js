@@ -170,6 +170,12 @@ const sendAdminPromotionEmail = async (studentData) => {
         firstname: studentData.Firstname || studentData.firstName || '',
         lastname: studentData.Lastname || studentData.lastName || '',
         email: studentData.email || '',
+        STUDENT_ID: studentData.studentId || studentData._id || 'N/A',
+        EMAIL: studentData.email || '',
+        PROMOTION_DATE: new Date().toLocaleDateString(),
+        PROMOTED_BY: studentData.promotedBy || 'System Administrator',
+        ADMIN_DASHBOARD_URL: `${process.env.APP_URL || 'https://bethelcollege.netlify.app'}/admin`,
+        ADMIN_SUPPORT_EMAIL: process.env.SUPPORT_EMAIL || 'support@example.com',
         adminPortalUrl: `${process.env.APP_URL || 'https://bethelcollege.netlify.app'}/admin`,
         promotionDate: new Date().toLocaleDateString(),
         supportEmail: process.env.SUPPORT_EMAIL || 'support@example.com',
@@ -532,11 +538,15 @@ const sendAccountDeletionEmail = async (userData, options = {}) => {
         firstname: userData.Firstname || userData.firstName || '',
         lastname: userData.Lastname || userData.lastName || '',
         email: userData.email || '',
+        studentId: userData.studentId || userData._id || 'N/A',
         deletionDate: new Date().toLocaleDateString(),
         deletionMethod: options.method || 'Self Deletion',
+        REQUESTED_BY: options.adminEmail || options.requestedBy || 'Self',
         adminEmail: options.adminEmail || '',
         supportEmail: process.env.SUPPORT_EMAIL || 'support@example.com',
-        supportPhone: process.env.SUPPORT_PHONE || '+1-800-000-0000'
+        supportPhone: process.env.SUPPORT_PHONE || '+1-800-000-0000',
+        SUPPORT_URL: `${process.env.APP_URL || 'https://bethelcollege.netlify.app'}/support`,
+        SUPPORT_EMAIL: process.env.SUPPORT_EMAIL || 'support@example.com'
     };
 
     return await sendTemplateEmail(
