@@ -271,23 +271,47 @@ const forgetPassword = async (req, res) => {
         student.otp = otp; // Assuming you have an otp field in your student schema
         await student.save();
 
-        // Send OTP email (non-blocking)
+        // Log email configuration status
+        console.log("Email configuration check:");
+        console.log("- EMAIL_USER:", process.env.EMAIL_USER ? "set" : "NOT SET");
+        console.log("- EMAIL_PASS:", process.env.EMAIL_PASS ? "set" : "NOT SET");
+        console.log("- Sending OTP to:", student.email);
+
+        // Send OTP email with proper await and error handling
         try {
             const emailService = getEmailService();
-            emailService.sendOtpEmail(student, otp).then(result => {
-                if (result.success) {
-                    console.log(`✓ OTP email sent to: ${student.email}`);
-                } else {
-                    console.error(`✗ Failed to send OTP email to ${student.email}:`, result.error);
-                }
-            }).catch(emailError => {
-                console.error("✗ Error sending OTP email:", emailError.message || emailError);
-            });
+            
+            // Add reset URL to the OTP email data
+            const otpData = {
+                Firstname: student.Firstname,
+                email: student.email,
+                otp: otp,
+                resetUrl: `${process.env.APP_URL || 'https://bethelcollege.netlify.app'}/reset-password`
+            };
+            
+            // Await the email sending to ensure it completes
+            const emailResult = await emailService.sendOtpEmail(otpData, otp);
+            
+            if (emailResult.success) {
+                console.log(`✓ OTP email sent successfully to: ${student.email}`);
+            } else {
+                console.error(`✗ Failed to send OTP email to ${student.email}:`, emailResult.error);
+                // Still return success to the user but log the error
+                return res.status(200).json({ message: "OTP sent to your email" });
+            }
         } catch (emailInitError) {
-            console.error("✗ Email service not available:", emailInitError.message);
+            console.error("✗ Email service error:", emailInitError.message);
+            // Log more details for debugging
+            if (emailInitError.code === 'EAUTH') {
+                console.error("✗ Authentication failed. Please check EMAIL_USER and EMAIL_PASS in .env file");
+            } else if (emailInitError.code === 'ENOTFOUND') {
+                console.error("✗ SMTP server not found. Please check your email configuration");
+            }
+            return res.status(500).json({ message: "Failed to send OTP email. Please try again later." });
         }
 
-        return res.status(200).json({ message: "OTP sent to your email", otp });
+        // Return success without OTP (security best practice)
+        return res.status(200).json({ message: "OTP sent to your email" });
     }
     catch (error) {
         console.error("Error in forget password:", error);
