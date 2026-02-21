@@ -209,20 +209,33 @@ const addStaff = async (req, res) => {
     });
     await newStaff.save();
 
-    // Send staff welcome email
+    // Send staff welcome email (include plaintext temporary password and keys matching template)
     try {
         const emailService = getEmailService();
-        emailService.sendStaffWelcomeEmail({
-            FirstName: newStaff.firstName,
-            LastName: newStaff.lastName,
+        const tempPassword = password; // preserve plaintext temporary password for the welcome email
+        const registrationDate = new Date().toLocaleString();
+        const loginUrl = process.env.STAFF_LOGIN_URL || process.env.LOGIN_URL || 'https://example.com/login';
+        const supportEmail = process.env.SUPPORT_EMAIL || 'support@example.com';
+        const supportPhone = process.env.SUPPORT_PHONE || '';
+        const emailData = {
+            firstname: newStaff.firstName,
+            lastname: newStaff.lastName,
             email: newStaff.email,
             phone: newStaff.phone,
             role: newStaff.role,
             department: newStaff.department,
-            studentId: newStaff._id
-        }, password).catch(emailError => {
-            console.error("Failed to send staff welcome email:", emailError.message);
-        });
+            staffId: newStaff._id,
+            registrationDate,
+            loginUrl,
+            supportEmail,
+            supportPhone,
+            tempPassword
+        };
+        if (typeof emailService.sendStaffWelcomeEmail === 'function') {
+            emailService.sendStaffWelcomeEmail(emailData).catch(emailError => {
+                console.error("Failed to send staff welcome email:", emailError.message);
+            });
+        }
     } catch (emailInitError) {
         console.error("Email service not available:", emailInitError.message);
     }
@@ -307,6 +320,60 @@ const getAllStaff = async (req, res) => {
     } catch (error) {
         console.error("Error fetching staff:", error);
         res.status(500).json({ message: "Internal server error" });
+    }
+};
+
+// Allow a staff member (or an admin) to change a staff account password.
+const changeStaffPassword = async (req, res) => {
+    try {
+        const { staffId } = req.params;
+        const { newPassword } = req.body;
+        const requesterId = req.student?.id;
+
+        if (!newPassword || typeof newPassword !== 'string' || newPassword.length < 6) {
+            return res.status(400).json({ message: 'New password must be at least 6 characters long' });
+        }
+
+        if (!requesterId) {
+            return res.status(401).json({ message: 'Unauthorized' });
+        }
+
+        // Allow if requester is the same staff or an admin
+        const isSameUser = requesterId === staffId;
+        const requesterAdmin = await Admin.findById(requesterId);
+        const isAdmin = !!requesterAdmin && (requesterAdmin.role === 'admin' || requesterAdmin.role === 'superadmin');
+
+        if (!isSameUser && !isAdmin) {
+            return res.status(403).json({ message: 'Forbidden' });
+        }
+
+        const staff = await Staff.findById(staffId);
+        if (!staff) {
+            return res.status(404).json({ message: 'Staff member not found' });
+        }
+
+        const hashed = await bcrypt.hash(newPassword, saltRounds);
+        staff.password = hashed;
+        await staff.save();
+
+        // Optionally send confirmation email
+        try {
+            const emailService = getEmailService();
+            if (typeof emailService.sendPasswordResetConfirmationEmail === 'function') {
+                emailService.sendPasswordResetConfirmationEmail({
+                    firstname: staff.firstName,
+                    lastname: staff.lastName,
+                    email: staff.email
+                }).catch(() => {});
+            }
+        } catch (e) {
+            // ignore email errors
+        }
+
+        return res.status(200).json({ message: 'Password changed successfully' });
+    } catch (error) {
+        console.error('Error changing staff password:', error);
+        return res.status(500).json({ message: 'Internal server error' });
     }
 };
 
@@ -835,6 +902,7 @@ module.exports = {
     deleteStudent,
     getAllStudents,
     addStaff,
+    changeStaffPassword,
     editStaff,
     deleteStaff,
     getAllStaff,

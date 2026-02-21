@@ -3,6 +3,7 @@ const router = express.Router();
 const {
     addStudent, editStudent, deleteStudent, getAllStudents,
     addStaff, editStaff, deleteStaff, getAllStaff,
+    changeStaffPassword,
     addCourse, editCourse, deleteCourse, getAllCourses,
     generateStudentReport, generateCourseAnalytics,
     getDashboardOverview,
@@ -22,6 +23,8 @@ router.post('/add-staff', isAuthenticated, addStaff);
 router.put('/edit-staff/:staffId', isAuthenticated, editStaff);
 router.delete('/delete-staff/:staffId', isAuthenticated, deleteStaff);
 router.get('/get-all-staff', isAuthenticated, getAllStaff);
+// Staff password change (staff themselves or admin can change)
+router.put('/staff/:staffId/change-password', isAuthenticated, changeStaffPassword);
 
 // Course Management Routes
 router.post('/add-course', isAuthenticated, addCourse);

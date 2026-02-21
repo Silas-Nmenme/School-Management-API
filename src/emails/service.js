@@ -163,6 +163,13 @@ const sendPasswordResetEmail = async (studentData) => {
 };
 
 /**
+ * Alias for password reset confirmation (keeps older controller callers working)
+ */
+const sendPasswordResetConfirmationEmail = async (studentData) => {
+    return await sendPasswordResetEmail(studentData);
+};
+
+/**
  * Send admin promotion email
  */
 const sendAdminPromotionEmail = async (studentData) => {
@@ -562,11 +569,15 @@ const sendAccountDeletionEmail = async (userData, options = {}) => {
  */
 const sendStaffWelcomeEmail = async (staffData) => {
     const variables = {
-        firstname: staffData.Firstname || staffData.firstName || '',
-        lastname: staffData.Lastname || staffData.lastName || '',
+        firstname: staffData.Firstname || staffData.firstName || staffData.firstname || '',
+        lastname: staffData.Lastname || staffData.lastName || staffData.lastname || '',
         email: staffData.email || '',
+        phone: staffData.phone || '',
         role: staffData.role || 'Staff',
-        loginUrl: `${process.env.APP_URL || 'https://bethelcollege.netlify.app'}/login`,
+        department: staffData.department || '',
+        staffId: staffData.staffId || staffData._id || '',
+        registrationDate: staffData.registrationDate || new Date().toLocaleDateString(),
+        loginUrl: staffData.loginUrl || `${process.env.APP_URL || 'https://bethelcollege.netlify.app'}/login`,
         tempPassword: staffData.tempPassword || 'Check your email for password',
         supportEmail: process.env.SUPPORT_EMAIL || 'support@example.com',
         supportPhone: process.env.SUPPORT_PHONE || '+1-800-000-0000'
@@ -707,6 +718,7 @@ module.exports = {
     sendLoginAlert,
     sendOtpEmail,
     sendPasswordResetEmail,
+    sendPasswordResetConfirmationEmail,
     sendAdminPromotionEmail,
     sendAdminNotificationEmail,
     sendCourseRegistrationEmail,
