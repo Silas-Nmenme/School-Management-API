@@ -53,12 +53,9 @@ const submitApplication = async (req, res) => {
             return res.status(400).json({ message: "ACT score must be between 1 and 36" });
         }
 
-        // Generate studentId if not provided
-        const generatedStudentId = studentId || `STU-${Date.now()}-${Math.random().toString(36).substring(2, 9).toUpperCase()}`;
-
         // Create new application with initial status 'Pending'
         const newApplication = new Application({
-            studentId: generatedStudentId,
+            studentId: studentId || null,
             firstName,
             lastName,
             email,
