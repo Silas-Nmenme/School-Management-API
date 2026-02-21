@@ -622,6 +622,11 @@ const updateApplicationStatus = async (req, res) => {
         const { applicationId } = req.params;
         const { status, remarks } = req.body;
 
+        // Validate application ID
+        if (!applicationId) {
+            return res.status(400).json({ message: "Application ID is required" });
+        }
+
         // Validate status
         const validStatuses = ['Pending', 'Under Review', 'Approved', 'Rejected', 'Accepted'];
         if (!validStatuses.includes(status)) {
@@ -630,9 +635,14 @@ const updateApplicationStatus = async (req, res) => {
             });
         }
 
+        // Validate remarks if provided
+        if (remarks && typeof remarks !== 'string') {
+            return res.status(400).json({ message: "Remarks must be a string" });
+        }
+
         const application = await Application.findByIdAndUpdate(
             applicationId,
-            { status, remarks, reviewedAt: new Date() },
+            { status, remarks: remarks || '', reviewedAt: new Date() },
             { new: true }
         );
 
@@ -640,41 +650,64 @@ const updateApplicationStatus = async (req, res) => {
             return res.status(404).json({ message: "Application not found" });
         }
 
-        // Send status update email to applicant
+        // Prepare email data with all necessary information
+        const emailData = {
+            id: application._id,
+            studentId: application.studentId,
+            applicantName: `${application.firstName} ${application.lastName}`,
+            email: application.email,
+            applicantEmail: application.email,
+            status: application.status,
+            submissionDate: application.submissionDate,
+            reviewedAt: application.reviewedAt,
+            faculty: application.faculty,
+            department: application.department,
+            course: application.course,
+            remarks: remarks || ''
+        };
+
+        // Send status update email to applicant (non-blocking)
         try {
             const emailService = getEmailService();
-            emailService.sendApplicationNotificationEmail(
-                application.email,
-                {
-                    id: application._id,
-                    studentId: application.studentId,
-                    status: application.status,
-                    submissionDate: application.submissionDate,
-                    reviewedAt: application.reviewedAt,
-                    applicantName: `${application.firstName} ${application.lastName}`,
-                    applicantEmail: application.email,
-                    faculty: application.faculty,
-                    department: application.department,
-                    course: application.course,
-                    remarks: remarks || ''
-                }
-            ).then(result => {
-                if (result.success) {
-                    console.log(`✓ Status update email sent to applicant: ${application.email}`);
-                } else {
-                    console.error(`✗ Failed to send status update email:`, result.error);
-                }
-            }).catch(emailError => {
-                console.error("✗ Error sending status update email:", emailError.message || emailError);
-            });
+            emailService.sendApplicationNotificationEmail(application.email, emailData)
+                .then(result => {
+                    if (result.success) {
+                        console.log(`✓ Status update email sent to applicant: ${application.email}`);
+                        console.log(`  - Student ID: ${application.studentId}`);
+                        console.log(`  - Status: ${status}`);
+                        console.log(`  - Message ID: ${result.messageId}`);
+                    } else {
+                        console.error(`✗ Failed to send status update email:`, result.error);
+                    }
+                })
+                .catch(emailError => {
+                    console.error("✗ Error sending status update email:", emailError.message || emailError);
+                });
         } catch (emailInitError) {
             console.error("✗ Email service not available:", emailInitError.message);
         }
 
+        // Return success response with updated application details
         res.status(200).json({
             message: "Application status updated successfully",
-            application
+            application: {
+                _id: application._id,
+                studentId: application.studentId,
+                firstName: application.firstName,
+                lastName: application.lastName,
+                email: application.email,
+                status: application.status,
+                remarks: application.remarks,
+                submissionDate: application.submissionDate,
+                reviewedAt: application.reviewedAt,
+                faculty: application.faculty,
+                department: application.department,
+                course: application.course
+            }
         });
+
+        console.log(`Application status updated - ID: ${application._id}, Student: ${application.studentId}, Status: ${status}`);
+
     } catch (error) {
         console.error("Error updating application status:", error);
         res.status(500).json({ message: "Internal server error" });
