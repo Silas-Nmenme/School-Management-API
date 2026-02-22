@@ -577,7 +577,7 @@ const sendStaffWelcomeEmail = async (staffData) => {
         department: staffData.department || '',
         staffId: staffData.staffId || staffData._id || '',
         registrationDate: staffData.registrationDate || new Date().toLocaleDateString(),
-        loginUrl: staffData.loginUrl || `${process.env.APP_URL || 'https://bethelcollege.netlify.app'}/login`,
+        loginUrl: staffData.loginUrl || process.env.STAFF_LOGIN_URL || 'https://bethelcollege.netlify.app/login.html',
         tempPassword: staffData.tempPassword || 'Check your email for password',
         supportEmail: process.env.SUPPORT_EMAIL || 'support@example.com',
         supportPhone: process.env.SUPPORT_PHONE || '+1-800-000-0000'
