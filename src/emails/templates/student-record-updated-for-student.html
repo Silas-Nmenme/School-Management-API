@@ -1,0 +1,48 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <title>Your Profile Was Updated</title>
+  </head>
+  <body style="font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif; color:#222; background:#f6f8fb; padding:24px;">
+    <div style="max-width:640px; margin:0 auto; background:#fff; border-radius:6px; overflow:hidden; box-shadow:0 2px 8px rgba(15,23,42,0.06)">
+      <div style="padding:18px 20px; border-bottom:1px solid #eef2f7;">
+        <h2 style="margin:0; font-size:18px; color:#0f172a">Your Student Profile Was Updated</h2>
+        <div style="color:#64748b; font-size:13px">Bethel College — Student Services</div>
+      </div>
+
+      <div style="padding:18px 20px;">
+        <p style="margin:0 0 12px;">Hello {{firstname}},</p>
+        <p style="margin:0 0 12px; color:#334155">A staff member has updated some information in your student record. If you did not make or expect this change, please contact Student Services immediately.</p>
+
+        <table role="presentation" style="width:100%; border-collapse:collapse; margin-bottom:12px;">
+          <tbody>
+            <tr>
+              <td style="width:140px; padding:8px 0; font-weight:600; color:#0f172a">Student ID</td>
+              <td style="padding:8px 0; color:#0f172a">{{studentId}}</td>
+            </tr>
+            <tr style="background:#fbfcfd">
+              <td style="padding:8px 0; font-weight:600; color:#0f172a">Updated Fields</td>
+              <td style="padding:8px 0; color:#0f172a"><pre style="margin:0; white-space:pre-wrap; font-family:inherit;">{{updatedFields}}</pre></td>
+            </tr>
+            <tr>
+              <td style="padding:8px 0; font-weight:600; color:#0f172a">Updated By</td>
+              <td style="padding:8px 0; color:#0f172a">{{staffName}} &lt;{{staffEmail}}&gt;</td>
+            </tr>
+            <tr style="background:#fbfcfd">
+              <td style="padding:8px 0; font-weight:600; color:#0f172a">Time</td>
+              <td style="padding:8px 0; color:#0f172a">{{updateTime}}</td>
+            </tr>
+          </tbody>
+        </table>
+
+        <p style="margin:0 0 12px; color:#475569">If you believe this was done in error, please reply to this email or contact Student Services at {{supportEmail}}.</p>
+
+        <p style="margin:12px 0 0; color:#0f172a">Regards,<br>Student Services — Bethel College</p>
+      </div>
+
+      <div style="padding:10px 20px; background:#f8fafc; border-top:1px solid #eef2f7; font-size:12px; color:#94a3b8">This is an automated message from the Bethel College Student Management System.</div>
+    </div>
+  </body>
+</html>

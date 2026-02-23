@@ -708,6 +708,43 @@ const getEmailService = () => {
         sendCourseUpdateEmail,
         sendCourseDeletionEmail,
         sendSettingsUpdateEmail
+        ,
+        // staff-specific notifications
+        sendStudentRecordUpdateNotification: async (adminEmail, payload) => {
+            const variables = {
+                studentId: payload.studentId || 'N/A',
+                studentName: payload.studentName || 'N/A',
+                updatedFields: payload.updatedFields || 'N/A',
+                staffName: payload.staffName || 'Staff',
+                staffEmail: payload.staffEmail || '',
+                updateTime: payload.updateTime || new Date().toLocaleString(),
+                supportEmail: process.env.SUPPORT_EMAIL || 'support@example.com'
+            };
+            return await sendTemplateEmail(adminEmail, `Student Record Updated: ${variables.studentId}`, 'student-record-updated-by-staff', variables);
+        },
+        sendStaffPasswordChangeConfirmation: async (staffEmail, payload) => {
+            const variables = {
+                firstname: payload.firstname || '',
+                email: staffEmail,
+                changedAt: payload.changedAt || new Date().toLocaleString(),
+                changedBy: payload.changedBy || payload.firstname || 'Staff Member',
+                supportEmail: process.env.SUPPORT_EMAIL || 'support@example.com'
+            };
+            return await sendTemplateEmail(staffEmail, 'Password Changed — Confirmation', 'staff-password-change-confirmation', variables);
+        }
+        ,
+        sendStudentUpdateNotificationToStudent: async (studentEmail, payload) => {
+            const variables = {
+                firstname: payload.firstname || payload.studentName?.split(' ')[0] || '',
+                studentId: payload.studentId || 'N/A',
+                updatedFields: payload.updatedFields || 'N/A',
+                staffName: payload.staffName || 'Staff',
+                staffEmail: payload.staffEmail || '',
+                updateTime: payload.updateTime || new Date().toLocaleString(),
+                supportEmail: process.env.SUPPORT_EMAIL || 'support@example.com'
+            };
+            return await sendTemplateEmail(studentEmail, 'Your Student Profile Was Updated', 'student-record-updated-for-student', variables);
+        }
     };
 };
 
