@@ -24,18 +24,36 @@ const createContact = async (req, res) => {
 
     await newContact.save();
 
-    // Send contact notification email to admin (non-blocking)
+    // Send emails (non-blocking)
     try {
         const emailService = getEmailService();
-        emailService.sendEmail(
+        
+        // Send confirmation email to the user (recipient)
+        emailService.sendContactConfirmationEmail({
+            name,
+            email,
+            subject,
+            message
+        }).then(result => {
+            if (result.success) {
+                console.log(`✓ Contact confirmation sent to ${email}`);
+            } else {
+                console.error(`✗ Failed to send contact confirmation:`, result.error);
+            }
+        }).catch(emailError => {
+            console.error("✗ Error sending contact confirmation email:", emailError.message || emailError);
+        });
+
+        // Send notification email to admin
+        emailService.sendAdminContactNotificationEmail(
             process.env.SUPPORT_EMAIL || 'support@example.com',
-            `New Contact Message from ${name}`,
-            `<h2>New Contact Message</h2>
-            <p><strong>Name:</strong> ${name}</p>
-            <p><strong>Email:</strong> ${email}</p>
-            <p><strong>Subject:</strong> ${subject}</p>
-            <p><strong>Message:</strong></p>
-            <p>${message}</p>`
+            {
+                _id: newContact._id,
+                name,
+                email,
+                subject,
+                message
+            }
         ).then(result => {
             if (result.success) {
                 console.log(`✓ Contact notification sent to admin`);
@@ -43,7 +61,7 @@ const createContact = async (req, res) => {
                 console.error(`✗ Failed to send contact notification:`, result.error);
             }
         }).catch(emailError => {
-            console.error("✗ Error sending contact notification email:", emailError.message || emailError);
+            console.error("✗ Error sending admin contact notification email:", emailError.message || emailError);
         });
     } catch (emailInitError) {
         console.error("✗ Email service not available:", emailInitError.message);

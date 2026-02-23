@@ -682,6 +682,53 @@ const sendSettingsUpdateEmail = async (settings, adminEmail) => {
 };
 
 /**
+ * Send contact form confirmation email to the user
+ */
+const sendContactConfirmationEmail = async (contactData) => {
+    const variables = {
+        name: contactData.name || '',
+        email: contactData.email || '',
+        subject: contactData.subject || '',
+        message: contactData.message || '',
+        submissionDate: new Date().toLocaleDateString(),
+        supportEmail: process.env.SUPPORT_EMAIL || 'support@example.com',
+        supportPhone: process.env.SUPPORT_PHONE || '+1-800-000-0000'
+    };
+
+    return await sendTemplateEmail(
+        contactData.email,
+        'We Received Your Message - Student Management System',
+        'contact-confirmation-email',
+        variables
+    );
+};
+
+/**
+ * Send contact form notification email to admin
+ */
+const sendAdminContactNotificationEmail = async (adminEmail, contactData) => {
+    const variables = {
+        name: contactData.name || '',
+        email: contactData.email || '',
+        subject: contactData.subject || '',
+        message: contactData.message || '',
+        submissionDate: new Date().toLocaleDateString(),
+        submissionTime: new Date().toLocaleTimeString(),
+        messageId: contactData._id || 'N/A',
+        adminDashboardUrl: `${process.env.APP_URL || 'https://bethelcollege.netlify.app'}/admin/contacts`,
+        supportEmail: process.env.SUPPORT_EMAIL || 'support@example.com',
+        supportPhone: process.env.SUPPORT_PHONE || '+1-800-000-0000'
+    };
+
+    return await sendTemplateEmail(
+        adminEmail,
+        `New Contact Message from ${contactData.name} - ${contactData.subject}`,
+        'admin-contact-notification',
+        variables
+    );
+};
+
+/**
  * Get email service instance - returns an object with all email methods
  */
 const getEmailService = () => {
@@ -707,8 +754,9 @@ const getEmailService = () => {
         sendCourseCreationEmail,
         sendCourseUpdateEmail,
         sendCourseDeletionEmail,
-        sendSettingsUpdateEmail
-        ,
+        sendSettingsUpdateEmail,
+        sendContactConfirmationEmail,
+        sendAdminContactNotificationEmail,
         // staff-specific notifications
         sendStudentRecordUpdateNotification: async (adminEmail, payload) => {
             const variables = {
@@ -731,8 +779,7 @@ const getEmailService = () => {
                 supportEmail: process.env.SUPPORT_EMAIL || 'support@example.com'
             };
             return await sendTemplateEmail(staffEmail, 'Password Changed — Confirmation', 'staff-password-change-confirmation', variables);
-        }
-        ,
+        },
         sendStudentUpdateNotificationToStudent: async (studentEmail, payload) => {
             const variables = {
                 firstname: payload.firstname || payload.studentName?.split(' ')[0] || '',

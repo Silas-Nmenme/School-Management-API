@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Contact Form Received - Student Management System</title>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        body {
+            font-family: 'Roboto', sans-serif;
+            line-height: 1.6;
+            color: #333;
+            background-color: #f4f4f4;
+            margin: 0;
+            padding: 20px;
+        }
+        .container {
+            background-color: #ffffff;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 0 20px rgba(0,0,0,0.1);
+            max-width: 600px;
+            margin: 0 auto;
+        }
+        .header {
+            text-align: center;
+            border-bottom: 3px solid #fd7e14;
+            padding-bottom: 20px;
+            margin-bottom: 30px;
+            animation: fadeIn 1s ease-in;
+        }
+        .header h1 {
+            color: #fd7e14;
+            margin: 0;
+            font-size: 28px;
+            font-weight: 700;
+        }
+        .success-icon {
+            text-align: center;
+            margin: 30px 0;
+            animation: bounceIn 0.8s ease-out;
+        }
+        .success-icon i {
+            font-size: 60px;
+            color: #28a745;
+        }
+        .message-box {
+            background-color: #f8f9fa;
+            padding: 25px;
+            border-radius: 10px;
+            margin: 20px 0;
+            border-left: 4px solid #fd7e14;
+            animation: slideIn 0.8s ease-out 0.2s both;
+        }
+        .message-details {
+            background-color: #e9ecef;
+            padding: 20px;
+            border-radius: 8px;
+            margin: 20px 0;
+            animation: slideIn 0.8s ease-out 0.4s both;
+        }
+        .message-details h4 {
+            margin-top: 0;
+            color: #495057;
+            font-weight: 500;
+        }
+        .next-steps {
+            background-color: #d4edda;
+            border: 1px solid #c3e6cb;
+            color: #155724;
+            padding: 20px;
+            border-radius: 8px;
+            margin: 20px 0;
+            animation: slideIn 0.8s ease-out 0.6s both;
+        }
+        .footer {
+            text-align: center;
+            margin-top: 30px;
+            padding-top: 20px;
+            border-top: 1px solid #eee;
+            color: #666;
+            font-size: 14px;
+            animation: fadeIn 1s ease-in 1s both;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+        @keyframes slideIn {
+            from { transform: translateY(-20px); opacity: 0; }
+            to { transform: translateY(0); opacity: 1; }
+        }
+        @keyframes bounceIn {
+            0% { transform: scale(0); opacity: 0; }
+            50% { transform: scale(1.2); }
+            100% { transform: scale(1); opacity: 1; }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1><i class="fas fa-envelope-open-text"></i> Message Received</h1>
+            <p style="margin: 10px 0 0 0; color: #666;">Thank you for contacting Student Management System</p>
+        </div>
+
+        <div class="success-icon">
+            <i class="fas fa-check-circle"></i>
+        </div>
+
+        <h2 style="text-align: center;">Hi {{name}},</h2>
+
+        <p style="text-align: center; font-size: 18px;">
+            Thank you for reaching out to us! We have received your message and will get back to you as soon as possible.
+        </p>
+
+        <div class="message-box">
+            <h3 style="margin-top: 0; color: #fd7e14;"><i class="fas fa-paper-plane"></i> Your Message Details</h3>
+            <p><strong>Subject:</strong> {{subject}}</p>
+            <p><strong>Submitted On:</strong> {{submissionDate}}</p>
+        </div>
+
+        <div class="message-details">
+            <h4><i class="fas fa-comment-alt"></i> Your Message:</h4>
+            <p>{{message}}</p>
+        </div>
+
+        <div class="next-steps">
+            <h4 style="margin-top: 0;"><i class="fas fa-clock"></i> What Happens Next?</h4>
+            <ul style="margin-bottom: 0;">
+                <li>Our team will review your message within 24-48 hours</li>
+                <li>You will receive a response to your email address: <strong>{{email}}</strong></li>
+                <li>If urgent, please contact us directly at {{supportEmail}} or {{supportPhone}}</li>
+            </ul>
+        </div>
+
+        <div class="footer">
+            <p><strong>Student Management System</strong></p>
+            <p>This is an automated confirmation. Please do not reply to this email.</p>
+            <p>For immediate assistance: {{supportEmail}} | {{supportPhone}}</p>
+        </div>
+    </div>
+</body>
+</html>
