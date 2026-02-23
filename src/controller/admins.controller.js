@@ -324,62 +324,7 @@ const getAllStaff = async (req, res) => {
     }
 };
 
-// Allow a staff member (or an admin) to change a staff account password.
-const changeStaffPassword = async (req, res) => {
-    try {
-        const { staffId } = req.params;
-        const { newPassword } = req.body;
-        const requesterId = req.student?.id;
 
-        if (!newPassword || typeof newPassword !== 'string' || newPassword.length < 6) {
-            return res.status(400).json({ message: 'New password must be at least 6 characters long' });
-        }
-
-        if (!requesterId) {
-            return res.status(401).json({ message: 'Unauthorized' });
-        }
-
-        // Allow if requester is the same staff or an admin
-        const isSameUser = requesterId === staffId;
-        const requesterAdmin = await Admin.findById(requesterId);
-        const isAdmin = !!requesterAdmin && (requesterAdmin.role === 'admin' || requesterAdmin.role === 'superadmin');
-
-        if (!isSameUser && !isAdmin) {
-            return res.status(403).json({ message: 'Forbidden' });
-        }
-
-        const staff = await Staff.findById(staffId);
-        if (!staff) {
-            return res.status(404).json({ message: 'Staff member not found' });
-        }
-
-        const hashed = await bcrypt.hash(newPassword, saltRounds);
-        staff.password = hashed;
-        // mark that the staff has completed the first-login change
-        if (staff.mustChangePassword) staff.mustChangePassword = false;
-        staff.lastLogin = new Date();
-        await staff.save();
-
-        // Optionally send confirmation email
-        try {
-            const emailService = getEmailService();
-            if (typeof emailService.sendPasswordResetConfirmationEmail === 'function') {
-                emailService.sendPasswordResetConfirmationEmail({
-                    firstname: staff.firstName,
-                    lastname: staff.lastName,
-                    email: staff.email
-                }).catch(() => {});
-            }
-        } catch (e) {
-            // ignore email errors
-        }
-
-        return res.status(200).json({ message: 'Password changed successfully' });
-    } catch (error) {
-        console.error('Error changing staff password:', error);
-        return res.status(500).json({ message: 'Internal server error' });
-    }
-};
 
 // Course Management Functions
 const addCourse = async (req, res) => {
@@ -906,7 +851,6 @@ module.exports = {
     deleteStudent,
     getAllStudents,
     addStaff,
-    changeStaffPassword,
     editStaff,
     deleteStaff,
     getAllStaff,

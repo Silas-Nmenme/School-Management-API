@@ -4,6 +4,8 @@ const Course = require('../models/course.schema.js');
 const Application = require('../models/application.schema.js');
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
+const Admin = require('../models/admin.schema.js');
+const saltRounds = 10;
 const { getEmailService } = require('../emails/service.js');
 
 const staffLogin = async (req, res) => {
@@ -46,7 +48,8 @@ const getStaffDashboard = async (req, res) => {
     if (!staffId) return res.status(401).json({ message: 'Unauthorized' });
 
     const staff = await Staff.findById(staffId).select('-password');
-    if (!staff) return res.status(404).json({ message: 'Staff not found' });
+      if (!staff) return res.status(404).json({ message: 'Staff not found' });
+      if (staff.mustChangePassword) return res.status(403).json({ message: 'Password change required', mustChangePassword: true });
 
     const totalStudents = await Student.countDocuments();
     const activeCourses = await Course.countDocuments({ isActive: true });
@@ -87,6 +90,11 @@ const listStudentsForStaff = async (req, res) => {
     const staffId = req.student?.id;
     if (!staffId) return res.status(401).json({ message: 'Unauthorized' });
 
+    // ensure staff changed temporary password first
+    const staff = await Staff.findById(staffId).select('mustChangePassword');
+    if (!staff) return res.status(404).json({ message: 'Staff not found' });
+    if (staff.mustChangePassword) return res.status(403).json({ message: 'Password change required', mustChangePassword: true });
+
     const students = await Student.find().select('studentId Firstname Lastname email age phone createdAt');
     res.status(200).json({ total: students.length, students });
   } catch (error) {
@@ -100,6 +108,11 @@ const updateStudentRecord = async (req, res) => {
   try {
     const staffId = req.student?.id;
     if (!staffId) return res.status(401).json({ message: 'Unauthorized' });
+
+    // ensure staff changed temporary password first
+    const staff = await Staff.findById(staffId).select('mustChangePassword');
+    if (!staff) return res.status(404).json({ message: 'Staff not found' });
+    if (staff.mustChangePassword) return res.status(403).json({ message: 'Password change required', mustChangePassword: true });
 
     const { id } = req.params;
     const allowed = ['phone', 'age'];
@@ -150,6 +163,11 @@ const listTeamMembers = async (req, res) => {
   try {
     const staffId = req.student?.id;
     if (!staffId) return res.status(401).json({ message: 'Unauthorized' });
+
+    // ensure staff changed temporary password first
+    const me = await Staff.findById(staffId).select('mustChangePassword');
+    if (!me) return res.status(404).json({ message: 'Staff not found' });
+    if (me.mustChangePassword) return res.status(403).json({ message: 'Password change required', mustChangePassword: true });
 
     const staff = await Staff.find().select('firstName lastName email role department isActive');
     res.status(200).json({ total: staff.length, staff });
@@ -202,4 +220,53 @@ const changeOwnPassword = async (req, res) => {
   }
 };
 
-module.exports = { staffLogin, getStaffDashboard, listStudentsForStaff, updateStudentRecord, listTeamMembers, changeOwnPassword };
+// Allow a staff member (or an admin) to change a staff account password (moved from admins.controller)
+const changeStaffPassword = async (req, res) => {
+  try {
+    const { staffId } = req.params;
+    const { newPassword } = req.body;
+    const requesterId = req.student?.id;
+
+    if (!newPassword || typeof newPassword !== 'string' || newPassword.length < 6) {
+      return res.status(400).json({ message: 'New password must be at least 6 characters long' });
+    }
+
+    if (!requesterId) {
+      return res.status(401).json({ message: 'Unauthorized' });
+    }
+
+    const isSameUser = String(requesterId) === String(staffId);
+    const requesterAdmin = await Admin.findById(requesterId);
+    const isAdmin = !!requesterAdmin && (requesterAdmin.role === 'admin' || requesterAdmin.role === 'superadmin');
+
+    if (!isSameUser && !isAdmin) return res.status(403).json({ message: 'Forbidden' });
+
+    const staff = await Staff.findById(staffId);
+    if (!staff) return res.status(404).json({ message: 'Staff member not found' });
+
+    const hashed = await bcrypt.hash(newPassword, saltRounds);
+    staff.password = hashed;
+    if (staff.mustChangePassword) staff.mustChangePassword = false;
+    staff.lastLogin = new Date();
+    await staff.save();
+
+    try {
+      const emailService = getEmailService();
+      if (typeof emailService.sendStaffPasswordChangeConfirmation === 'function') {
+        await emailService.sendStaffPasswordChangeConfirmation(staff.email, {
+          firstname: staff.firstName,
+          lastname: staff.lastName,
+          changedAt: new Date().toLocaleString(),
+          changedBy: isAdmin ? (requesterAdmin.email || 'Admin') : `${staff.firstName} ${staff.lastName}`
+        }).catch(() => {});
+      }
+    } catch (e) { /* ignore */ }
+
+    return res.status(200).json({ message: 'Password changed successfully' });
+  } catch (error) {
+    console.error('Error changing staff password:', error);
+    return res.status(500).json({ message: 'Internal server error' });
+  }
+};
+
+module.exports = { staffLogin, getStaffDashboard, listStudentsForStaff, updateStudentRecord, listTeamMembers, changeOwnPassword, changeStaffPassword };
