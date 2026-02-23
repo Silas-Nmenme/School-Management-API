@@ -11,6 +11,7 @@ const applicationsRoutes = require('./src/routes/applications.routes.js');
 const contactRoutes = require('./src/routes/contact.routes.js');
 const visitRoutes = require('./src/routes/visit.routes.js');
 const supportRoutes = require('./src/routes/support.routes.js');
+const staffRoutes = require('./src/routes/staff.routes.js');
 const { getAllStudents, getAllCourses } = require('./src/controller/admins.controller.js');
 const { isAuthenticated } = require('./src/middlewares/isAuth.js');
 const { getEmailService } = require("./src/emails/service.js");
@@ -58,6 +59,7 @@ app.use('/api/applications', applicationsRoutes);
 app.use('/api/contact', contactRoutes);
 app.use('/api/visits', visitRoutes);
 app.use('/api/support', supportRoutes);
+app.use('/api/staff', staffRoutes);
 
 
 // Start server

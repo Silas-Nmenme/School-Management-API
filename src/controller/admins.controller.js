@@ -203,6 +203,7 @@ const addStaff = async (req, res) => {
         email,
         phone,
         password: hashedPassword,
+        mustChangePassword: true,
         role,
         department,
         salary
@@ -354,6 +355,9 @@ const changeStaffPassword = async (req, res) => {
 
         const hashed = await bcrypt.hash(newPassword, saltRounds);
         staff.password = hashed;
+        // mark that the staff has completed the first-login change
+        if (staff.mustChangePassword) staff.mustChangePassword = false;
+        staff.lastLogin = new Date();
         await staff.save();
 
         // Optionally send confirmation email

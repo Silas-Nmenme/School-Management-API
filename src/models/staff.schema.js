@@ -42,6 +42,13 @@ const staffSchema = new mongoose.Schema({
     type: Boolean,
     default: true
   },
+  mustChangePassword: {
+    type: Boolean,
+    default: true
+  },
+  lastLogin: {
+    type: Date,
+  },
   hireDate: {
     type: Date,
     default: Date.now
