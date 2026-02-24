@@ -505,6 +505,20 @@ const getGrades = async (req, res) => {
     }
 };
 
+const getExams = async (req, res) => {
+    try {
+        const studentId = req.student.id;
+        const student = await Student.findById(studentId).select('exams');
+        if (!student) {
+            return res.status(404).json({ message: "Student not found" });
+        }
+        return res.status(200).json({ exams: student.exams });
+    } catch (error) {
+        console.error("Error getting exams:", error);
+        return res.status(500).json({ message: "Internal server error" });
+    }
+};
+
 const getRecentActivity = async (req, res) => {
     try {
         const studentId = req.student.id;
@@ -930,6 +944,7 @@ module.exports = {
     updateProfile,
     getCourses,
     getGrades,
+    getExams,
     getRecentActivity,
     registerForCourse,
     unregisterForCourse,
