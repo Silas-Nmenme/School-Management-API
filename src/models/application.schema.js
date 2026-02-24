@@ -52,12 +52,13 @@ const applicationSchema = new mongoose.Schema({
     max: 36
   },
   faculty: {
-    type: String,
-    required: true,
-    enum: ['Science', 'Arts', 'Engineering', 'Business']
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'Faculty',
+    required: true
   },
   department: {
-    type: String,
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'Department',
     required: true
   },
   course: {
