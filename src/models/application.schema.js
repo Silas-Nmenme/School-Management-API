@@ -54,12 +54,20 @@ const applicationSchema = new mongoose.Schema({
   faculty: {
     type: mongoose.Schema.Types.ObjectId,
     ref: 'Faculty',
-    required: true
+    required: false
+  },
+  facultyName: {
+    type: String,
+    trim: true
   },
   department: {
     type: mongoose.Schema.Types.ObjectId,
     ref: 'Department',
-    required: true
+    required: false
+  },
+  departmentName: {
+    type: String,
+    trim: true
   },
   course: {
     type: String,

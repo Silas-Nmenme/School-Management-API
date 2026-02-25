@@ -120,14 +120,16 @@ const submitApplication = async (req, res) => {
         }
         
         // Use the found department's ObjectId and faculty reference, or use string values as fallback
-        const departmentObjectId = dept ? dept._id : department;
-        const facultyObjectId = dept && dept.faculty ? dept.faculty : faculty;
+        const departmentObjectId = dept ? dept._id : null;
+        const facultyObjectId = dept && dept.faculty ? dept.faculty : null;
+        const departmentNameValue = dept ? dept.name : department;
+        const facultyNameValue = dept && dept.faculty ? null : faculty;
 
         // Generate unique studentId if not provided
         const generatedStudentId = studentId || generateStudentId();
 
         // Create new application with initial status 'Pending'
-        // Use ObjectIds for faculty and department references
+        // Use ObjectIds for faculty and department references when available
         const newApplication = new Application({
             studentId: generatedStudentId,
             firstName,
@@ -139,8 +141,10 @@ const submitApplication = async (req, res) => {
             gpa: gpa || null,
             satScore: satScore || null,
             actScore: actScore || null,
-            faculty: facultyObjectId,  // Use ObjectId reference
-            department: departmentObjectId,  // Use ObjectId reference
+            faculty: facultyObjectId,  // Use ObjectId reference if found
+            facultyName: facultyNameValue,  // Store name if ObjectId not found
+            department: departmentObjectId,  // Use ObjectId reference if found
+            departmentName: departmentNameValue,  // Store name if ObjectId not found
             course,
             essay: essay || '',
             status: 'Pending', // Set initial status to Pending
@@ -260,8 +264,8 @@ const getApplicationStatus = async (req, res) => {
             remarks: application.remarks || null,
             submissionDate: application.submissionDate,
             reviewedAt: application.reviewedAt || null,
-            faculty: application.faculty,
-            department: application.department,
+            faculty: application.facultyName || application.faculty,
+            department: application.departmentName || application.department,
             course: application.course
         });
 
@@ -307,8 +311,8 @@ const getApplicationDetails = async (req, res) => {
                 gpa: application.gpa,
                 satScore: application.satScore,
                 actScore: application.actScore,
-                faculty: application.faculty,
-                department: application.department,
+                faculty: application.facultyName || application.faculty,
+                department: application.departmentName || application.department,
                 course: application.course,
                 essay: application.essay,
                 status: application.status,
@@ -359,8 +363,8 @@ const getAllApplications = async (req, res) => {
                 firstName: app.firstName,
                 lastName: app.lastName,
                 email: app.email,
-                faculty: app.faculty,
-                department: app.department,
+                faculty: app.facultyName || app.faculty,
+                department: app.departmentName || app.department,
                 course: app.course,
                 status: app.status,
                 submissionDate: app.submissionDate,
@@ -403,8 +407,8 @@ const getApplicationByEmail = async (req, res) => {
                 lastName: application.lastName,
                 email: application.email,
                 phone: application.phone,
-                faculty: application.faculty,
-                department: application.department,
+                faculty: application.facultyName || application.faculty,
+                department: application.departmentName || application.department,
                 course: application.course,
                 status: application.status,
                 remarks: application.remarks || null,
