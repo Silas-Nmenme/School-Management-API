@@ -1,5 +1,26 @@
 const mongoose = require('mongoose');
 
+const courseSchema = new mongoose.Schema({
+  name: {
+    type: String,
+    required: true,
+    trim: true
+  },
+  code: {
+    type: String,
+    trim: true
+  },
+  type: {
+    type: String,
+    enum: ['BSc', 'MSc', 'PhD', 'BEng', 'MEng', 'BBA', 'MBA', 'BA', 'MA', 'LLB', 'LLM', 'MBBS', 'B.Ed', 'M.Ed'],
+    required: true
+  },
+  isActive: {
+    type: Boolean,
+    default: true
+  }
+}, { _id: false });
+
 const departmentSchema = new mongoose.Schema({
   departmentId: {
     type: String,
@@ -22,6 +43,7 @@ const departmentSchema = new mongoose.Schema({
     ref: 'Faculty',
     required: true
   },
+  courses: [courseSchema],
   isActive: {
     type: Boolean,
     default: true

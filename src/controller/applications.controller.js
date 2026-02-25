@@ -1,4 +1,5 @@
 const Application = require("../models/application.schema.js");
+const Department = require("../models/department.schema.js");
 const { getEmailService } = require("../emails/service.js");
 
 // Valid application statuses aligned with admin controller
@@ -16,6 +17,7 @@ const generateStudentId = () => {
  * Submit Application
  * - Validates all required fields
  * - Checks for duplicate applications
+ * - Validates course exists in department
  * - Generates unique studentId if not provided
  * - Saves application with 'Pending' status
  * - Sends confirmation email to applicant with studentId
@@ -68,6 +70,20 @@ const submitApplication = async (req, res) => {
         // Validate ACT score if provided
         if (actScore !== undefined && (actScore < 1 || actScore > 36)) {
             return res.status(400).json({ message: "ACT score must be between 1 and 36" });
+        }
+
+        // Validate that the course exists in the selected department
+        const dept = await Department.findById(department);
+        if (!dept) {
+            return res.status(400).json({ message: "Department not found" });
+        }
+
+        // Check if the course exists in the department's courses array
+        const courseExists = dept.courses && dept.courses.some(c => c.name === course && c.isActive !== false);
+        if (!courseExists) {
+            return res.status(400).json({ 
+                message: `Course "${course}" is not available in the selected department. Please select a valid course.`
+            });
         }
 
         // Generate unique studentId if not provided

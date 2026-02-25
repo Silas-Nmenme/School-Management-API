@@ -11,11 +11,46 @@ const generateDepartmentId = async () => {
 };
 
 /**
+ * Get courses for a specific department
+ */
+const getDepartmentCourses = async (req, res) => {
+  try {
+    const { departmentId } = req.params;
+
+    const department = await Department.findById(departmentId);
+
+    if (!department) {
+      return res.status(404).json({ message: "Department not found" });
+    }
+
+    // Filter only active courses
+    const activeCourses = department.courses.filter(course => course.isActive !== false);
+
+    res.status(200).json({
+      message: "Department courses retrieved successfully",
+      department: {
+        _id: department._id,
+        name: department.name,
+        departmentId: department.departmentId
+      },
+      courses: activeCourses,
+      totalCourses: activeCourses.length
+    });
+
+    console.log(`Retrieved ${activeCourses.length} courses for department: ${department.name}`);
+
+  } catch (error) {
+    console.error("Error fetching department courses:", error);
+    res.status(500).json({ message: "Internal server error" });
+  }
+};
+
+/**
  * Create a new Department
  */
 const createDepartment = async (req, res) => {
   try {
-    const { name, description, faculty, order } = req.body;
+    const { name, description, faculty, order, courses } = req.body;
 
     if (!name || !faculty) {
       return res.status(400).json({ message: "Department name and faculty are required" });
@@ -44,6 +79,7 @@ const createDepartment = async (req, res) => {
       name,
       description: description || '',
       faculty,
+      courses: courses || [],
       order: order || 0
     });
 
@@ -202,7 +238,7 @@ const getDepartmentsByFaculty = async (req, res) => {
 const updateDepartment = async (req, res) => {
   try {
     const { departmentId } = req.params;
-    const { name, description, faculty, order, isActive } = req.body;
+    const { name, description, faculty, order, isActive, courses } = req.body;
 
     const department = await Department.findById(departmentId);
 
@@ -238,6 +274,7 @@ const updateDepartment = async (req, res) => {
     if (faculty) department.faculty = faculty;
     if (order !== undefined) department.order = order;
     if (isActive !== undefined) department.isActive = isActive;
+    if (courses !== undefined) department.courses = courses;
 
     const updatedDepartment = await department.save();
     
@@ -297,7 +334,7 @@ const seedDepartments = async (req, res) => {
     const errors = [];
 
     for (let i = 0; i < departments.length; i++) {
-      const { name, description, facultyName } = departments[i];
+      const { name, description, facultyName, courses } = departments[i];
       
       if (!name || !facultyName) {
         errors.push(`Missing name or facultyName for department at index ${i}`);
@@ -332,6 +369,7 @@ const seedDepartments = async (req, res) => {
         name,
         description: description || '',
         faculty: faculty._id,
+        courses: courses || [],
         order: i + 1
       });
 
@@ -396,6 +434,7 @@ module.exports = {
   getDepartmentById,
   getDepartmentByName,
   getDepartmentsByFaculty,
+  getDepartmentCourses,
   updateDepartment,
   deleteDepartment,
   seedDepartments,

@@ -5,6 +5,7 @@ const {
   getDepartmentById,
   getDepartmentByName,
   getDepartmentsByFaculty,
+  getDepartmentCourses,
   updateDepartment,
   deleteDepartment,
   seedDepartments,
@@ -30,6 +31,9 @@ router.get('/faculty/:facultyId', getDepartmentsByFaculty);
 
 // GET /api/departments/name/:name - Get department by name (with optional faculty filter)
 router.get('/name/:name', getDepartmentByName);
+
+// GET /api/departments/:departmentId/courses - Get courses for a department
+router.get('/:departmentId/courses', getDepartmentCourses);
 
 // GET /api/departments/:departmentId - Get department by ID
 router.get('/:departmentId', getDepartmentById);

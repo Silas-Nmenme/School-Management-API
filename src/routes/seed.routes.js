@@ -54,7 +54,7 @@ router.post('/all', async (req, res) => {
     // Seed departments
     const createdDepartments = [];
     for (let i = 0; i < departmentsData.length; i++) {
-      const { name, facultyName } = departmentsData[i];
+      const { name, facultyName, courses } = departmentsData[i];
       
       // Find faculty by name
       const faculty = await Faculty.findOne({ 
@@ -83,6 +83,7 @@ router.post('/all', async (req, res) => {
         name,
         description: '',
         faculty: faculty._id,
+        courses: courses || [],
         order: i + 1
       });
 
@@ -156,7 +157,7 @@ router.post('/departments', async (req, res) => {
     const createdDepartments = [];
     
     for (let i = 0; i < departmentsData.length; i++) {
-      const { name, facultyName } = departmentsData[i];
+      const { name, facultyName, courses } = departmentsData[i];
       
       const faculty = await Faculty.findOne({ 
         name: { $regex: new RegExp(`^${facultyName}$`, 'i') } 
@@ -182,6 +183,7 @@ router.post('/departments', async (req, res) => {
         name,
         description: '',
         faculty: faculty._id,
+        courses: courses || [],
         order: i + 1
       });
 
