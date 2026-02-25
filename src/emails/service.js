@@ -280,7 +280,7 @@ const sendCourseRegistrationEmail = async (studentData, courseData) => {
 };
 
 /**
- * Send application notification email
+ * Send application notification email (to applicant)
  */
 const sendApplicationNotificationEmail = async (email, applicationData) => {
     // Format dates
@@ -336,8 +336,8 @@ const sendApplicationNotificationEmail = async (email, applicationData) => {
         STATUS_CLASS: statusClass,
         SUBMISSION_DATE: submissionDate,
         SUBMISSION_TIME: applicationData.submissionDate ? new Date(applicationData.submissionDate).toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit', hour12: true }) : 'N/A',
-        FACULTY: applicationData.faculty || 'Not specified',
-        DEPARTMENT: applicationData.department || 'Not specified',
+        FACULTY: applicationData.facultyName || applicationData.faculty || 'Not specified',
+        DEPARTMENT: applicationData.departmentName || applicationData.department || 'Not specified',
         COURSE: applicationData.course || 'Not specified',
         REMARKS: applicationData.remarks || '',
         REMARKS_SECTION: remarksSection,
@@ -372,8 +372,8 @@ const sendAdminApplicationNotificationEmail = async (adminEmail, applicationData
         GPA: applicationData.gpa || 'Not provided',
         SAT_SCORE: applicationData.satScore || 'Not provided',
         ACT_SCORE: applicationData.actScore || 'Not provided',
-        FACULTY: applicationData.faculty || '',
-        DEPARTMENT: applicationData.department || '',
+        FACULTY: applicationData.facultyName || applicationData.faculty || '',
+        DEPARTMENT: applicationData.departmentName || applicationData.department || '',
         COURSE: applicationData.course || '',
         ESSAY: applicationData.essay || 'No essay provided',
         APPLICATION_STATUS: applicationData.status || 'Pending',

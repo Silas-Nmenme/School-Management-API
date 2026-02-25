@@ -73,18 +73,45 @@ const submitApplication = async (req, res) => {
         // Validate that the course exists in the department's courses array
         // Find department by searching through all departments for the course
         let dept;
+        let facultyFromDept = null;
+        
         try {
-            // Find department that contains this course and populate the faculty field
+            // Find department that contains this course
             dept = await Department.findOne({
                 'courses.name': course,
                 'courses.isActive': { $ne: false }
-            }).populate('faculty', 'name');
+            });
             
             // If still not found, try a case-insensitive partial match for course
             if (!dept) {
                 dept = await Department.findOne({
                     'courses.name': { $regex: new RegExp(course, 'i') }
-                }).populate('faculty', 'name');
+                });
+            }
+            
+            // If still not found, try to find department by name (some courses might be named similarly to departments)
+            if (!dept) {
+                dept = await Department.findOne({
+                    name: { $regex: new RegExp(course, 'i') }
+                });
+            }
+            
+            // If department found, try to populate faculty
+            if (dept) {
+                try {
+                    await dept.populate('faculty');
+                    facultyFromDept = dept.faculty;
+                } catch (popError) {
+                    console.warn(`Could not populate faculty for department "${dept.name}"`);
+                    // Try to find faculty by name from the department's stored faculty reference
+                    if (dept.faculty) {
+                        const Faculty = require('../models/faculty.schema.js');
+                        const faculty = await Faculty.findById(dept.faculty);
+                        if (faculty) {
+                            facultyFromDept = faculty;
+                        }
+                    }
+                }
             }
             
             // If still not found, allow submission without department validation
@@ -110,9 +137,11 @@ const submitApplication = async (req, res) => {
             console.warn(`Department "${dept.name}" has no courses defined, skipping course validation`);
         }
         
-        // Use the found department's name and faculty name (from populated faculty)
-        const departmentNameValue = dept ? dept.name : course;
-        const facultyNameValue = dept && dept.faculty ? dept.faculty.name : null;
+        // Use the found department's name and faculty name
+        // departmentName should be the actual department name (e.g., "Department of Medical Laboratory Science")
+        const departmentNameValue = dept ? dept.name : null;
+        // facultyName should be the actual faculty name (e.g., "Faculty of Health Sciences")
+        const facultyNameValue = facultyFromDept ? facultyFromDept.name : null;
 
         // Generate unique studentId if not provided
         const generatedStudentId = studentId || generateStudentId();
