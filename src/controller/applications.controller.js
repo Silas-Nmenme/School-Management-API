@@ -74,17 +74,17 @@ const submitApplication = async (req, res) => {
         // Find department by searching through all departments for the course
         let dept;
         try {
-            // Find department that contains this course (populate faculty to get faculty name)
+            // Find department that contains this course
             dept = await Department.findOne({
                 'courses.name': course,
                 'courses.isActive': { $ne: false }
-            }).populate('faculty');
+            });
             
             // If still not found, try a case-insensitive partial match for course
             if (!dept) {
                 dept = await Department.findOne({
                     'courses.name': { $regex: new RegExp(course, 'i') }
-                }).populate('faculty');
+                });
             }
             
             // If still not found, allow submission without department validation
@@ -112,7 +112,7 @@ const submitApplication = async (req, res) => {
         
         // Use the found department's name and faculty name
         const departmentNameValue = dept ? dept.name : course;
-        const facultyNameValue = dept && dept.faculty ? (dept.faculty.name || null) : null;
+        const facultyNameValue = dept ? (dept.facultyName || null) : null;
 
         // Generate unique studentId if not provided
         const generatedStudentId = studentId || generateStudentId();
