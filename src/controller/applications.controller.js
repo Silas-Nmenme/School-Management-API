@@ -96,25 +96,32 @@ const submitApplication = async (req, res) => {
                 dept = await Department.findOne({ name: { $regex: new RegExp(department, 'i') } });
             }
             
+            // If still not found, allow submission with string reference
             if (!dept) {
-                return res.status(400).json({ message: "Department not found" });
+                console.warn(`Department "${department}" not found in database, storing as string reference`);
             }
         } catch (error) {
             console.error("Error finding department:", error);
-            return res.status(400).json({ message: "Invalid department value" });
+            console.warn(`Department lookup failed, storing as string reference`);
         }
 
-        // Check if the course exists in the department's courses array
-        const courseExists = dept.courses && dept.courses.some(c => c.name === course && c.isActive !== false);
-        if (!courseExists) {
-            return res.status(400).json({ 
-                message: `Course "${course}" is not available in the selected department. Please select a valid course.`
-            });
+        // Check if the course exists in the department's courses array (only if dept was found and has courses)
+        let courseExists = true;
+        if (dept && dept.courses && dept.courses.length > 0) {
+            courseExists = dept.courses.some(c => c.name === course && c.isActive !== false);
+            if (!courseExists) {
+                return res.status(400).json({ 
+                    message: `Course "${course}" is not available in the selected department. Please select a valid course.`
+                });
+            }
+        } else if (dept) {
+            // Department exists but has no courses - skip validation
+            console.warn(`Department "${dept.name}" has no courses defined, skipping course validation`);
         }
         
-        // Use the found department's ObjectId and faculty reference
-        const departmentObjectId = dept._id;
-        const facultyObjectId = dept.faculty;
+        // Use the found department's ObjectId and faculty reference, or use string values as fallback
+        const departmentObjectId = dept ? dept._id : department;
+        const facultyObjectId = dept && dept.faculty ? dept.faculty : faculty;
 
         // Generate unique studentId if not provided
         const generatedStudentId = studentId || generateStudentId();
