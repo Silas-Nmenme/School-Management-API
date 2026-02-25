@@ -70,21 +70,21 @@ const submitApplication = async (req, res) => {
             return res.status(400).json({ message: "ACT score must be between 1 and 36" });
         }
 
-// Validate that the course exists in the department's courses array
+        // Validate that the course exists in the department's courses array
         // Find department by searching through all departments for the course
         let dept;
         try {
-            // Find department that contains this course
+            // Find department that contains this course (populate faculty to get faculty name)
             dept = await Department.findOne({
                 'courses.name': course,
                 'courses.isActive': { $ne: false }
-            });
+            }).populate('faculty');
             
             // If still not found, try a case-insensitive partial match for course
             if (!dept) {
                 dept = await Department.findOne({
                     'courses.name': { $regex: new RegExp(course, 'i') }
-                });
+                }).populate('faculty');
             }
             
             // If still not found, allow submission without department validation
@@ -112,12 +112,12 @@ const submitApplication = async (req, res) => {
         
         // Use the found department's name and faculty name
         const departmentNameValue = dept ? dept.name : course;
-        const facultyNameValue = dept && dept.faculty ? (typeof dept.faculty === 'object' ? dept.faculty.name : null) : null;
+        const facultyNameValue = dept && dept.faculty ? (dept.faculty.name || null) : null;
 
         // Generate unique studentId if not provided
         const generatedStudentId = studentId || generateStudentId();
 
-// Create new application with initial status 'Pending'
+        // Create new application with initial status 'Pending'
         const newApplication = new Application({
             studentId: generatedStudentId,
             firstName,
@@ -140,7 +140,7 @@ const submitApplication = async (req, res) => {
         // Save to database
         const savedApplication = await newApplication.save();
 
-// Prepare email data object
+        // Prepare email data object
         const applicationEmailData = {
             applicantName: `${firstName} ${lastName}`,
             id: savedApplication._id,
@@ -200,7 +200,7 @@ const submitApplication = async (req, res) => {
             submissionDate: savedApplication.submissionDate
         });
 
-console.log("New application submitted:", {
+        console.log("New application submitted:", {
             id: savedApplication._id,
             studentId: savedApplication.studentId,
             email: savedApplication.email,
@@ -250,7 +250,7 @@ const getApplicationStatus = async (req, res) => {
             remarks: application.remarks || null,
             submissionDate: application.submissionDate,
             reviewedAt: application.reviewedAt || null,
-faculty: application.facultyName,
+            faculty: application.facultyName,
             department: application.departmentName,
             course: application.course
         });
@@ -297,7 +297,7 @@ const getApplicationDetails = async (req, res) => {
                 gpa: application.gpa,
                 satScore: application.satScore,
                 actScore: application.actScore,
-faculty: application.facultyName,
+                faculty: application.facultyName,
                 department: application.departmentName,
                 course: application.course,
                 essay: application.essay,
@@ -349,7 +349,7 @@ const getAllApplications = async (req, res) => {
                 firstName: app.firstName,
                 lastName: app.lastName,
                 email: app.email,
-faculty: app.facultyName,
+                faculty: app.facultyName,
                 department: app.departmentName,
                 course: app.course,
                 status: app.status,
@@ -393,7 +393,7 @@ const getApplicationByEmail = async (req, res) => {
                 lastName: application.lastName,
                 email: application.email,
                 phone: application.phone,
-faculty: application.facultyName,
+                faculty: application.facultyName,
                 department: application.departmentName,
                 course: application.course,
                 status: application.status,
