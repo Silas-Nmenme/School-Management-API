@@ -36,16 +36,14 @@ const submitApplication = async (req, res) => {
             gpa,
             satScore,
             actScore,
-            faculty,
-            department,
             course,
             essay
         } = req.body;
 
         // Validate required fields
-        if (!firstName || !lastName || !email || !phone || !highSchool || !faculty || !department || !course) {
+        if (!firstName || !lastName || !email || !phone || !highSchool || !course) {
             return res.status(400).json({
-                message: "Missing required fields: firstName, lastName, email, phone, highSchool, faculty, department, course"
+                message: "Missing required fields: firstName, lastName, email, phone, highSchool, course"
             });
         }
 
@@ -72,37 +70,30 @@ const submitApplication = async (req, res) => {
             return res.status(400).json({ message: "ACT score must be between 1 and 36" });
         }
 
-        // Validate that the course exists in the selected department
-        // Support both ObjectId and string name for department
+// Validate that the course exists in the department's courses array
+        // Find department by searching through all departments for the course
         let dept;
         try {
-            // Ensure department is a valid string
-            if (!department || typeof department !== 'string') {
-                return res.status(400).json({ message: "Invalid department value" });
-            }
+            // Find department that contains this course
+            dept = await Department.findOne({
+                'courses.name': course,
+                'courses.isActive': { $ne: false }
+            });
             
-            // Try to find by ObjectId first (in case client sends ObjectId)
-            if (/^[0-9a-fA-F]{24}$/.test(department)) {
-                dept = await Department.findById(department);
-            }
-            
-            // If not found by ID, try to find by exact name (case-insensitive)
+            // If still not found, try a case-insensitive partial match for course
             if (!dept) {
-                dept = await Department.findOne({ name: { $regex: new RegExp(`^${department}$`, 'i') } });
+                dept = await Department.findOne({
+                    'courses.name': { $regex: new RegExp(course, 'i') }
+                });
             }
             
-            // If still not found, try a case-insensitive partial match
+            // If still not found, allow submission without department validation
             if (!dept) {
-                dept = await Department.findOne({ name: { $regex: new RegExp(department, 'i') } });
-            }
-            
-            // If still not found, allow submission with string reference
-            if (!dept) {
-                console.warn(`Department "${department}" not found in database, storing as string reference`);
+                console.warn(`Department for course "${course}" not found in database, storing course without department reference`);
             }
         } catch (error) {
             console.error("Error finding department:", error);
-            console.warn(`Department lookup failed, storing as string reference`);
+            console.warn(`Department lookup failed, storing course without department reference`);
         }
 
         // Check if the course exists in the department's courses array (only if dept was found and has courses)
@@ -111,7 +102,7 @@ const submitApplication = async (req, res) => {
             courseExists = dept.courses.some(c => c.name === course && c.isActive !== false);
             if (!courseExists) {
                 return res.status(400).json({ 
-                    message: `Course "${course}" is not available in the selected department. Please select a valid course.`
+                    message: `Course "${course}" is not available. Please select a valid course.`
                 });
             }
         } else if (dept) {
@@ -119,17 +110,14 @@ const submitApplication = async (req, res) => {
             console.warn(`Department "${dept.name}" has no courses defined, skipping course validation`);
         }
         
-        // Use the found department's ObjectId and faculty reference, or use string values as fallback
-        const departmentObjectId = dept ? dept._id : null;
-        const facultyObjectId = dept && dept.faculty ? dept.faculty : null;
-        const departmentNameValue = dept ? dept.name : department;
-        const facultyNameValue = dept && dept.faculty ? null : faculty;
+        // Use the found department's name and faculty name
+        const departmentNameValue = dept ? dept.name : course;
+        const facultyNameValue = dept && dept.faculty ? (typeof dept.faculty === 'object' ? dept.faculty.name : null) : null;
 
         // Generate unique studentId if not provided
         const generatedStudentId = studentId || generateStudentId();
 
-        // Create new application with initial status 'Pending'
-        // Use ObjectIds for faculty and department references when available
+// Create new application with initial status 'Pending'
         const newApplication = new Application({
             studentId: generatedStudentId,
             firstName,
@@ -141,10 +129,8 @@ const submitApplication = async (req, res) => {
             gpa: gpa || null,
             satScore: satScore || null,
             actScore: actScore || null,
-            faculty: facultyObjectId,  // Use ObjectId reference if found
-            facultyName: facultyNameValue,  // Store name if ObjectId not found
-            department: departmentObjectId,  // Use ObjectId reference if found
-            departmentName: departmentNameValue,  // Store name if ObjectId not found
+            facultyName: facultyNameValue,
+            departmentName: departmentNameValue,
             course,
             essay: essay || '',
             status: 'Pending', // Set initial status to Pending
@@ -154,15 +140,15 @@ const submitApplication = async (req, res) => {
         // Save to database
         const savedApplication = await newApplication.save();
 
-        // Prepare email data object
+// Prepare email data object
         const applicationEmailData = {
             applicantName: `${firstName} ${lastName}`,
             id: savedApplication._id,
             studentId: savedApplication.studentId,
             status: savedApplication.status,
             submissionDate: savedApplication.submissionDate,
-            faculty: faculty,
-            department: department,
+            faculty: savedApplication.facultyName,
+            department: savedApplication.departmentName,
             course: course,
             remarks: ''
         };
@@ -214,14 +200,14 @@ const submitApplication = async (req, res) => {
             submissionDate: savedApplication.submissionDate
         });
 
-        console.log("New application submitted:", {
+console.log("New application submitted:", {
             id: savedApplication._id,
             studentId: savedApplication.studentId,
             email: savedApplication.email,
             firstName: savedApplication.firstName,
             lastName: savedApplication.lastName,
-            faculty: savedApplication.faculty,
-            department: savedApplication.department,
+            faculty: savedApplication.facultyName,
+            department: savedApplication.departmentName,
             course: savedApplication.course,
             status: savedApplication.status,
             submissionDate: savedApplication.submissionDate
@@ -264,8 +250,8 @@ const getApplicationStatus = async (req, res) => {
             remarks: application.remarks || null,
             submissionDate: application.submissionDate,
             reviewedAt: application.reviewedAt || null,
-            faculty: application.facultyName || application.faculty,
-            department: application.departmentName || application.department,
+faculty: application.facultyName,
+            department: application.departmentName,
             course: application.course
         });
 
@@ -311,8 +297,8 @@ const getApplicationDetails = async (req, res) => {
                 gpa: application.gpa,
                 satScore: application.satScore,
                 actScore: application.actScore,
-                faculty: application.facultyName || application.faculty,
-                department: application.departmentName || application.department,
+faculty: application.facultyName,
+                department: application.departmentName,
                 course: application.course,
                 essay: application.essay,
                 status: application.status,
@@ -363,8 +349,8 @@ const getAllApplications = async (req, res) => {
                 firstName: app.firstName,
                 lastName: app.lastName,
                 email: app.email,
-                faculty: app.facultyName || app.faculty,
-                department: app.departmentName || app.department,
+faculty: app.facultyName,
+                department: app.departmentName,
                 course: app.course,
                 status: app.status,
                 submissionDate: app.submissionDate,
@@ -407,8 +393,8 @@ const getApplicationByEmail = async (req, res) => {
                 lastName: application.lastName,
                 email: application.email,
                 phone: application.phone,
-                faculty: application.facultyName || application.faculty,
-                department: application.departmentName || application.department,
+faculty: application.facultyName,
+                department: application.departmentName,
                 course: application.course,
                 status: application.status,
                 remarks: application.remarks || null,
