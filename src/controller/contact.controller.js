@@ -22,65 +22,62 @@ const createContact = async (req, res) => {
       message
     });
 
-    await newContact.save();
+    // Save to database
+    const savedContact = await newContact.save();
+    console.log('✓ Contact saved to database:', savedContact._id);
 
-    // Send emails (non-blocking)
-    try {
-        // Validate email credentials first
-        if (!process.env.EMAIL_USER || !process.env.EMAIL_PASS) {
-            console.error("✗ Email credentials not configured. Please set EMAIL_USER and EMAIL_PASS in .env file");
+    // Send emails (non-blocking) - don't await to avoid blocking response
+    const emailService = getEmailService();
+    
+    // Check if email credentials are configured
+    const isEmailConfigured = process.env.EMAIL_USER && process.env.EMAIL_PASS;
+    
+    if (isEmailConfigured) {
+      // Send confirmation email to the user (recipient)
+      emailService.sendContactConfirmationEmail({
+        name,
+        email,
+        subject,
+        message
+      }).then(result => {
+        if (result.success) {
+          console.log(`✓ Contact confirmation sent to ${email}`);
         } else {
-            console.log("✓ Email credentials found, attempting to send emails...");
+          console.error(`✗ Failed to send contact confirmation:`, result.error);
         }
-        
-        const emailService = getEmailService();
-        
-        // Send confirmation email to the user (recipient)
-        emailService.sendContactConfirmationEmail({
-            name,
-            email,
-            subject,
-            message
-        }).then(result => {
-            if (result.success) {
-                console.log(`✓ Contact confirmation sent to ${email}`);
-            } else {
-                console.error(`✗ Failed to send contact confirmation:`, result.error);
-            }
-        }).catch(emailError => {
-            console.error("✗ Error sending contact confirmation email:", emailError.message || emailError);
-        });
+      }).catch(emailError => {
+        console.error("✗ Error sending contact confirmation email:", emailError.message || emailError);
+      });
 
-        // Send notification email to admin
-        emailService.sendAdminContactNotificationEmail(
-            process.env.SUPPORT_EMAIL || 'support@example.com',
-            {
-                _id: newContact._id,
-                name,
-                email,
-                subject,
-                message
-            }
-        ).then(result => {
-            if (result.success) {
-                console.log(`✓ Contact notification sent to admin at ${process.env.SUPPORT_EMAIL || 'support@example.com'}`);
-            } else {
-                console.error(`✗ Failed to send contact notification:`, result.error);
-            }
-        }).catch(emailError => {
-            console.error("✗ Error sending admin contact notification email:", emailError.message || emailError);
-        });
-    } catch (emailInitError) {
-        console.error("✗ Email service not available:", emailInitError.message);
+      // Send notification email to admin
+      emailService.sendAdminContactNotificationEmail(
+        process.env.SUPPORT_EMAIL || 'support@example.com',
+        {
+          name,
+          email,
+          subject,
+          message
+        }
+      ).then(result => {
+        if (result.success) {
+          console.log(`✓ Contact notification sent to admin at ${process.env.SUPPORT_EMAIL || 'support@example.com'}`);
+        } else {
+          console.error(`✗ Failed to send contact notification:`, result.error);
+        }
+      }).catch(emailError => {
+        console.error("✗ Error sending admin contact notification email:", emailError.message || emailError);
+      });
+    } else {
+      console.warn("⚠️ Email credentials not configured. Skipping email sending.");
     }
 
     res.status(201).json({
       success: true,
       message: 'Contact message sent successfully.',
-      data: newContact
+      data: savedContact
     });
   } catch (error) {
-    console.error('Error creating contact:', error);
+    console.error('✗ Error creating contact:', error);
     res.status(500).json({
       success: false,
       message: 'Server error while sending message.'
