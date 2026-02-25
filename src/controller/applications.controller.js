@@ -73,9 +73,35 @@ const submitApplication = async (req, res) => {
         }
 
         // Validate that the course exists in the selected department
-        const dept = await Department.findById(department);
-        if (!dept) {
-            return res.status(400).json({ message: "Department not found" });
+        // Support both ObjectId and string name for department
+        let dept;
+        try {
+            // Ensure department is a valid string
+            if (!department || typeof department !== 'string') {
+                return res.status(400).json({ message: "Invalid department value" });
+            }
+            
+            // Try to find by ObjectId first (in case client sends ObjectId)
+            if (/^[0-9a-fA-F]{24}$/.test(department)) {
+                dept = await Department.findById(department);
+            }
+            
+            // If not found by ID, try to find by exact name (case-insensitive)
+            if (!dept) {
+                dept = await Department.findOne({ name: { $regex: new RegExp(`^${department}$`, 'i') } });
+            }
+            
+            // If still not found, try a case-insensitive partial match
+            if (!dept) {
+                dept = await Department.findOne({ name: { $regex: new RegExp(department, 'i') } });
+            }
+            
+            if (!dept) {
+                return res.status(400).json({ message: "Department not found" });
+            }
+        } catch (error) {
+            console.error("Error finding department:", error);
+            return res.status(400).json({ message: "Invalid department value" });
         }
 
         // Check if the course exists in the department's courses array
@@ -85,11 +111,16 @@ const submitApplication = async (req, res) => {
                 message: `Course "${course}" is not available in the selected department. Please select a valid course.`
             });
         }
+        
+        // Use the found department's ObjectId and faculty reference
+        const departmentObjectId = dept._id;
+        const facultyObjectId = dept.faculty;
 
         // Generate unique studentId if not provided
         const generatedStudentId = studentId || generateStudentId();
 
         // Create new application with initial status 'Pending'
+        // Use ObjectIds for faculty and department references
         const newApplication = new Application({
             studentId: generatedStudentId,
             firstName,
@@ -101,8 +132,8 @@ const submitApplication = async (req, res) => {
             gpa: gpa || null,
             satScore: satScore || null,
             actScore: actScore || null,
-            faculty,
-            department,
+            faculty: facultyObjectId,  // Use ObjectId reference
+            department: departmentObjectId,  // Use ObjectId reference
             course,
             essay: essay || '',
             status: 'Pending', // Set initial status to Pending
