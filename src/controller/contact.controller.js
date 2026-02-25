@@ -26,6 +26,13 @@ const createContact = async (req, res) => {
 
     // Send emails (non-blocking)
     try {
+        // Validate email credentials first
+        if (!process.env.EMAIL_USER || !process.env.EMAIL_PASS) {
+            console.error("✗ Email credentials not configured. Please set EMAIL_USER and EMAIL_PASS in .env file");
+        } else {
+            console.log("✓ Email credentials found, attempting to send emails...");
+        }
+        
         const emailService = getEmailService();
         
         // Send confirmation email to the user (recipient)
@@ -56,7 +63,7 @@ const createContact = async (req, res) => {
             }
         ).then(result => {
             if (result.success) {
-                console.log(`✓ Contact notification sent to admin`);
+                console.log(`✓ Contact notification sent to admin at ${process.env.SUPPORT_EMAIL || 'support@example.com'}`);
             } else {
                 console.error(`✗ Failed to send contact notification:`, result.error);
             }

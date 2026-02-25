@@ -2,6 +2,29 @@ const nodemailer = require('nodemailer');
 const fs = require('fs');
 const path = require('path');
 
+// Validate email credentials on startup
+const validateEmailConfig = () => {
+    const emailUser = process.env.EMAIL_USER;
+    const emailPass = process.env.EMAIL_PASS;
+    
+    if (!emailUser || !emailPass) {
+        console.warn('⚠️ Email credentials not configured. Emails will fail to send.');
+        console.warn('   Please set EMAIL_USER and EMAIL_PASS in your .env file');
+        return false;
+    }
+    
+    if (!emailUser.includes('@')) {
+        console.warn('⚠️ EMAIL_USER appears to be invalid (should be an email address)');
+        return false;
+    }
+    
+    console.log('✓ Email configuration validated');
+    return true;
+};
+
+// Run validation immediately
+const isEmailConfigured = validateEmailConfig();
+
 const transporter = nodemailer.createTransport({
   service: 'gmail',
   auth: {
@@ -9,6 +32,19 @@ const transporter = nodemailer.createTransport({
     pass: process.env.EMAIL_PASS
   }
 });
+
+// Verify transporter connection on startup (only if credentials exist)
+if (isEmailConfigured) {
+    transporter.verify((error, success) => {
+        if (error) {
+            console.error('✗ Email transporter verification failed:', error.message);
+            console.error('   Please check your EMAIL_USER and EMAIL_PASS in .env file');
+            console.error('   For Gmail, make sure you\'re using an App Password, not your regular password');
+        } else {
+            console.log('✓ Email transporter verified and ready');
+        }
+    });
+}
 
 // Helper function to send email with template
 const sendTemplateEmail = async (to, subject, templateName, variables) => {
