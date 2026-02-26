@@ -1,28 +1,28 @@
 // Seed data for faculties, departments and courses
-// This data is based on the user's requirements
+// Updated to match user's exact format with uppercase names and emojis
 
 const facultiesData = [
-  { name: "Faculty of Science", description: "Department of Sciences", icon: "🔬" },
-  { name: "Faculty of Engineering", description: "Department of Engineering", icon: "🏗" },
-  { name: "Faculty of Business & Management Sciences", description: "Department of Business", icon: "💼" },
-  { name: "Faculty of Arts & Humanities", description: "Department of Arts", icon: "🎨" },
-  { name: "Faculty of Social Sciences", description: "Department of Social Sciences", icon: "🌍" },
-  { name: "Faculty of Health Sciences", description: "Department of Health Sciences", icon: "🏥" },
-  { name: "Faculty of Law", description: "Department of Law", icon: "⚖" },
-  { name: "Faculty of Agriculture", description: "Department of Agriculture", icon: "🌾" },
-  { name: "Faculty of Education", description: "Department of Education", icon: "🏛" },
-  { name: "Faculty of Environmental Sciences", description: "Department of Environmental Sciences", icon: "🏗" },
-  { name: "Faculty of Information & Digital Technologies", description: "Department of IT", icon: "💻" },
-  { name: "Faculty of Transport & Logistics", description: "Department of Transport", icon: "🚢" },
-  { name: "Faculty of Creative & Media Technologies", description: "Department of Creative Arts", icon: "🎭" },
-  { name: "Faculty of Advanced Research & Innovation", description: "Department of Research", icon: "🔬" },
-  { name: "Faculty of Professional Studies", description: "Department of Professional Studies", icon: "📊" }
+  { name: "🔬 FACULTY OF SCIENCE", description: "Faculty of Science", icon: "🔬" },
+  { name: "🏗 FACULTY OF ENGINEERING", description: "Faculty of Engineering", icon: "🏗" },
+  { name: "💼 FACULTY OF BUSINESS & MANAGEMENT SCIENCES", description: "Faculty of Business & Management Sciences", icon: "💼" },
+  { name: "🎨 FACULTY OF ARTS & HUMANITIES", description: "Faculty of Arts & Humanities", icon: "🎨" },
+  { name: "🌍 FACULTY OF SOCIAL SCIENCES", description: "Faculty of Social Sciences", icon: "🌍" },
+  { name: "🏥 FACULTY OF HEALTH SCIENCES", description: "Faculty of Health Sciences", icon: "🏥" },
+  { name: "⚖ FACULTY OF LAW", description: "Faculty of Law", icon: "⚖" },
+  { name: "🌾 FACULTY OF AGRICULTURE", description: "Faculty of Agriculture", icon: "🌾" },
+  { name: "🏛 FACULTY OF EDUCATION", description: "Faculty of Education", icon: "🏛" },
+  { name: "🏗 FACULTY OF ENVIRONMENTAL SCIENCES", description: "Faculty of Environmental Sciences", icon: "🏗" },
+  { name: "💻 FACULTY OF INFORMATION & DIGITAL TECHNOLOGIES", description: "Faculty of Information & Digital Technologies", icon: "💻" },
+  { name: "🚢 FACULTY OF TRANSPORT & LOGISTICS", description: "Faculty of Transport & Logistics", icon: "🚢" },
+  { name: "🎭 FACULTY OF CREATIVE & MEDIA TECHNOLOGIES", description: "Faculty of Creative & Media Technologies", icon: "🎭" },
+  { name: "🔬 FACULTY OF ADVANCED RESEARCH & INNOVATION", description: "Faculty of Advanced Research & Innovation", icon: "🔬" },
+  { name: "📊 FACULTY OF PROFESSIONAL STUDIES", description: "Faculty of Professional Studies", icon: "📊" }
 ];
 
 const departmentsData = [
-  // Faculty of Science
+  // FACULTY OF SCIENCE
   { 
-    facultyName: "Faculty of Science", 
+    facultyName: "🔬 FACULTY OF SCIENCE", 
     name: "Department of Computer Science",
     courses: [
       { name: "BSc Computer Science", type: "BSc" },
@@ -31,7 +31,7 @@ const departmentsData = [
     ]
   },
   { 
-    facultyName: "Faculty of Science", 
+    facultyName: "🔬 FACULTY OF SCIENCE", 
     name: "Department of Software Engineering",
     courses: [
       { name: "BSc Software Engineering", type: "BSc" },
@@ -40,7 +40,7 @@ const departmentsData = [
     ]
   },
   { 
-    facultyName: "Faculty of Science", 
+    facultyName: "🔬 FACULTY OF SCIENCE", 
     name: "Department of Information Systems",
     courses: [
       { name: "BSc Information Systems", type: "BSc" },
@@ -49,7 +49,7 @@ const departmentsData = [
     ]
   },
   { 
-    facultyName: "Faculty of Science", 
+    facultyName: "🔬 FACULTY OF SCIENCE", 
     name: "Department of Cybersecurity",
     courses: [
       { name: "BSc Cybersecurity", type: "BSc" },
@@ -58,7 +58,7 @@ const departmentsData = [
     ]
   },
   { 
-    facultyName: "Faculty of Science", 
+    facultyName: "🔬 FACULTY OF SCIENCE", 
     name: "Department of Artificial Intelligence",
     courses: [
       { name: "BSc Artificial Intelligence", type: "BSc" },
@@ -67,7 +67,7 @@ const departmentsData = [
     ]
   },
   { 
-    facultyName: "Faculty of Science", 
+    facultyName: "🔬 FACULTY OF SCIENCE", 
     name: "Department of Data Science",
     courses: [
       { name: "BSc Data Science", type: "BSc" },
@@ -76,7 +76,7 @@ const departmentsData = [
     ]
   },
   { 
-    facultyName: "Faculty of Science", 
+    facultyName: "🔬 FACULTY OF SCIENCE", 
     name: "Department of Mathematics",
     courses: [
       { name: "BSc Mathematics", type: "BSc" },
@@ -85,7 +85,7 @@ const departmentsData = [
     ]
   },
   { 
-    facultyName: "Faculty of Science", 
+    facultyName: "🔬 FACULTY OF SCIENCE", 
     name: "Department of Applied Mathematics",
     courses: [
       { name: "BSc Applied Mathematics", type: "BSc" },
@@ -94,7 +94,7 @@ const departmentsData = [
     ]
   },
   { 
-    facultyName: "Faculty of Science", 
+    facultyName: "🔬 FACULTY OF SCIENCE", 
     name: "Department of Statistics",
     courses: [
       { name: "BSc Statistics", type: "BSc" },
@@ -103,7 +103,7 @@ const departmentsData = [
     ]
   },
   { 
-    facultyName: "Faculty of Science", 
+    facultyName: "🔬 FACULTY OF SCIENCE", 
     name: "Department of Actuarial Science",
     courses: [
       { name: "BSc Actuarial Science", type: "BSc" },
@@ -112,7 +112,7 @@ const departmentsData = [
     ]
   },
   { 
-    facultyName: "Faculty of Science", 
+    facultyName: "🔬 FACULTY OF SCIENCE", 
     name: "Department of Physics",
     courses: [
       { name: "BSc Physics", type: "BSc" },
@@ -121,7 +121,7 @@ const departmentsData = [
     ]
   },
   { 
-    facultyName: "Faculty of Science", 
+    facultyName: "🔬 FACULTY OF SCIENCE", 
     name: "Department of Applied Physics",
     courses: [
       { name: "BSc Applied Physics", type: "BSc" },
@@ -130,7 +130,7 @@ const departmentsData = [
     ]
   },
   { 
-    facultyName: "Faculty of Science", 
+    facultyName: "🔬 FACULTY OF SCIENCE", 
     name: "Department of Medical Physics",
     courses: [
       { name: "BSc Medical Physics", type: "BSc" },
@@ -139,7 +139,7 @@ const departmentsData = [
     ]
   },
   { 
-    facultyName: "Faculty of Science", 
+    facultyName: "🔬 FACULTY OF SCIENCE", 
     name: "Department of Chemistry",
     courses: [
       { name: "BSc Chemistry", type: "BSc" },
@@ -148,7 +148,7 @@ const departmentsData = [
     ]
   },
   { 
-    facultyName: "Faculty of Science", 
+    facultyName: "🔬 FACULTY OF SCIENCE", 
     name: "Department of Industrial Chemistry",
     courses: [
       { name: "BSc Industrial Chemistry", type: "BSc" },
@@ -157,7 +157,7 @@ const departmentsData = [
     ]
   },
   { 
-    facultyName: "Faculty of Science", 
+    facultyName: "🔬 FACULTY OF SCIENCE", 
     name: "Department of Biochemistry",
     courses: [
       { name: "BSc Biochemistry", type: "BSc" },
@@ -166,7 +166,7 @@ const departmentsData = [
     ]
   },
   { 
-    facultyName: "Faculty of Science", 
+    facultyName: "🔬 FACULTY OF SCIENCE", 
     name: "Department of Biology",
     courses: [
       { name: "BSc Biology", type: "BSc" },
@@ -175,7 +175,7 @@ const departmentsData = [
     ]
   },
   { 
-    facultyName: "Faculty of Science", 
+    facultyName: "🔬 FACULTY OF SCIENCE", 
     name: "Department of Microbiology",
     courses: [
       { name: "BSc Microbiology", type: "BSc" },
@@ -184,7 +184,7 @@ const departmentsData = [
     ]
   },
   { 
-    facultyName: "Faculty of Science", 
+    facultyName: "🔬 FACULTY OF SCIENCE", 
     name: "Department of Biotechnology",
     courses: [
       { name: "BSc Biotechnology", type: "BSc" },
@@ -193,7 +193,7 @@ const departmentsData = [
     ]
   },
   { 
-    facultyName: "Faculty of Science", 
+    facultyName: "🔬 FACULTY OF SCIENCE", 
     name: "Department of Environmental Science",
     courses: [
       { name: "BSc Environmental Science", type: "BSc" },
@@ -202,9 +202,9 @@ const departmentsData = [
     ]
   },
 
-  // Faculty of Engineering
+  // FACULTY OF ENGINEERING
   { 
-    facultyName: "Faculty of Engineering", 
+    facultyName: "🏗 FACULTY OF ENGINEERING", 
     name: "Department of Mechanical Engineering",
     courses: [
       { name: "BEng Mechanical Engineering", type: "BEng" },
@@ -213,7 +213,7 @@ const departmentsData = [
     ]
   },
   { 
-    facultyName: "Faculty of Engineering", 
+    facultyName: "🏗 FACULTY OF ENGINEERING", 
     name: "Department of Mechatronics Engineering",
     courses: [
       { name: "BEng Mechatronics Engineering", type: "BEng" },
@@ -222,7 +222,7 @@ const departmentsData = [
     ]
   },
   { 
-    facultyName: "Faculty of Engineering", 
+    facultyName: "🏗 FACULTY OF ENGINEERING", 
     name: "Department of Automotive Engineering",
     courses: [
       { name: "BEng Automotive Engineering", type: "BEng" },
@@ -231,7 +231,7 @@ const departmentsData = [
     ]
   },
   { 
-    facultyName: "Faculty of Engineering", 
+    facultyName: "🏗 FACULTY OF ENGINEERING", 
     name: "Department of Civil Engineering",
     courses: [
       { name: "BEng Civil Engineering", type: "BEng" },
@@ -240,7 +240,7 @@ const departmentsData = [
     ]
   },
   { 
-    facultyName: "Faculty of Engineering", 
+    facultyName: "🏗 FACULTY OF ENGINEERING", 
     name: "Department of Structural Engineering",
     courses: [
       { name: "BEng Structural Engineering", type: "BEng" },
@@ -249,7 +249,7 @@ const departmentsData = [
     ]
   },
   { 
-    facultyName: "Faculty of Engineering", 
+    facultyName: "🏗 FACULTY OF ENGINEERING", 
     name: "Department of Building Engineering",
     courses: [
       { name: "BEng Building Engineering", type: "BEng" },
@@ -258,7 +258,7 @@ const departmentsData = [
     ]
   },
   { 
-    facultyName: "Faculty of Engineering", 
+    facultyName: "🏗 FACULTY OF ENGINEERING", 
     name: "Department of Electrical Engineering",
     courses: [
       { name: "BEng Electrical Engineering", type: "BEng" },
@@ -267,7 +267,7 @@ const departmentsData = [
     ]
   },
   { 
-    facultyName: "Faculty of Engineering", 
+    facultyName: "🏗 FACULTY OF ENGINEERING", 
     name: "Department of Electronics Engineering",
     courses: [
       { name: "BEng Electronics Engineering", type: "BEng" },
@@ -276,7 +276,7 @@ const departmentsData = [
     ]
   },
   { 
-    facultyName: "Faculty of Engineering", 
+    facultyName: "🏗 FACULTY OF ENGINEERING", 
     name: "Department of Computer Engineering",
     courses: [
       { name: "BEng Computer Engineering", type: "BEng" },
@@ -285,7 +285,7 @@ const departmentsData = [
     ]
   },
   { 
-    facultyName: "Faculty of Engineering", 
+    facultyName: "🏗 FACULTY OF ENGINEERING", 
     name: "Department of Telecommunications Engineering",
     courses: [
       { name: "BEng Telecommunications Engineering", type: "BEng" },
@@ -294,7 +294,7 @@ const departmentsData = [
     ]
   },
   { 
-    facultyName: "Faculty of Engineering", 
+    facultyName: "🏗 FACULTY OF ENGINEERING", 
     name: "Department of Chemical Engineering",
     courses: [
       { name: "BEng Chemical Engineering", type: "BEng" },
@@ -303,7 +303,7 @@ const departmentsData = [
     ]
   },
   { 
-    facultyName: "Faculty of Engineering", 
+    facultyName: "🏗 FACULTY OF ENGINEERING", 
     name: "Department of Petroleum Engineering",
     courses: [
       { name: "BEng Petroleum Engineering", type: "BEng" },
@@ -312,7 +312,7 @@ const departmentsData = [
     ]
   },
   { 
-    facultyName: "Faculty of Engineering", 
+    facultyName: "🏗 FACULTY OF ENGINEERING", 
     name: "Department of Gas Engineering",
     courses: [
       { name: "BEng Gas Engineering", type: "BEng" },
@@ -321,7 +321,7 @@ const departmentsData = [
     ]
   },
   { 
-    facultyName: "Faculty of Engineering", 
+    facultyName: "🏗 FACULTY OF ENGINEERING", 
     name: "Department of Marine Engineering",
     courses: [
       { name: "BEng Marine Engineering", type: "BEng" },
@@ -330,7 +330,7 @@ const departmentsData = [
     ]
   },
   { 
-    facultyName: "Faculty of Engineering", 
+    facultyName: "🏗 FACULTY OF ENGINEERING", 
     name: "Department of Aerospace Engineering",
     courses: [
       { name: "BEng Aerospace Engineering", type: "BEng" },
@@ -339,7 +339,7 @@ const departmentsData = [
     ]
   },
   { 
-    facultyName: "Faculty of Engineering", 
+    facultyName: "🏗 FACULTY OF ENGINEERING", 
     name: "Department of Agricultural Engineering",
     courses: [
       { name: "BEng Agricultural Engineering", type: "BEng" },
@@ -348,7 +348,7 @@ const departmentsData = [
     ]
   },
   { 
-    facultyName: "Faculty of Engineering", 
+    facultyName: "🏗 FACULTY OF ENGINEERING", 
     name: "Department of Biomedical Engineering",
     courses: [
       { name: "BEng Biomedical Engineering", type: "BEng" },
@@ -357,7 +357,7 @@ const departmentsData = [
     ]
   },
   { 
-    facultyName: "Faculty of Engineering", 
+    facultyName: "🏗 FACULTY OF ENGINEERING", 
     name: "Department of Materials Engineering",
     courses: [
       { name: "BEng Materials Engineering", type: "BEng" },
@@ -366,7 +366,7 @@ const departmentsData = [
     ]
   },
   { 
-    facultyName: "Faculty of Engineering", 
+    facultyName: "🏗 FACULTY OF ENGINEERING", 
     name: "Department of Metallurgical Engineering",
     courses: [
       { name: "BEng Metallurgical Engineering", type: "BEng" },
@@ -375,7 +375,7 @@ const departmentsData = [
     ]
   },
   { 
-    facultyName: "Faculty of Engineering", 
+    facultyName: "🏗 FACULTY OF ENGINEERING", 
     name: "Department of Industrial & Production Engineering",
     courses: [
       { name: "BEng Industrial & Production Engineering", type: "BEng" },
@@ -384,9 +384,9 @@ const departmentsData = [
     ]
   },
 
-  // Faculty of Business & Management Sciences
+  // FACULTY OF BUSINESS & MANAGEMENT SCIENCES
   { 
-    facultyName: "Faculty of Business & Management Sciences", 
+    facultyName: "💼 FACULTY OF BUSINESS & MANAGEMENT SCIENCES", 
     name: "Department of Business Administration",
     courses: [
       { name: "BBA Business Administration", type: "BBA" },
@@ -395,7 +395,7 @@ const departmentsData = [
     ]
   },
   { 
-    facultyName: "Faculty of Business & Management Sciences", 
+    facultyName: "💼 FACULTY OF BUSINESS & MANAGEMENT SCIENCES", 
     name: "Department of Management Studies",
     courses: [
       { name: "BBA Management Studies", type: "BBA" },
@@ -404,7 +404,7 @@ const departmentsData = [
     ]
   },
   { 
-    facultyName: "Faculty of Business & Management Sciences", 
+    facultyName: "💼 FACULTY OF BUSINESS & MANAGEMENT SCIENCES", 
     name: "Department of Human Resource Management",
     courses: [
       { name: "BBA Human Resource Management", type: "BBA" },
@@ -413,7 +413,7 @@ const departmentsData = [
     ]
   },
   { 
-    facultyName: "Faculty of Business & Management Sciences", 
+    facultyName: "💼 FACULTY OF BUSINESS & MANAGEMENT SCIENCES", 
     name: "Department of Entrepreneurship",
     courses: [
       { name: "BBA Entrepreneurship", type: "BBA" },
@@ -422,7 +422,7 @@ const departmentsData = [
     ]
   },
   { 
-    facultyName: "Faculty of Business & Management Sciences", 
+    facultyName: "💼 FACULTY OF BUSINESS & MANAGEMENT SCIENCES", 
     name: "Department of Marketing",
     courses: [
       { name: "BBA Marketing", type: "BBA" },
@@ -431,7 +431,7 @@ const departmentsData = [
     ]
   },
   { 
-    facultyName: "Faculty of Business & Management Sciences", 
+    facultyName: "💼 FACULTY OF BUSINESS & MANAGEMENT SCIENCES", 
     name: "Department of International Business",
     courses: [
       { name: "BBA International Business", type: "BBA" },
@@ -440,7 +440,7 @@ const departmentsData = [
     ]
   },
   { 
-    facultyName: "Faculty of Business & Management Sciences", 
+    facultyName: "💼 FACULTY OF BUSINESS & MANAGEMENT SCIENCES", 
     name: "Department of Accounting",
     courses: [
       { name: "BBA Accounting", type: "BBA" },
@@ -449,7 +449,7 @@ const departmentsData = [
     ]
   },
   { 
-    facultyName: "Faculty of Business & Management Sciences", 
+    facultyName: "💼 FACULTY OF BUSINESS & MANAGEMENT SCIENCES", 
     name: "Department of Finance",
     courses: [
       { name: "BBA Finance", type: "BBA" },
@@ -458,7 +458,7 @@ const departmentsData = [
     ]
   },
   { 
-    facultyName: "Faculty of Business & Management Sciences", 
+    facultyName: "💼 FACULTY OF BUSINESS & MANAGEMENT SCIENCES", 
     name: "Department of Banking & Finance",
     courses: [
       { name: "BBA Banking & Finance", type: "BBA" },
@@ -467,7 +467,7 @@ const departmentsData = [
     ]
   },
   { 
-    facultyName: "Faculty of Business & Management Sciences", 
+    facultyName: "💼 FACULTY OF BUSINESS & MANAGEMENT SCIENCES", 
     name: "Department of Insurance",
     courses: [
       { name: "BBA Insurance", type: "BBA" },
@@ -476,7 +476,7 @@ const departmentsData = [
     ]
   },
   { 
-    facultyName: "Faculty of Business & Management Sciences", 
+    facultyName: "💼 FACULTY OF BUSINESS & MANAGEMENT SCIENCES", 
     name: "Department of Economics",
     courses: [
       { name: "BBA Economics", type: "BBA" },
@@ -485,7 +485,7 @@ const departmentsData = [
     ]
   },
   { 
-    facultyName: "Faculty of Business & Management Sciences", 
+    facultyName: "💼 FACULTY OF BUSINESS & MANAGEMENT SCIENCES", 
     name: "Department of Development Economics",
     courses: [
       { name: "BBA Development Economics", type: "BBA" },
@@ -494,7 +494,7 @@ const departmentsData = [
     ]
   },
   { 
-    facultyName: "Faculty of Business & Management Sciences", 
+    facultyName: "💼 FACULTY OF BUSINESS & MANAGEMENT SCIENCES", 
     name: "Department of Public Administration",
     courses: [
       { name: "BBA Public Administration", type: "BBA" },
@@ -503,7 +503,7 @@ const departmentsData = [
     ]
   },
   { 
-    facultyName: "Faculty of Business & Management Sciences", 
+    facultyName: "💼 FACULTY OF BUSINESS & MANAGEMENT SCIENCES", 
     name: "Department of Procurement & Supply Chain",
     courses: [
       { name: "BBA Procurement & Supply Chain", type: "BBA" },
@@ -512,7 +512,7 @@ const departmentsData = [
     ]
   },
   { 
-    facultyName: "Faculty of Business & Management Sciences", 
+    facultyName: "💼 FACULTY OF BUSINESS & MANAGEMENT SCIENCES", 
     name: "Department of Logistics Management",
     courses: [
       { name: "BBA Logistics Management", type: "BBA" },
@@ -521,7 +521,7 @@ const departmentsData = [
     ]
   },
   { 
-    facultyName: "Faculty of Business & Management Sciences", 
+    facultyName: "💼 FACULTY OF BUSINESS & MANAGEMENT SCIENCES", 
     name: "Department of Project Management",
     courses: [
       { name: "BBA Project Management", type: "BBA" },
@@ -530,7 +530,7 @@ const departmentsData = [
     ]
   },
   { 
-    facultyName: "Faculty of Business & Management Sciences", 
+    facultyName: "💼 FACULTY OF BUSINESS & MANAGEMENT SCIENCES", 
     name: "Department of Taxation",
     courses: [
       { name: "BBA Taxation", type: "BBA" },
@@ -539,7 +539,7 @@ const departmentsData = [
     ]
   },
   { 
-    facultyName: "Faculty of Business & Management Sciences", 
+    facultyName: "💼 FACULTY OF BUSINESS & MANAGEMENT SCIENCES", 
     name: "Department of Real Estate Management",
     courses: [
       { name: "BBA Real Estate Management", type: "BBA" },
@@ -548,7 +548,7 @@ const departmentsData = [
     ]
   },
   { 
-    facultyName: "Faculty of Business & Management Sciences", 
+    facultyName: "💼 FACULTY OF BUSINESS & MANAGEMENT SCIENCES", 
     name: "Department of Hospitality Management",
     courses: [
       { name: "BBA Hospitality Management", type: "BBA" },
@@ -557,7 +557,7 @@ const departmentsData = [
     ]
   },
   { 
-    facultyName: "Faculty of Business & Management Sciences", 
+    facultyName: "💼 FACULTY OF BUSINESS & MANAGEMENT SCIENCES", 
     name: "Department of Tourism Management",
     courses: [
       { name: "BBA Tourism Management", type: "BBA" },
@@ -566,9 +566,9 @@ const departmentsData = [
     ]
   },
 
-  // Faculty of Arts & Humanities
+  // FACULTY OF ARTS & HUMANITIES
   { 
-    facultyName: "Faculty of Arts & Humanities", 
+    facultyName: "🎨 FACULTY OF ARTS & HUMANITIES", 
     name: "Department of English Language",
     courses: [
       { name: "BA English Language", type: "BA" },
@@ -577,7 +577,7 @@ const departmentsData = [
     ]
   },
   { 
-    facultyName: "Faculty of Arts & Humanities", 
+    facultyName: "🎨 FACULTY OF ARTS & HUMANITIES", 
     name: "Department of English Literature",
     courses: [
       { name: "BA English Literature", type: "BA" },
@@ -586,7 +586,7 @@ const departmentsData = [
     ]
   },
   { 
-    facultyName: "Faculty of Arts & Humanities", 
+    facultyName: "🎨 FACULTY OF ARTS & HUMANITIES", 
     name: "Department of Linguistics",
     courses: [
       { name: "BA Linguistics", type: "BA" },
@@ -595,7 +595,7 @@ const departmentsData = [
     ]
   },
   { 
-    facultyName: "Faculty of Arts & Humanities", 
+    facultyName: "🎨 FACULTY OF ARTS & HUMANITIES", 
     name: "Department of Creative Writing",
     courses: [
       { name: "BA Creative Writing", type: "BA" },
@@ -604,7 +604,7 @@ const departmentsData = [
     ]
   },
   { 
-    facultyName: "Faculty of Arts & Humanities", 
+    facultyName: "🎨 FACULTY OF ARTS & HUMANITIES", 
     name: "Department of History",
     courses: [
       { name: "BA History", type: "BA" },
@@ -613,7 +613,7 @@ const departmentsData = [
     ]
   },
   { 
-    facultyName: "Faculty of Arts & Humanities", 
+    facultyName: "🎨 FACULTY OF ARTS & HUMANITIES", 
     name: "Department of International Studies",
     courses: [
       { name: "BA International Studies", type: "BA" },
@@ -622,7 +622,7 @@ const departmentsData = [
     ]
   },
   { 
-    facultyName: "Faculty of Arts & Humanities", 
+    facultyName: "🎨 FACULTY OF ARTS & HUMANITIES", 
     name: "Department of Philosophy",
     courses: [
       { name: "BA Philosophy", type: "BA" },
@@ -631,7 +631,7 @@ const departmentsData = [
     ]
   },
   { 
-    facultyName: "Faculty of Arts & Humanities", 
+    facultyName: "🎨 FACULTY OF ARTS & HUMANITIES", 
     name: "Department of Religious Studies",
     courses: [
       { name: "BA Religious Studies", type: "BA" },
@@ -640,7 +640,7 @@ const departmentsData = [
     ]
   },
   { 
-    facultyName: "Faculty of Arts & Humanities", 
+    facultyName: "🎨 FACULTY OF ARTS & HUMANITIES", 
     name: "Department of Islamic Studies",
     courses: [
       { name: "BA Islamic Studies", type: "BA" },
@@ -649,7 +649,7 @@ const departmentsData = [
     ]
   },
   { 
-    facultyName: "Faculty of Arts & Humanities", 
+    facultyName: "🎨 FACULTY OF ARTS & HUMANITIES", 
     name: "Department of Christian Studies",
     courses: [
       { name: "BA Christian Studies", type: "BA" },
@@ -658,7 +658,7 @@ const departmentsData = [
     ]
   },
   { 
-    facultyName: "Faculty of Arts & Humanities", 
+    facultyName: "🎨 FACULTY OF ARTS & HUMANITIES", 
     name: "Department of Theatre Arts",
     courses: [
       { name: "BA Theatre Arts", type: "BA" },
@@ -667,7 +667,7 @@ const departmentsData = [
     ]
   },
   { 
-    facultyName: "Faculty of Arts & Humanities", 
+    facultyName: "🎨 FACULTY OF ARTS & HUMANITIES", 
     name: "Department of Performing Arts",
     courses: [
       { name: "BA Performing Arts", type: "BA" },
@@ -676,7 +676,7 @@ const departmentsData = [
     ]
   },
   { 
-    facultyName: "Faculty of Arts & Humanities", 
+    facultyName: "🎨 FACULTY OF ARTS & HUMANITIES", 
     name: "Department of Music",
     courses: [
       { name: "BA Music", type: "BA" },
@@ -685,7 +685,7 @@ const departmentsData = [
     ]
   },
   { 
-    facultyName: "Faculty of Arts & Humanities", 
+    facultyName: "🎨 FACULTY OF ARTS & HUMANITIES", 
     name: "Department of Fine Arts",
     courses: [
       { name: "BA Fine Arts", type: "BA" },
@@ -694,7 +694,7 @@ const departmentsData = [
     ]
   },
   { 
-    facultyName: "Faculty of Arts & Humanities", 
+    facultyName: "🎨 FACULTY OF ARTS & HUMANITIES", 
     name: "Department of Visual Arts",
     courses: [
       { name: "BA Visual Arts", type: "BA" },
@@ -703,7 +703,7 @@ const departmentsData = [
     ]
   },
   { 
-    facultyName: "Faculty of Arts & Humanities", 
+    facultyName: "🎨 FACULTY OF ARTS & HUMANITIES", 
     name: "Department of Graphic Design",
     courses: [
       { name: "BA Graphic Design", type: "BA" },
@@ -712,7 +712,7 @@ const departmentsData = [
     ]
   },
   { 
-    facultyName: "Faculty of Arts & Humanities", 
+    facultyName: "🎨 FACULTY OF ARTS & HUMANITIES", 
     name: "Department of Fashion Design",
     courses: [
       { name: "BA Fashion Design", type: "BA" },
@@ -721,7 +721,7 @@ const departmentsData = [
     ]
   },
   { 
-    facultyName: "Faculty of Arts & Humanities", 
+    facultyName: "🎨 FACULTY OF ARTS & HUMANITIES", 
     name: "Department of French",
     courses: [
       { name: "BA French", type: "BA" },
@@ -730,7 +730,7 @@ const departmentsData = [
     ]
   },
   { 
-    facultyName: "Faculty of Arts & Humanities", 
+    facultyName: "🎨 FACULTY OF ARTS & HUMANITIES", 
     name: "Department of Spanish",
     courses: [
       { name: "BA Spanish", type: "BA" },
@@ -739,7 +739,7 @@ const departmentsData = [
     ]
   },
   { 
-    facultyName: "Faculty of Arts & Humanities", 
+    facultyName: "🎨 FACULTY OF ARTS & HUMANITIES", 
     name: "Department of Chinese Studies",
     courses: [
       { name: "BA Chinese Studies", type: "BA" },
@@ -748,9 +748,9 @@ const departmentsData = [
     ]
   },
 
-  // Faculty of Social Sciences
+  // FACULTY OF SOCIAL SCIENCES
   { 
-    facultyName: "Faculty of Social Sciences", 
+    facultyName: "🌍 FACULTY OF SOCIAL SCIENCES", 
     name: "Department of Political Science",
     courses: [
       { name: "BA Political Science", type: "BA" },
@@ -759,7 +759,7 @@ const departmentsData = [
     ]
   },
   { 
-    facultyName: "Faculty of Social Sciences", 
+    facultyName: "🌍 FACULTY OF SOCIAL SCIENCES", 
     name: "Department of Public Policy",
     courses: [
       { name: "BA Public Policy", type: "BA" },
@@ -768,7 +768,7 @@ const departmentsData = [
     ]
   },
   { 
-    facultyName: "Faculty of Social Sciences", 
+    facultyName: "🌍 FACULTY OF SOCIAL SCIENCES", 
     name: "Department of Sociology",
     courses: [
       { name: "BA Sociology", type: "BA" },
@@ -777,7 +777,7 @@ const departmentsData = [
     ]
   },
   { 
-    facultyName: "Faculty of Social Sciences", 
+    facultyName: "🌍 FACULTY OF SOCIAL SCIENCES", 
     name: "Department of Anthropology",
     courses: [
       { name: "BA Anthropology", type: "BA" },
@@ -786,7 +786,7 @@ const departmentsData = [
     ]
   },
   { 
-    facultyName: "Faculty of Social Sciences", 
+    facultyName: "🌍 FACULTY OF SOCIAL SCIENCES", 
     name: "Department of Psychology",
     courses: [
       { name: "BA Psychology", type: "BA" },
@@ -795,7 +795,7 @@ const departmentsData = [
     ]
   },
   { 
-    facultyName: "Faculty of Social Sciences", 
+    facultyName: "🌍 FACULTY OF SOCIAL SCIENCES", 
     name: "Department of Criminology",
     courses: [
       { name: "BA Criminology", type: "BA" },
@@ -804,7 +804,7 @@ const departmentsData = [
     ]
   },
   { 
-    facultyName: "Faculty of Social Sciences", 
+    facultyName: "🌍 FACULTY OF SOCIAL SCIENCES", 
     name: "Department of Peace & Conflict Studies",
     courses: [
       { name: "BA Peace & Conflict Studies", type: "BA" },
@@ -813,7 +813,7 @@ const departmentsData = [
     ]
   },
   { 
-    facultyName: "Faculty of Social Sciences", 
+    facultyName: "🌍 FACULTY OF SOCIAL SCIENCES", 
     name: "Department of Gender Studies",
     courses: [
       { name: "BA Gender Studies", type: "BA" },
@@ -822,7 +822,7 @@ const departmentsData = [
     ]
   },
   { 
-    facultyName: "Faculty of Social Sciences", 
+    facultyName: "🌍 FACULTY OF SOCIAL SCIENCES", 
     name: "Department of Geography",
     courses: [
       { name: "BA Geography", type: "BA" },
@@ -831,7 +831,7 @@ const departmentsData = [
     ]
   },
   { 
-    facultyName: "Faculty of Social Sciences", 
+    facultyName: "🌍 FACULTY OF SOCIAL SCIENCES", 
     name: "Department of Urban & Regional Planning",
     courses: [
       { name: "BA Urban & Regional Planning", type: "BA" },
@@ -840,7 +840,7 @@ const departmentsData = [
     ]
   },
   { 
-    facultyName: "Faculty of Social Sciences", 
+    facultyName: "🌍 FACULTY OF SOCIAL SCIENCES", 
     name: "Department of Demography",
     courses: [
       { name: "BA Demography", type: "BA" },
@@ -849,7 +849,7 @@ const departmentsData = [
     ]
   },
   { 
-    facultyName: "Faculty of Social Sciences", 
+    facultyName: "🌍 FACULTY OF SOCIAL SCIENCES", 
     name: "Department of Social Work",
     courses: [
       { name: "BA Social Work", type: "BA" },
@@ -858,7 +858,7 @@ const departmentsData = [
     ]
   },
   { 
-    facultyName: "Faculty of Social Sciences", 
+    facultyName: "🌍 FACULTY OF SOCIAL SCIENCES", 
     name: "Department of International Relations",
     courses: [
       { name: "BA International Relations", type: "BA" },
@@ -867,7 +867,7 @@ const departmentsData = [
     ]
   },
   { 
-    facultyName: "Faculty of Social Sciences", 
+    facultyName: "🌍 FACULTY OF SOCIAL SCIENCES", 
     name: "Department of Strategic Studies",
     courses: [
       { name: "BA Strategic Studies", type: "BA" },
@@ -876,7 +876,7 @@ const departmentsData = [
     ]
   },
   { 
-    facultyName: "Faculty of Social Sciences", 
+    facultyName: "🌍 FACULTY OF SOCIAL SCIENCES", 
     name: "Department of Security Studies",
     courses: [
       { name: "BA Security Studies", type: "BA" },
@@ -885,7 +885,7 @@ const departmentsData = [
     ]
   },
   { 
-    facultyName: "Faculty of Social Sciences", 
+    facultyName: "🌍 FACULTY OF SOCIAL SCIENCES", 
     name: "Department of Communication Studies",
     courses: [
       { name: "BA Communication Studies", type: "BA" },
@@ -894,7 +894,7 @@ const departmentsData = [
     ]
   },
   { 
-    facultyName: "Faculty of Social Sciences", 
+    facultyName: "🌍 FACULTY OF SOCIAL SCIENCES", 
     name: "Department of Media Studies",
     courses: [
       { name: "BA Media Studies", type: "BA" },
@@ -903,7 +903,7 @@ const departmentsData = [
     ]
   },
   { 
-    facultyName: "Faculty of Social Sciences", 
+    facultyName: "🌍 FACULTY OF SOCIAL SCIENCES", 
     name: "Department of Journalism",
     courses: [
       { name: "BA Journalism", type: "BA" },
@@ -912,7 +912,7 @@ const departmentsData = [
     ]
   },
   { 
-    facultyName: "Faculty of Social Sciences", 
+    facultyName: "🌍 FACULTY OF SOCIAL SCIENCES", 
     name: "Department of Broadcasting",
     courses: [
       { name: "BA Broadcasting", type: "BA" },
@@ -921,7 +921,7 @@ const departmentsData = [
     ]
   },
   { 
-    facultyName: "Faculty of Social Sciences", 
+    facultyName: "🌍 FACULTY OF SOCIAL SCIENCES", 
     name: "Department of Development Studies",
     courses: [
       { name: "BA Development Studies", type: "BA" },
@@ -930,23 +930,23 @@ const departmentsData = [
     ]
   },
 
-  // Faculty of Health Sciences
+  // FACULTY OF HEALTH SCIENCES
   { 
-    facultyName: "Faculty of Health Sciences", 
+    facultyName: "🏥 FACULTY OF HEALTH SCIENCES", 
     name: "Department of Medicine",
     courses: [
       { name: "MBBS Medicine", type: "MBBS" }
     ]
   },
   { 
-    facultyName: "Faculty of Health Sciences", 
+    facultyName: "🏥 FACULTY OF HEALTH SCIENCES", 
     name: "Department of Surgery",
     courses: [
       { name: "MBBS Surgery", type: "MBBS" }
     ]
   },
   { 
-    facultyName: "Faculty of Health Sciences", 
+    facultyName: "🏥 FACULTY OF HEALTH SCIENCES", 
     name: "Department of Nursing",
     courses: [
       { name: "BSc Nursing", type: "BSc" },
@@ -955,7 +955,7 @@ const departmentsData = [
     ]
   },
   { 
-    facultyName: "Faculty of Health Sciences", 
+    facultyName: "🏥 FACULTY OF HEALTH SCIENCES", 
     name: "Department of Pharmacy",
     courses: [
       { name: "BSc Pharmacy", type: "BSc" },
@@ -964,7 +964,7 @@ const departmentsData = [
     ]
   },
   { 
-    facultyName: "Faculty of Health Sciences", 
+    facultyName: "🏥 FACULTY OF HEALTH SCIENCES", 
     name: "Department of Pharmacology",
     courses: [
       { name: "BSc Pharmacology", type: "BSc" },
@@ -973,7 +973,7 @@ const departmentsData = [
     ]
   },
   { 
-    facultyName: "Faculty of Health Sciences", 
+    facultyName: "🏥 FACULTY OF HEALTH SCIENCES", 
     name: "Department of Anatomy",
     courses: [
       { name: "BSc Anatomy", type: "BSc" },
@@ -982,7 +982,7 @@ const departmentsData = [
     ]
   },
   { 
-    facultyName: "Faculty of Health Sciences", 
+    facultyName: "🏥 FACULTY OF HEALTH SCIENCES", 
     name: "Department of Physiology",
     courses: [
       { name: "BSc Physiology", type: "BSc" },
@@ -991,7 +991,7 @@ const departmentsData = [
     ]
   },
   { 
-    facultyName: "Faculty of Health Sciences", 
+    facultyName: "🏥 FACULTY OF HEALTH SCIENCES", 
     name: "Department of Medical Laboratory Science",
     courses: [
       { name: "BSc Medical Laboratory Science", type: "BSc" },
@@ -1000,7 +1000,7 @@ const departmentsData = [
     ]
   },
   { 
-    facultyName: "Faculty of Health Sciences", 
+    facultyName: "🏥 FACULTY OF HEALTH SCIENCES", 
     name: "Department of Public Health",
     courses: [
       { name: "BSc Public Health", type: "BSc" },
@@ -1009,7 +1009,7 @@ const departmentsData = [
     ]
   },
   { 
-    facultyName: "Faculty of Health Sciences", 
+    facultyName: "🏥 FACULTY OF HEALTH SCIENCES", 
     name: "Department of Environmental Health",
     courses: [
       { name: "BSc Environmental Health", type: "BSc" },
@@ -1018,7 +1018,7 @@ const departmentsData = [
     ]
   },
   { 
-    facultyName: "Faculty of Health Sciences", 
+    facultyName: "🏥 FACULTY OF HEALTH SCIENCES", 
     name: "Department of Dentistry",
     courses: [
       { name: "BSc Dentistry", type: "BSc" },
@@ -1027,7 +1027,7 @@ const departmentsData = [
     ]
   },
   { 
-    facultyName: "Faculty of Health Sciences", 
+    facultyName: "🏥 FACULTY OF HEALTH SCIENCES", 
     name: "Department of Optometry",
     courses: [
       { name: "BSc Optometry", type: "BSc" },
@@ -1036,7 +1036,7 @@ const departmentsData = [
     ]
   },
   { 
-    facultyName: "Faculty of Health Sciences", 
+    facultyName: "🏥 FACULTY OF HEALTH SCIENCES", 
     name: "Department of Physiotherapy",
     courses: [
       { name: "BSc Physiotherapy", type: "BSc" },
@@ -1045,7 +1045,7 @@ const departmentsData = [
     ]
   },
   { 
-    facultyName: "Faculty of Health Sciences", 
+    facultyName: "🏥 FACULTY OF HEALTH SCIENCES", 
     name: "Department of Radiography",
     courses: [
       { name: "BSc Radiography", type: "BSc" },
@@ -1054,7 +1054,7 @@ const departmentsData = [
     ]
   },
   { 
-    facultyName: "Faculty of Health Sciences", 
+    facultyName: "🏥 FACULTY OF HEALTH SCIENCES", 
     name: "Department of Nutrition & Dietetics",
     courses: [
       { name: "BSc Nutrition & Dietetics", type: "BSc" },
@@ -1063,7 +1063,7 @@ const departmentsData = [
     ]
   },
   { 
-    facultyName: "Faculty of Health Sciences", 
+    facultyName: "🏥 FACULTY OF HEALTH SCIENCES", 
     name: "Department of Epidemiology",
     courses: [
       { name: "BSc Epidemiology", type: "BSc" },
@@ -1072,7 +1072,7 @@ const departmentsData = [
     ]
   },
   { 
-    facultyName: "Faculty of Health Sciences", 
+    facultyName: "🏥 FACULTY OF HEALTH SCIENCES", 
     name: "Department of Health Information Management",
     courses: [
       { name: "BSc Health Information Management", type: "BSc" },
@@ -1081,7 +1081,7 @@ const departmentsData = [
     ]
   },
   { 
-    facultyName: "Faculty of Health Sciences", 
+    facultyName: "🏥 FACULTY OF HEALTH SCIENCES", 
     name: "Department of Community Health",
     courses: [
       { name: "BSc Community Health", type: "BSc" },
@@ -1090,14 +1090,16 @@ const departmentsData = [
     ]
   },
   { 
-    facultyName: "Faculty of Health Sciences", 
+    facultyName: "🏥 FACULTY OF HEALTH SCIENCES", 
     name: "Department of Veterinary Medicine",
     courses: [
-      { name: "MBBS Veterinary Medicine", type: "MBBS" }
+      { name: "BSc Veterinary Medicine", type: "BSc" },
+      { name: "MSc Veterinary Medicine", type: "MSc" },
+      { name: "PhD Veterinary Medicine", type: "PhD" }
     ]
   },
   { 
-    facultyName: "Faculty of Health Sciences", 
+    facultyName: "🏥 FACULTY OF HEALTH SCIENCES", 
     name: "Department of Biomedical Sciences",
     courses: [
       { name: "BSc Biomedical Sciences", type: "BSc" },
@@ -1106,9 +1108,9 @@ const departmentsData = [
     ]
   },
 
-  // Faculty of Law
+  // FACULTY OF LAW
   { 
-    facultyName: "Faculty of Law", 
+    facultyName: "⚖ FACULTY OF LAW", 
     name: "Department of Public Law",
     courses: [
       { name: "LLB (Hons) Public Law", type: "LLB" },
@@ -1117,7 +1119,7 @@ const departmentsData = [
     ]
   },
   { 
-    facultyName: "Faculty of Law", 
+    facultyName: "⚖ FACULTY OF LAW", 
     name: "Department of Private Law",
     courses: [
       { name: "LLB (Hons) Private Law", type: "LLB" },
@@ -1126,7 +1128,7 @@ const departmentsData = [
     ]
   },
   { 
-    facultyName: "Faculty of Law", 
+    facultyName: "⚖ FACULTY OF LAW", 
     name: "Department of Commercial Law",
     courses: [
       { name: "LLB (Hons) Commercial Law", type: "LLB" },
@@ -1135,7 +1137,7 @@ const departmentsData = [
     ]
   },
   { 
-    facultyName: "Faculty of Law", 
+    facultyName: "⚖ FACULTY OF LAW", 
     name: "Department of International Law",
     courses: [
       { name: "LLB (Hons) International Law", type: "LLB" },
@@ -1144,7 +1146,7 @@ const departmentsData = [
     ]
   },
   { 
-    facultyName: "Faculty of Law", 
+    facultyName: "⚖ FACULTY OF LAW", 
     name: "Department of Constitutional Law",
     courses: [
       { name: "LLB (Hons) Constitutional Law", type: "LLB" },
@@ -1153,7 +1155,7 @@ const departmentsData = [
     ]
   },
   { 
-    facultyName: "Faculty of Law", 
+    facultyName: "⚖ FACULTY OF LAW", 
     name: "Department of Criminal Law",
     courses: [
       { name: "LLB (Hons) Criminal Law", type: "LLB" },
@@ -1162,7 +1164,7 @@ const departmentsData = [
     ]
   },
   { 
-    facultyName: "Faculty of Law", 
+    facultyName: "⚖ FACULTY OF LAW", 
     name: "Department of Property Law",
     courses: [
       { name: "LLB (Hons) Property Law", type: "LLB" },
@@ -1171,7 +1173,7 @@ const departmentsData = [
     ]
   },
   { 
-    facultyName: "Faculty of Law", 
+    facultyName: "⚖ FACULTY OF LAW", 
     name: "Department of Maritime Law",
     courses: [
       { name: "LLB (Hons) Maritime Law", type: "LLB" },
@@ -1180,7 +1182,7 @@ const departmentsData = [
     ]
   },
   { 
-    facultyName: "Faculty of Law", 
+    facultyName: "⚖ FACULTY OF LAW", 
     name: "Department of Environmental Law",
     courses: [
       { name: "LLB (Hons) Environmental Law", type: "LLB" },
@@ -1189,7 +1191,7 @@ const departmentsData = [
     ]
   },
   { 
-    facultyName: "Faculty of Law", 
+    facultyName: "⚖ FACULTY OF LAW", 
     name: "Department of Tax Law",
     courses: [
       { name: "LLB (Hons) Tax Law", type: "LLB" },
@@ -1198,9 +1200,9 @@ const departmentsData = [
     ]
   },
 
-  // Faculty of Agriculture
+  // FACULTY OF AGRICULTURE
   { 
-    facultyName: "Faculty of Agriculture", 
+    facultyName: "🌾 FACULTY OF AGRICULTURE", 
     name: "Department of Crop Science",
     courses: [
       { name: "BSc Crop Science", type: "BSc" },
@@ -1209,7 +1211,7 @@ const departmentsData = [
     ]
   },
   { 
-    facultyName: "Faculty of Agriculture", 
+    facultyName: "🌾 FACULTY OF AGRICULTURE", 
     name: "Department of Soil Science",
     courses: [
       { name: "BSc Soil Science", type: "BSc" },
@@ -1218,7 +1220,7 @@ const departmentsData = [
     ]
   },
   { 
-    facultyName: "Faculty of Agriculture", 
+    facultyName: "🌾 FACULTY OF AGRICULTURE", 
     name: "Department of Animal Science",
     courses: [
       { name: "BSc Animal Science", type: "BSc" },
@@ -1227,7 +1229,7 @@ const departmentsData = [
     ]
   },
   { 
-    facultyName: "Faculty of Agriculture", 
+    facultyName: "🌾 FACULTY OF AGRICULTURE", 
     name: "Department of Agricultural Economics",
     courses: [
       { name: "BSc Agricultural Economics", type: "BSc" },
@@ -1236,7 +1238,7 @@ const departmentsData = [
     ]
   },
   { 
-    facultyName: "Faculty of Agriculture", 
+    facultyName: "🌾 FACULTY OF AGRICULTURE", 
     name: "Department of Agribusiness",
     courses: [
       { name: "BSc Agribusiness", type: "BSc" },
@@ -1245,7 +1247,7 @@ const departmentsData = [
     ]
   },
   { 
-    facultyName: "Faculty of Agriculture", 
+    facultyName: "🌾 FACULTY OF AGRICULTURE", 
     name: "Department of Fisheries & Aquaculture",
     courses: [
       { name: "BSc Fisheries & Aquaculture", type: "BSc" },
@@ -1254,7 +1256,7 @@ const departmentsData = [
     ]
   },
   { 
-    facultyName: "Faculty of Agriculture", 
+    facultyName: "🌾 FACULTY OF AGRICULTURE", 
     name: "Department of Forestry",
     courses: [
       { name: "BSc Forestry", type: "BSc" },
@@ -1263,7 +1265,7 @@ const departmentsData = [
     ]
   },
   { 
-    facultyName: "Faculty of Agriculture", 
+    facultyName: "🌾 FACULTY OF AGRICULTURE", 
     name: "Department of Horticulture",
     courses: [
       { name: "BSc Horticulture", type: "BSc" },
@@ -1272,7 +1274,7 @@ const departmentsData = [
     ]
   },
   { 
-    facultyName: "Faculty of Agriculture", 
+    facultyName: "🌾 FACULTY OF AGRICULTURE", 
     name: "Department of Plant Breeding",
     courses: [
       { name: "BSc Plant Breeding", type: "BSc" },
@@ -1281,7 +1283,7 @@ const departmentsData = [
     ]
   },
   { 
-    facultyName: "Faculty of Agriculture", 
+    facultyName: "🌾 FACULTY OF AGRICULTURE", 
     name: "Department of Agricultural Extension",
     courses: [
       { name: "BSc Agricultural Extension", type: "BSc" },
@@ -1290,9 +1292,9 @@ const departmentsData = [
     ]
   },
 
-  // Faculty of Education
+  // FACULTY OF EDUCATION
   { 
-    facultyName: "Faculty of Education", 
+    facultyName: "🏛 FACULTY OF EDUCATION", 
     name: "Department of Educational Management",
     courses: [
       { name: "B.Ed Educational Management", type: "B.Ed" },
@@ -1301,7 +1303,7 @@ const departmentsData = [
     ]
   },
   { 
-    facultyName: "Faculty of Education", 
+    facultyName: "🏛 FACULTY OF EDUCATION", 
     name: "Department of Curriculum Studies",
     courses: [
       { name: "B.Ed Curriculum Studies", type: "B.Ed" },
@@ -1310,7 +1312,7 @@ const departmentsData = [
     ]
   },
   { 
-    facultyName: "Faculty of Education", 
+    facultyName: "🏛 FACULTY OF EDUCATION", 
     name: "Department of Early Childhood Education",
     courses: [
       { name: "B.Ed Early Childhood Education", type: "B.Ed" },
@@ -1319,7 +1321,7 @@ const departmentsData = [
     ]
   },
   { 
-    facultyName: "Faculty of Education", 
+    facultyName: "🏛 FACULTY OF EDUCATION", 
     name: "Department of Primary Education",
     courses: [
       { name: "B.Ed Primary Education", type: "B.Ed" },
@@ -1328,7 +1330,7 @@ const departmentsData = [
     ]
   },
   { 
-    facultyName: "Faculty of Education", 
+    facultyName: "🏛 FACULTY OF EDUCATION", 
     name: "Department of Secondary Education",
     courses: [
       { name: "B.Ed Secondary Education", type: "B.Ed" },
@@ -1337,7 +1339,7 @@ const departmentsData = [
     ]
   },
   { 
-    facultyName: "Faculty of Education", 
+    facultyName: "🏛 FACULTY OF EDUCATION", 
     name: "Department of Guidance & Counselling",
     courses: [
       { name: "B.Ed Guidance & Counselling", type: "B.Ed" },
@@ -1346,7 +1348,7 @@ const departmentsData = [
     ]
   },
   { 
-    facultyName: "Faculty of Education", 
+    facultyName: "🏛 FACULTY OF EDUCATION", 
     name: "Department of Special Education",
     courses: [
       { name: "B.Ed Special Education", type: "B.Ed" },
@@ -1355,7 +1357,7 @@ const departmentsData = [
     ]
   },
   { 
-    facultyName: "Faculty of Education", 
+    facultyName: "🏛 FACULTY OF EDUCATION", 
     name: "Department of Educational Psychology",
     courses: [
       { name: "B.Ed Educational Psychology", type: "B.Ed" },
@@ -1364,7 +1366,7 @@ const departmentsData = [
     ]
   },
   { 
-    facultyName: "Faculty of Education", 
+    facultyName: "🏛 FACULTY OF EDUCATION", 
     name: "Department of Adult Education",
     courses: [
       { name: "B.Ed Adult Education", type: "B.Ed" },
@@ -1373,7 +1375,7 @@ const departmentsData = [
     ]
   },
   { 
-    facultyName: "Faculty of Education", 
+    facultyName: "🏛 FACULTY OF EDUCATION", 
     name: "Department of Science Education",
     courses: [
       { name: "B.Ed Science Education", type: "B.Ed" },
@@ -1382,9 +1384,9 @@ const departmentsData = [
     ]
   },
 
-  // Faculty of Environmental Sciences
+  // FACULTY OF ENVIRONMENTAL SCIENCES
   { 
-    facultyName: "Faculty of Environmental Sciences", 
+    facultyName: "🏗 FACULTY OF ENVIRONMENTAL SCIENCES", 
     name: "Department of Architecture",
     courses: [
       { name: "BSc Architecture", type: "BSc" },
@@ -1393,7 +1395,7 @@ const departmentsData = [
     ]
   },
   { 
-    facultyName: "Faculty of Environmental Sciences", 
+    facultyName: "🏗 FACULTY OF ENVIRONMENTAL SCIENCES", 
     name: "Department of Quantity Surveying",
     courses: [
       { name: "BSc Quantity Surveying", type: "BSc" },
@@ -1402,7 +1404,7 @@ const departmentsData = [
     ]
   },
   { 
-    facultyName: "Faculty of Environmental Sciences", 
+    facultyName: "🏗 FACULTY OF ENVIRONMENTAL SCIENCES", 
     name: "Department of Building Technology",
     courses: [
       { name: "BSc Building Technology", type: "BSc" },
@@ -1411,7 +1413,7 @@ const departmentsData = [
     ]
   },
   { 
-    facultyName: "Faculty of Environmental Sciences", 
+    facultyName: "🏗 FACULTY OF ENVIRONMENTAL SCIENCES", 
     name: "Department of Estate Management",
     courses: [
       { name: "BSc Estate Management", type: "BSc" },
@@ -1420,7 +1422,7 @@ const departmentsData = [
     ]
   },
   { 
-    facultyName: "Faculty of Environmental Sciences", 
+    facultyName: "🏗 FACULTY OF ENVIRONMENTAL SCIENCES", 
     name: "Department of Surveying & Geoinformatics",
     courses: [
       { name: "BSc Surveying & Geoinformatics", type: "BSc" },
@@ -1429,7 +1431,7 @@ const departmentsData = [
     ]
   },
   { 
-    facultyName: "Faculty of Environmental Sciences", 
+    facultyName: "🏗 FACULTY OF ENVIRONMENTAL SCIENCES", 
     name: "Department of Urban Planning",
     courses: [
       { name: "BSc Urban Planning", type: "BSc" },
@@ -1438,7 +1440,7 @@ const departmentsData = [
     ]
   },
   { 
-    facultyName: "Faculty of Environmental Sciences", 
+    facultyName: "🏗 FACULTY OF ENVIRONMENTAL SCIENCES", 
     name: "Department of Environmental Management",
     courses: [
       { name: "BSc Environmental Management", type: "BSc" },
@@ -1447,7 +1449,7 @@ const departmentsData = [
     ]
   },
   { 
-    facultyName: "Faculty of Environmental Sciences", 
+    facultyName: "🏗 FACULTY OF ENVIRONMENTAL SCIENCES", 
     name: "Department of Landscape Architecture",
     courses: [
       { name: "BSc Landscape Architecture", type: "BSc" },
@@ -1456,7 +1458,7 @@ const departmentsData = [
     ]
   },
   { 
-    facultyName: "Faculty of Environmental Sciences", 
+    facultyName: "🏗 FACULTY OF ENVIRONMENTAL SCIENCES", 
     name: "Department of Interior Design",
     courses: [
       { name: "BSc Interior Design", type: "BSc" },
@@ -1465,7 +1467,7 @@ const departmentsData = [
     ]
   },
   { 
-    facultyName: "Faculty of Environmental Sciences", 
+    facultyName: "🏗 FACULTY OF ENVIRONMENTAL SCIENCES", 
     name: "Department of Construction Management",
     courses: [
       { name: "BSc Construction Management", type: "BSc" },
@@ -1474,9 +1476,9 @@ const departmentsData = [
     ]
   },
 
-  // Faculty of Information & Digital Technologies
+  // FACULTY OF INFORMATION & DIGITAL TECHNOLOGIES
   { 
-    facultyName: "Faculty of Information & Digital Technologies", 
+    facultyName: "💻 FACULTY OF INFORMATION & DIGITAL TECHNOLOGIES", 
     name: "Department of Information Technology",
     courses: [
       { name: "BSc Information Technology", type: "BSc" },
@@ -1485,7 +1487,7 @@ const departmentsData = [
     ]
   },
   { 
-    facultyName: "Faculty of Information & Digital Technologies", 
+    facultyName: "💻 FACULTY OF INFORMATION & DIGITAL TECHNOLOGIES", 
     name: "Department of Cloud Computing",
     courses: [
       { name: "BSc Cloud Computing", type: "BSc" },
@@ -1494,7 +1496,7 @@ const departmentsData = [
     ]
   },
   { 
-    facultyName: "Faculty of Information & Digital Technologies", 
+    facultyName: "💻 FACULTY OF INFORMATION & DIGITAL TECHNOLOGIES", 
     name: "Department of Blockchain Technology",
     courses: [
       { name: "BSc Blockchain Technology", type: "BSc" },
@@ -1503,7 +1505,7 @@ const departmentsData = [
     ]
   },
   { 
-    facultyName: "Faculty of Information & Digital Technologies", 
+    facultyName: "💻 FACULTY OF INFORMATION & DIGITAL TECHNOLOGIES", 
     name: "Department of Robotics",
     courses: [
       { name: "BSc Robotics", type: "BSc" },
@@ -1512,7 +1514,7 @@ const departmentsData = [
     ]
   },
   { 
-    facultyName: "Faculty of Information & Digital Technologies", 
+    facultyName: "💻 FACULTY OF INFORMATION & DIGITAL TECHNOLOGIES", 
     name: "Department of Internet of Things",
     courses: [
       { name: "BSc Internet of Things", type: "BSc" },
@@ -1521,7 +1523,7 @@ const departmentsData = [
     ]
   },
   { 
-    facultyName: "Faculty of Information & Digital Technologies", 
+    facultyName: "💻 FACULTY OF INFORMATION & DIGITAL TECHNOLOGIES", 
     name: "Department of Game Development",
     courses: [
       { name: "BSc Game Development", type: "BSc" },
@@ -1530,7 +1532,7 @@ const departmentsData = [
     ]
   },
   { 
-    facultyName: "Faculty of Information & Digital Technologies", 
+    facultyName: "💻 FACULTY OF INFORMATION & DIGITAL TECHNOLOGIES", 
     name: "Department of UI/UX Design",
     courses: [
       { name: "BSc UI/UX Design", type: "BSc" },
@@ -1539,7 +1541,7 @@ const departmentsData = [
     ]
   },
   { 
-    facultyName: "Faculty of Information & Digital Technologies", 
+    facultyName: "💻 FACULTY OF INFORMATION & DIGITAL TECHNOLOGIES", 
     name: "Department of Digital Marketing",
     courses: [
       { name: "BSc Digital Marketing", type: "BSc" },
@@ -1548,7 +1550,7 @@ const departmentsData = [
     ]
   },
   { 
-    facultyName: "Faculty of Information & Digital Technologies", 
+    facultyName: "💻 FACULTY OF INFORMATION & DIGITAL TECHNOLOGIES", 
     name: "Department of E-Commerce",
     courses: [
       { name: "BSc E-Commerce", type: "BSc" },
@@ -1557,7 +1559,7 @@ const departmentsData = [
     ]
   },
   { 
-    facultyName: "Faculty of Information & Digital Technologies", 
+    facultyName: "💻 FACULTY OF INFORMATION & DIGITAL TECHNOLOGIES", 
     name: "Department of Business Analytics",
     courses: [
       { name: "BSc Business Analytics", type: "BSc" },
@@ -1566,9 +1568,9 @@ const departmentsData = [
     ]
   },
 
-  // Faculty of Transport & Logistics
+  // FACULTY OF TRANSPORT & LOGISTICS
   { 
-    facultyName: "Faculty of Transport & Logistics", 
+    facultyName: "🚢 FACULTY OF TRANSPORT & LOGISTICS", 
     name: "Department of Transportation Management",
     courses: [
       { name: "BSc Transportation Management", type: "BSc" },
@@ -1577,7 +1579,7 @@ const departmentsData = [
     ]
   },
   { 
-    facultyName: "Faculty of Transport & Logistics", 
+    facultyName: "🚢 FACULTY OF TRANSPORT & LOGISTICS", 
     name: "Department of Aviation Management",
     courses: [
       { name: "BSc Aviation Management", type: "BSc" },
@@ -1586,7 +1588,7 @@ const departmentsData = [
     ]
   },
   { 
-    facultyName: "Faculty of Transport & Logistics", 
+    facultyName: "🚢 FACULTY OF TRANSPORT & LOGISTICS", 
     name: "Department of Maritime Studies",
     courses: [
       { name: "BSc Maritime Studies", type: "BSc" },
@@ -1595,7 +1597,7 @@ const departmentsData = [
     ]
   },
   { 
-    facultyName: "Faculty of Transport & Logistics", 
+    facultyName: "🚢 FACULTY OF TRANSPORT & LOGISTICS", 
     name: "Department of Railway Engineering",
     courses: [
       { name: "BSc Railway Engineering", type: "BSc" },
@@ -1604,7 +1606,7 @@ const departmentsData = [
     ]
   },
   { 
-    facultyName: "Faculty of Transport & Logistics", 
+    facultyName: "🚢 FACULTY OF TRANSPORT & LOGISTICS", 
     name: "Department of Logistics Engineering",
     courses: [
       { name: "BSc Logistics Engineering", type: "BSc" },
@@ -1613,7 +1615,7 @@ const departmentsData = [
     ]
   },
   { 
-    facultyName: "Faculty of Transport & Logistics", 
+    facultyName: "🚢 FACULTY OF TRANSPORT & LOGISTICS", 
     name: "Department of Fleet Management",
     courses: [
       { name: "BSc Fleet Management", type: "BSc" },
@@ -1622,7 +1624,7 @@ const departmentsData = [
     ]
   },
   { 
-    facultyName: "Faculty of Transport & Logistics", 
+    facultyName: "🚢 FACULTY OF TRANSPORT & LOGISTICS", 
     name: "Department of Port Management",
     courses: [
       { name: "BSc Port Management", type: "BSc" },
@@ -1631,7 +1633,7 @@ const departmentsData = [
     ]
   },
   { 
-    facultyName: "Faculty of Transport & Logistics", 
+    facultyName: "🚢 FACULTY OF TRANSPORT & LOGISTICS", 
     name: "Department of Supply Chain Analytics",
     courses: [
       { name: "BSc Supply Chain Analytics", type: "BSc" },
@@ -1640,9 +1642,9 @@ const departmentsData = [
     ]
   },
 
-  // Faculty of Creative & Media Technologies
+  // FACULTY OF CREATIVE & MEDIA TECHNOLOGIES
   { 
-    facultyName: "Faculty of Creative & Media Technologies", 
+    facultyName: "🎭 FACULTY OF CREATIVE & MEDIA TECHNOLOGIES", 
     name: "Department of Film Production",
     courses: [
       { name: "BSc Film Production", type: "BSc" },
@@ -1651,7 +1653,7 @@ const departmentsData = [
     ]
   },
   { 
-    facultyName: "Faculty of Creative & Media Technologies", 
+    facultyName: "🎭 FACULTY OF CREATIVE & MEDIA TECHNOLOGIES", 
     name: "Department of Cinematography",
     courses: [
       { name: "BSc Cinematography", type: "BSc" },
@@ -1660,7 +1662,7 @@ const departmentsData = [
     ]
   },
   { 
-    facultyName: "Faculty of Creative & Media Technologies", 
+    facultyName: "🎭 FACULTY OF CREATIVE & MEDIA TECHNOLOGIES", 
     name: "Department of Animation",
     courses: [
       { name: "BSc Animation", type: "BSc" },
@@ -1669,7 +1671,7 @@ const departmentsData = [
     ]
   },
   { 
-    facultyName: "Faculty of Creative & Media Technologies", 
+    facultyName: "🎭 FACULTY OF CREATIVE & MEDIA TECHNOLOGIES", 
     name: "Department of Multimedia Technology",
     courses: [
       { name: "BSc Multimedia Technology", type: "BSc" },
@@ -1678,7 +1680,7 @@ const departmentsData = [
     ]
   },
   { 
-    facultyName: "Faculty of Creative & Media Technologies", 
+    facultyName: "🎭 FACULTY OF CREATIVE & MEDIA TECHNOLOGIES", 
     name: "Department of Sound Engineering",
     courses: [
       { name: "BSc Sound Engineering", type: "BSc" },
@@ -1687,7 +1689,7 @@ const departmentsData = [
     ]
   },
   { 
-    facultyName: "Faculty of Creative & Media Technologies", 
+    facultyName: "🎭 FACULTY OF CREATIVE & MEDIA TECHNOLOGIES", 
     name: "Department of Digital Photography",
     courses: [
       { name: "BSc Digital Photography", type: "BSc" },
@@ -1696,7 +1698,7 @@ const departmentsData = [
     ]
   },
   { 
-    facultyName: "Faculty of Creative & Media Technologies", 
+    facultyName: "🎭 FACULTY OF CREATIVE & MEDIA TECHNOLOGIES", 
     name: "Department of Content Creation",
     courses: [
       { name: "BSc Content Creation", type: "BSc" },
@@ -1705,7 +1707,7 @@ const departmentsData = [
     ]
   },
   { 
-    facultyName: "Faculty of Creative & Media Technologies", 
+    facultyName: "🎭 FACULTY OF CREATIVE & MEDIA TECHNOLOGIES", 
     name: "Department of Advertising",
     courses: [
       { name: "BSc Advertising", type: "BSc" },
@@ -1714,9 +1716,9 @@ const departmentsData = [
     ]
   },
 
-  // Faculty of Advanced Research & Innovation
+  // FACULTY OF ADVANCED RESEARCH & INNOVATION
   { 
-    facultyName: "Faculty of Advanced Research & Innovation", 
+    facultyName: "🔬 FACULTY OF ADVANCED RESEARCH & INNOVATION", 
     name: "Department of Nanotechnology",
     courses: [
       { name: "BSc Nanotechnology", type: "BSc" },
@@ -1725,7 +1727,7 @@ const departmentsData = [
     ]
   },
   { 
-    facultyName: "Faculty of Advanced Research & Innovation", 
+    facultyName: "🔬 FACULTY OF ADVANCED RESEARCH & INNOVATION", 
     name: "Department of Renewable Energy",
     courses: [
       { name: "BSc Renewable Energy", type: "BSc" },
@@ -1734,7 +1736,7 @@ const departmentsData = [
     ]
   },
   { 
-    facultyName: "Faculty of Advanced Research & Innovation", 
+    facultyName: "🔬 FACULTY OF ADVANCED RESEARCH & INNOVATION", 
     name: "Department of Space Science",
     courses: [
       { name: "BSc Space Science", type: "BSc" },
@@ -1743,7 +1745,7 @@ const departmentsData = [
     ]
   },
   { 
-    facultyName: "Faculty of Advanced Research & Innovation", 
+    facultyName: "🔬 FACULTY OF ADVANCED RESEARCH & INNOVATION", 
     name: "Department of Climate Change Studies",
     courses: [
       { name: "BSc Climate Change Studies", type: "BSc" },
@@ -1752,7 +1754,7 @@ const departmentsData = [
     ]
   },
   { 
-    facultyName: "Faculty of Advanced Research & Innovation", 
+    facultyName: "🔬 FACULTY OF ADVANCED RESEARCH & INNOVATION", 
     name: "Department of Artificial Intelligence Research",
     courses: [
       { name: "BSc Artificial Intelligence Research", type: "BSc" },
@@ -1761,7 +1763,7 @@ const departmentsData = [
     ]
   },
   { 
-    facultyName: "Faculty of Advanced Research & Innovation", 
+    facultyName: "🔬 FACULTY OF ADVANCED RESEARCH & INNOVATION", 
     name: "Department of Biotechnology Research",
     courses: [
       { name: "BSc Biotechnology Research", type: "BSc" },
@@ -1770,7 +1772,7 @@ const departmentsData = [
     ]
   },
   { 
-    facultyName: "Faculty of Advanced Research & Innovation", 
+    facultyName: "🔬 FACULTY OF ADVANCED RESEARCH & INNOVATION", 
     name: "Department of Smart Systems Engineering",
     courses: [
       { name: "BSc Smart Systems Engineering", type: "BSc" },
@@ -1779,7 +1781,7 @@ const departmentsData = [
     ]
   },
   { 
-    facultyName: "Faculty of Advanced Research & Innovation", 
+    facultyName: "🔬 FACULTY OF ADVANCED RESEARCH & INNOVATION", 
     name: "Department of Quantum Computing",
     courses: [
       { name: "BSc Quantum Computing", type: "BSc" },
@@ -1788,9 +1790,9 @@ const departmentsData = [
     ]
   },
 
-  // Faculty of Professional Studies
+  // FACULTY OF PROFESSIONAL STUDIES
   { 
-    facultyName: "Faculty of Professional Studies", 
+    facultyName: "📊 FACULTY OF PROFESSIONAL STUDIES", 
     name: "Department of Leadership Studies",
     courses: [
       { name: "BSc Leadership Studies", type: "BSc" },
@@ -1799,7 +1801,7 @@ const departmentsData = [
     ]
   },
   { 
-    facultyName: "Faculty of Professional Studies", 
+    facultyName: "📊 FACULTY OF PROFESSIONAL STUDIES", 
     name: "Department of Corporate Governance",
     courses: [
       { name: "BSc Corporate Governance", type: "BSc" },
@@ -1808,7 +1810,7 @@ const departmentsData = [
     ]
   },
   { 
-    facultyName: "Faculty of Professional Studies", 
+    facultyName: "📊 FACULTY OF PROFESSIONAL STUDIES", 
     name: "Department of Risk Management",
     courses: [
       { name: "BSc Risk Management", type: "BSc" },
@@ -1817,7 +1819,7 @@ const departmentsData = [
     ]
   },
   { 
-    facultyName: "Faculty of Professional Studies", 
+    facultyName: "📊 FACULTY OF PROFESSIONAL STUDIES", 
     name: "Department of Financial Technology (FinTech)",
     courses: [
       { name: "BSc Financial Technology (FinTech)", type: "BSc" },
@@ -1826,7 +1828,7 @@ const departmentsData = [
     ]
   },
   { 
-    facultyName: "Faculty of Professional Studies", 
+    facultyName: "📊 FACULTY OF PROFESSIONAL STUDIES", 
     name: "Department of Compliance & Regulation",
     courses: [
       { name: "BSc Compliance & Regulation", type: "BSc" },
@@ -1835,7 +1837,7 @@ const departmentsData = [
     ]
   },
   { 
-    facultyName: "Faculty of Professional Studies", 
+    facultyName: "📊 FACULTY OF PROFESSIONAL STUDIES", 
     name: "Department of Business Law",
     courses: [
       { name: "BSc Business Law", type: "BSc" },
@@ -1844,7 +1846,7 @@ const departmentsData = [
     ]
   },
   { 
-    facultyName: "Faculty of Professional Studies", 
+    facultyName: "📊 FACULTY OF PROFESSIONAL STUDIES", 
     name: "Department of Digital Transformation",
     courses: [
       { name: "BSc Digital Transformation", type: "BSc" },
@@ -1853,7 +1855,7 @@ const departmentsData = [
     ]
   },
   { 
-    facultyName: "Faculty of Professional Studies", 
+    facultyName: "📊 FACULTY OF PROFESSIONAL STUDIES", 
     name: "Department of Innovation Management",
     courses: [
       { name: "BSc Innovation Management", type: "BSc" },
