@@ -51,19 +51,10 @@ const applicationSchema = new mongoose.Schema({
     min: 1,
     max: 36
   },
-  faculty: {
-    type: mongoose.Schema.Types.ObjectId,
-    ref: 'Faculty',
-    required: false
-  },
+  // Store faculty and department as strings for easier querying
   facultyName: {
     type: String,
     trim: true
-  },
-  department: {
-    type: mongoose.Schema.Types.ObjectId,
-    ref: 'Department',
-    required: false
   },
   departmentName: {
     type: String,
@@ -98,6 +89,14 @@ const applicationSchema = new mongoose.Schema({
   timestamps: true,
   versionKey: false
 });
+
+// Index for faster queries on commonly searched fields
+applicationSchema.index({ email: 1 });
+applicationSchema.index({ studentId: 1 });
+applicationSchema.index({ status: 1 });
+applicationSchema.index({ facultyName: 1 });
+applicationSchema.index({ departmentName: 1 });
+applicationSchema.index({ submissionDate: -1 });
 
 const Application = mongoose.model('Application', applicationSchema);
 module.exports = Application;

@@ -676,8 +676,8 @@ const updateApplicationStatus = async (req, res) => {
             status: application.status,
             submissionDate: application.submissionDate,
             reviewedAt: application.reviewedAt,
-            faculty: application.faculty,
-            department: application.department,
+            faculty: application.facultyName,
+            department: application.departmentName,
             course: application.course,
             remarks: remarks || ''
         };
@@ -716,8 +716,8 @@ const updateApplicationStatus = async (req, res) => {
                 remarks: application.remarks,
                 submissionDate: application.submissionDate,
                 reviewedAt: application.reviewedAt,
-                faculty: application.faculty,
-                department: application.department,
+                faculty: application.facultyName,
+                department: application.departmentName,
                 course: application.course
             }
         });

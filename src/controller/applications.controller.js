@@ -1,5 +1,6 @@
 const Application = require("../models/application.schema.js");
 const Department = require("../models/department.schema.js");
+const Faculty = require("../models/faculty.schema.js");
 const { getEmailService } = require("../emails/service.js");
 
 // Valid application statuses aligned with admin controller
