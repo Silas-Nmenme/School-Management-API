@@ -21,11 +21,12 @@ router.post('/', createFaculty);
 // GET /api/faculties - Get all faculties
 router.get('/', getAllFaculties);
 
+// GET /api/faculties/:facultyId/departments - Get faculty with its departments
+// IMPORTANT: This must be BEFORE /:facultyId to avoid route conflicts
+router.get('/:facultyId/departments', getFacultyWithDepartments);
+
 // GET /api/faculties/name/:name - Get faculty by name
 router.get('/name/:name', getFacultyByName);
-
-// GET /api/faculties/:facultyId/departments - Get faculty with its departments
-router.get('/:facultyId/departments', getFacultyWithDepartments);
 
 // GET /api/faculties/:facultyId - Get faculty by ID
 router.get('/:facultyId', getFacultyById);
