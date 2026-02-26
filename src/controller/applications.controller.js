@@ -1,14 +1,11 @@
 const Application = require("../models/application.schema.js");
 const Department = require("../models/department.schema.js");
-const Faculty = require("../models/faculty.schema.js");
 const { getEmailService } = require("../emails/service.js");
 
-// Valid application statuses aligned with admin controller
 const VALID_STATUSES = ['Pending', 'Under Review', 'Approved', 'Rejected', 'Accepted'];
 
 /**
- * Generate a unique student ID
- * Format: STU{timestamp}{random3digits}
+ * Generate unique student ID
  */
 const generateStudentId = () => {
     return 'STU' + Date.now() + Math.floor(Math.random() * 1000);
@@ -16,13 +13,6 @@ const generateStudentId = () => {
 
 /**
  * Submit Application
- * - Validates all required fields
- * - Checks for duplicate applications
- * - Validates course exists in department
- * - Generates unique studentId if not provided
- * - Saves application with 'Pending' status
- * - Sends confirmation email to applicant with studentId
- * - Sends notification email to admin
  */
 const submitApplication = async (req, res) => {
     try {
@@ -37,18 +27,19 @@ const submitApplication = async (req, res) => {
             gpa,
             satScore,
             actScore,
+            departmentId,
             course,
             essay
         } = req.body;
 
-        // Validate required fields
-        if (!firstName || !lastName || !email || !phone || !highSchool || !course) {
+        // ===== REQUIRED FIELD VALIDATION =====
+        if (!firstName || !lastName || !email || !phone || !highSchool || !course || !departmentId) {
             return res.status(400).json({
-                message: "Missing required fields: firstName, lastName, email, phone, highSchool, course"
+                message: "Missing required fields: firstName, lastName, email, phone, highSchool, course, departmentId"
             });
         }
 
-        // Check if application already exists with this email
+        // ===== DUPLICATE CHECK =====
         const existingApplication = await Application.findOne({ email });
         if (existingApplication) {
             return res.status(400).json({
@@ -56,98 +47,56 @@ const submitApplication = async (req, res) => {
             });
         }
 
-        // Validate GPA if provided
+        // ===== SCORE VALIDATION =====
         if (gpa !== undefined && (gpa < 0 || gpa > 4)) {
             return res.status(400).json({ message: "GPA must be between 0 and 4" });
         }
 
-        // Validate SAT score if provided
         if (satScore !== undefined && (satScore < 400 || satScore > 1600)) {
             return res.status(400).json({ message: "SAT score must be between 400 and 1600" });
         }
 
-        // Validate ACT score if provided
         if (actScore !== undefined && (actScore < 1 || actScore > 36)) {
             return res.status(400).json({ message: "ACT score must be between 1 and 36" });
         }
 
-        // Validate that the course exists in the department's courses array
-        // Find department by searching through all departments for the course
-        let dept;
-        let facultyFromDept = null;
-        
-        try {
-            // Find department that contains this course
-            dept = await Department.findOne({
-                'courses.name': course,
-                'courses.isActive': { $ne: false }
+        // ===== FIND DEPARTMENT + FACULTY =====
+        const department = await Department.findById(departmentId).populate('faculty');
+
+        if (!department) {
+            return res.status(400).json({
+                message: "Invalid department selected"
             });
-            
-            // If still not found, try a case-insensitive partial match for course
-            if (!dept) {
-                dept = await Department.findOne({
-                    'courses.name': { $regex: new RegExp(course, 'i') }
-                });
-            }
-            
-            // If still not found, try to find department by name (some courses might be named similarly to departments)
-            if (!dept) {
-                dept = await Department.findOne({
-                    name: { $regex: new RegExp(course, 'i') }
-                });
-            }
-            
-            // If department found, try to populate faculty
-            if (dept) {
-                try {
-                    await dept.populate('faculty');
-                    facultyFromDept = dept.faculty;
-                } catch (popError) {
-                    console.warn(`Could not populate faculty for department "${dept.name}"`);
-                    // Try to find faculty by name from the department's stored faculty reference
-                    if (dept.faculty) {
-                        const Faculty = require('../models/faculty.schema.js');
-                        const faculty = await Faculty.findById(dept.faculty);
-                        if (faculty) {
-                            facultyFromDept = faculty;
-                        }
-                    }
-                }
-            }
-            
-            // If still not found, allow submission without department validation
-            if (!dept) {
-                console.warn(`Department for course "${course}" not found in database, storing course without department reference`);
-            }
-        } catch (error) {
-            console.error("Error finding department:", error);
-            console.warn(`Department lookup failed, storing course without department reference`);
         }
 
-        // Check if the course exists in the department's courses array (only if dept was found and has courses)
-        let courseExists = true;
-        if (dept && dept.courses && dept.courses.length > 0) {
-            courseExists = dept.courses.some(c => c.name === course && c.isActive !== false);
-            if (!courseExists) {
-                return res.status(400).json({ 
-                    message: `Course "${course}" is not available. Please select a valid course.`
-                });
-            }
-        } else if (dept) {
-            // Department exists but has no courses - skip validation
-            console.warn(`Department "${dept.name}" has no courses defined, skipping course validation`);
+        if (!department.faculty) {
+            return res.status(400).json({
+                message: "Selected department has no associated faculty"
+            });
         }
-        
-        // Use the found department's name and faculty name
-        // departmentName should be the actual department name (e.g., "Department of Medical Laboratory Science")
-        const departmentNameValue = dept ? dept.name : null;
-        // facultyName should be the actual faculty name (e.g., "Faculty of Health Sciences")
-        const facultyNameValue = facultyFromDept ? facultyFromDept.name : null;
 
-        // Generate unique studentId if not provided
+        // ===== VALIDATE COURSE EXISTS =====
+        const courseExists = department.courses?.some(
+            c => c.name === course && c.isActive !== false
+        );
+
+        if (!courseExists) {
+            return res.status(400).json({
+                message: `Course "${course}" is not available in ${department.name}`
+            });
+        }
+
+        // ===== EXTRACT IDS + NAMES =====
+        const departmentIdValue = department._id;
+        const facultyIdValue = department.faculty._id;
+
+        const departmentNameValue = department.name;
+        const facultyNameValue = department.faculty.name;
+
+        // ===== GENERATE STUDENT ID =====
         const generatedStudentId = studentId || generateStudentId();
 
-        // Create new application with initial status 'Pending'
+        // ===== CREATE APPLICATION =====
         const newApplication = new Application({
             studentId: generatedStudentId,
             firstName,
@@ -156,21 +105,26 @@ const submitApplication = async (req, res) => {
             phone,
             address: address || '',
             highSchool,
-            gpa: gpa || null,
-            satScore: satScore || null,
-            actScore: actScore || null,
+            gpa: gpa ?? null,
+            satScore: satScore ?? null,
+            actScore: actScore ?? null,
+
+            // 🔥 REQUIRED BY NEW SCHEMA
+            departmentId: departmentIdValue,
+            facultyId: facultyIdValue,
+
             facultyName: facultyNameValue,
             departmentName: departmentNameValue,
+
             course,
             essay: essay || '',
-            status: 'Pending', // Set initial status to Pending
+            status: 'Pending',
             submissionDate: new Date()
         });
 
-        // Save to database
         const savedApplication = await newApplication.save();
 
-        // Prepare email data object
+        // ===== EMAIL DATA =====
         const applicationEmailData = {
             applicantName: `${firstName} ${lastName}`,
             id: savedApplication._id,
@@ -179,49 +133,30 @@ const submitApplication = async (req, res) => {
             submissionDate: savedApplication.submissionDate,
             faculty: savedApplication.facultyName,
             department: savedApplication.departmentName,
-            course: course,
+            course,
             remarks: ''
         };
 
-        // Send notification emails to admin and applicant (non-blocking)
+        // ===== SEND EMAILS (NON-BLOCKING) =====
         try {
             const emailService = getEmailService();
-            
-            // Send confirmation email to applicant with studentId
-            emailService.sendApplicationNotificationEmail(email, applicationEmailData)
-                .then(result => {
-                    if (result.success) {
-                        console.log(`✓ Application confirmation sent to applicant: ${email}`);
-                        console.log(`  - Student ID: ${savedApplication.studentId}`);
-                    } else {
-                        console.error(`✗ Failed to send application confirmation:`, result.error);
-                    }
-                })
-                .catch(emailError => {
-                    console.error("✗ Error sending application confirmation email:", emailError.message || emailError);
-                });
-            
-            // Send detailed admin notification with complete application details
-            emailService.sendAdminApplicationNotificationEmail(
-                process.env.ADMIN_EMAIL || 'silasonyekachi15@gmail.com',
-                savedApplication
-            )
-                .then(result => {
-                    if (result.success) {
-                        console.log(`✓ Application notification sent to admin for: ${firstName} ${lastName}`);
-                        console.log(`  - Student ID: ${savedApplication.studentId}`);
-                    } else {
-                        console.error(`✗ Failed to send application notification:`, result.error);
-                    }
-                })
-                .catch(emailError => {
-                    console.error("✗ Error sending application notification email:", emailError.message || emailError);
-                });
-        } catch (emailInitError) {
-            console.error("✗ Email service not available:", emailInitError.message);
+
+            emailService
+                .sendApplicationNotificationEmail(email, applicationEmailData)
+                .catch(err => console.error("Applicant email error:", err.message));
+
+            emailService
+                .sendAdminApplicationNotificationEmail(
+                    process.env.ADMIN_EMAIL,
+                    savedApplication
+                )
+                .catch(err => console.error("Admin email error:", err.message));
+
+        } catch (emailError) {
+            console.error("Email service error:", emailError.message);
         }
 
-        // Return success response with application details including studentId
+        // ===== RESPONSE =====
         res.status(201).json({
             message: "Application submitted successfully",
             applicationId: savedApplication._id,
@@ -230,17 +165,13 @@ const submitApplication = async (req, res) => {
             submissionDate: savedApplication.submissionDate
         });
 
-        console.log("New application submitted:", {
-            id: savedApplication._id,
+        console.log("Application submitted:", {
             studentId: savedApplication.studentId,
-            email: savedApplication.email,
-            firstName: savedApplication.firstName,
-            lastName: savedApplication.lastName,
-            faculty: savedApplication.facultyName,
-            department: savedApplication.departmentName,
-            course: savedApplication.course,
-            status: savedApplication.status,
-            submissionDate: savedApplication.submissionDate
+            facultyId: facultyIdValue,
+            departmentId: departmentIdValue,
+            faculty: facultyNameValue,
+            department: departmentNameValue,
+            course
         });
 
     } catch (error) {
@@ -251,109 +182,64 @@ const submitApplication = async (req, res) => {
 
 /**
  * Get Application Status
- * - Retrieves current status, remarks, and submission/review dates
- * - Includes studentId for tracking
  */
 const getApplicationStatus = async (req, res) => {
     try {
         const { applicationId } = req.params;
-        
-        // Validate applicationId
-        if (!applicationId) {
-            return res.status(400).json({ message: "Application ID is required" });
-        }
 
         const application = await Application.findById(applicationId);
-        
+
         if (!application) {
             return res.status(404).json({ message: "Application not found" });
         }
 
         res.status(200).json({
-            message: "Application status retrieved successfully",
-            applicationId: application._id,
             studentId: application.studentId,
-            firstName: application.firstName,
-            lastName: application.lastName,
-            email: application.email,
             status: application.status,
-            remarks: application.remarks || null,
+            remarks: application.remarks ?? null,
             submissionDate: application.submissionDate,
-            reviewedAt: application.reviewedAt || null,
+            reviewedAt: application.reviewedAt ?? null,
             faculty: application.facultyName,
             department: application.departmentName,
             course: application.course
         });
 
-        console.log(`Application status retrieved - ID: ${application._id}, Student: ${application.studentId}, Status: ${application.status}`);
-
     } catch (error) {
-        console.error("Error fetching application status:", error);
+        console.error("Status fetch error:", error);
         res.status(500).json({ message: "Internal server error" });
     }
 };
 
 /**
  * Get Application Details
- * - Retrieves complete application information for applicant view
- * - Includes studentId, status, and all submitted details
  */
 const getApplicationDetails = async (req, res) => {
     try {
         const { applicationId } = req.params;
-        
-        // Validate applicationId
-        if (!applicationId) {
-            return res.status(400).json({ message: "Application ID is required" });
-        }
 
-        const application = await Application.findById(applicationId);
-        
+        const application = await Application.findById(applicationId)
+            .populate('facultyId', 'name facultyId')
+            .populate('departmentId', 'name departmentId');
+
         if (!application) {
             return res.status(404).json({ message: "Application not found" });
         }
 
-        res.status(200).json({
-            message: "Application details retrieved successfully",
-            application: {
-                _id: application._id,
-                studentId: application.studentId,
-                firstName: application.firstName,
-                lastName: application.lastName,
-                email: application.email,
-                phone: application.phone,
-                address: application.address,
-                highSchool: application.highSchool,
-                gpa: application.gpa,
-                satScore: application.satScore,
-                actScore: application.actScore,
-                faculty: application.facultyName,
-                department: application.departmentName,
-                course: application.course,
-                essay: application.essay,
-                status: application.status,
-                remarks: application.remarks || null,
-                submissionDate: application.submissionDate,
-                reviewedAt: application.reviewedAt || null
-            }
-        });
-
-        console.log(`Application details retrieved - ID: ${application._id}, Student: ${application.studentId}`);
+        res.status(200).json({ application });
 
     } catch (error) {
-        console.error("Error fetching application details:", error);
+        console.error("Details fetch error:", error);
         res.status(500).json({ message: "Internal server error" });
     }
 };
 
 /**
- * Get All Applications with Pagination
- * - Retrieves all applications with optional filters
- * - Supports filtering by status
+ * Get All Applications (Admin)
  */
 const getAllApplications = async (req, res) => {
     try {
         const { status, page = 1, limit = 10 } = req.query;
+
         const skip = (page - 1) * limit;
 
         let query = {};
@@ -364,79 +250,42 @@ const getAllApplications = async (req, res) => {
         const applications = await Application.find(query)
             .sort({ submissionDate: -1 })
             .skip(skip)
-            .limit(parseInt(limit));
+            .limit(parseInt(limit))
+            .populate('facultyId', 'name')
+            .populate('departmentId', 'name');
 
         const totalApplications = await Application.countDocuments(query);
 
         res.status(200).json({
-            message: "Applications retrieved successfully",
             totalApplications,
             currentPage: parseInt(page),
             totalPages: Math.ceil(totalApplications / limit),
-            applications: applications.map(app => ({
-                _id: app._id,
-                studentId: app.studentId,
-                firstName: app.firstName,
-                lastName: app.lastName,
-                email: app.email,
-                faculty: app.facultyName,
-                department: app.departmentName,
-                course: app.course,
-                status: app.status,
-                submissionDate: app.submissionDate,
-                reviewedAt: app.reviewedAt
-            }))
+            applications
         });
 
-        console.log(`Retrieved ${applications.length} applications`);
-
     } catch (error) {
-        console.error("Error fetching applications:", error);
+        console.error("Admin fetch error:", error);
         res.status(500).json({ message: "Internal server error" });
     }
 };
 
 /**
  * Get Application by Email
- * - Allows students to retrieve their application using email
  */
 const getApplicationByEmail = async (req, res) => {
     try {
         const { email } = req.params;
 
-        if (!email) {
-            return res.status(400).json({ message: "Email is required" });
-        }
-
         const application = await Application.findOne({ email });
 
         if (!application) {
-            return res.status(404).json({ message: "Application not found for this email" });
+            return res.status(404).json({ message: "Application not found" });
         }
 
-        res.status(200).json({
-            message: "Application retrieved successfully",
-            application: {
-                _id: application._id,
-                studentId: application.studentId,
-                firstName: application.firstName,
-                lastName: application.lastName,
-                email: application.email,
-                phone: application.phone,
-                faculty: application.facultyName,
-                department: application.departmentName,
-                course: application.course,
-                status: application.status,
-                remarks: application.remarks || null,
-                submissionDate: application.submissionDate,
-                reviewedAt: application.reviewedAt
-            }
-        });
-
-        console.log(`Application retrieved by email - Email: ${email}, Student: ${application.studentId}`);
+        res.status(200).json({ application });
 
     } catch (error) {
-        console.error("Error fetching application by email:", error);
+        console.error("Email fetch error:", error);
         res.status(500).json({ message: "Internal server error" });
     }
 };
