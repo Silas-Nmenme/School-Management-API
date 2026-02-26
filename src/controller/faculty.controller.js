@@ -66,11 +66,10 @@ const getAllFaculties = async (req, res) => {
   try {
     const faculties = await Faculty.find({ isActive: true }).sort({ order: 1, name: 1 });
 
-    res.status(200).json({
-      message: "Faculties retrieved successfully",
-      totalFaculties: faculties.length,
-      faculties
-    });
+    // Return array directly for frontend compatibility
+    // Also set total count in response header
+    res.set('X-Total-Count', faculties.length);
+    res.status(200).json(faculties);
 
     console.log(`Retrieved ${faculties.length} faculties`);
 
